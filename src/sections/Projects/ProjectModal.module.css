@@ -1,0 +1,90 @@
+/**
+ * ProjectModal.module.css — Project details modal BODY content.
+ * --------------------------------------------------------------------------
+ * Consumed by ProjectModal.jsx as `styles.content`, `styles.image`,
+ * `styles.description`, `styles.tech`, `styles.features`, `styles.featuresTitle`,
+ * `styles.featureList`, `styles.featureItem`, `styles.featureIcon`, `styles.actions`.
+ *
+ * Scope contract:
+ *   - This module styles ONLY the content rendered inside the Modal primitive's
+ *     body <div>. The Modal primitive (components/ui/Modal) owns the overlay,
+ *     panel, header (<h2> title + close button), padding and scroll behavior,
+ *     as well as open/close motion — none of that is (or may be) restated here.
+ *   - Zero hardcoded values: every property value is a var(--token) from
+ *     src/styles/variables.css, except the allowed structural literals (0, 100%
+ *     and the 16 / 9 aspect ratio) and plain CSS keywords.
+ *   - Global element resets and shared behaviors live in src/styles/global.css
+ *     and are deliberately not restated here (img reset, button reset,
+ *     ul/ol list reset, box-sizing, and the reduced-motion guard). The
+ *     .featureList renders as a list whose markers/padding are already removed
+ *     globally, so it needs no manual reset.
+ */
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.image {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.description {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+}
+
+.tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.features {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.featuresTitle {
+  margin: 0;
+  color: var(--color-heading);
+  font-family: var(--font-heading);
+  font-size: var(--text-lg);
+  font-weight: var(--font-weight-semibold);
+}
+
+.featureList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.featureItem {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  color: var(--color-text);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+}
+
+.featureIcon {
+  flex-shrink: 0;
+  margin-top: var(--space-1);
+  color: var(--color-success);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
