@@ -21,6 +21,7 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { FaArrowUp } from 'react-icons/fa'
 import { useScrollToTop } from '@/hooks/useScrollToTop'
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 import { BACK_TO_TOP_THRESHOLD } from '@/utils'
 import styles from './BackToTop.module.css'
 
@@ -36,6 +37,20 @@ import styles from './BackToTop.module.css'
  */
 function BackToTop({ threshold = BACK_TO_TOP_THRESHOLD, className, ...rest }) {
   const { isVisible, scrollToTop } = useScrollToTop(threshold)
+  const reduced = usePrefersReducedMotion()
+
+  // Show/hide motion, gated on the reduced-motion preference. When reduced
+  // motion is requested we pass no motion props, so the button appears and
+  // disappears instantly (still tracked by AnimatePresence) rather than
+  // sliding/fading — honoring the accessibility rule (AAP §0.7.4).
+  const motionProps = reduced
+    ? {}
+    : {
+        initial: { opacity: 0, y: 16 },
+        animate: { opacity: 1, y: 0 },
+        exit: { opacity: 0, y: 16 },
+        transition: { duration: 0.25, ease: [0.4, 0, 0.2, 1] },
+      }
 
   return (
     <AnimatePresence>
@@ -45,10 +60,7 @@ function BackToTop({ threshold = BACK_TO_TOP_THRESHOLD, className, ...rest }) {
           aria-label="Back to top"
           className={[styles.backToTop, className].filter(Boolean).join(' ')}
           onClick={scrollToTop}
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 16 }}
-          transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+          {...motionProps}
           {...rest}
         >
           <FaArrowUp aria-hidden />

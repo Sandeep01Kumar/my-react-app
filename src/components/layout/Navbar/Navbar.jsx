@@ -8,6 +8,7 @@ import { navLinks } from '@/data'
 import { scrollToId } from '@/utils'
 import { useActiveSection } from '@/hooks/useActiveSection'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 import styles from './Navbar.module.css'
 
 const SCROLL_THRESHOLD = 8
@@ -15,6 +16,7 @@ const SCROLL_THRESHOLD = 8
 function Navbar() {
   const activeId = useActiveSection()
   const isMobile = useMediaQuery('(max-width: 768px)')
+  const reduced = usePrefersReducedMotion()
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
 
@@ -24,6 +26,19 @@ function Navbar() {
   // resize, and avoids the cascading-render pattern flagged by
   // react-hooks/set-state-in-effect (see React's "You Might Not Need an Effect").
   const mobileMenuOpen = isMobile && menuOpen
+
+  // Mobile-menu entrance/exit motion, gated on the user's reduced-motion
+  // preference. When reduced motion is requested we pass no motion props, so
+  // the menu appears/disappears instantly (still tracked by AnimatePresence)
+  // instead of sliding/fading — honoring the accessibility rule (AAP §0.7.4).
+  const menuMotion = reduced
+    ? {}
+    : {
+        initial: { opacity: 0, y: -8 },
+        animate: { opacity: 1, y: 0 },
+        exit: { opacity: 0, y: -8 },
+        transition: { duration: 0.25, ease: [0.4, 0, 0.2, 1] },
+      }
 
   useEffect(() => {
     const handleScroll = () => {
@@ -85,10 +100,7 @@ function Navbar() {
             id="mobile-menu"
             className={styles.mobileMenu}
             aria-label="Mobile"
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+            {...menuMotion}
           >
             <ul className={styles.mobileLinks}>{renderNavItems()}</ul>
           </motion.nav>

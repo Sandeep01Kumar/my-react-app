@@ -38,6 +38,7 @@ import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { MdClose } from 'react-icons/md'
 import { fadeIn, scaleIn } from '@/utils'
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 import styles from './Modal.module.css'
 
 // Elements treated as focusable by the focus trap and the initial-focus logic.
@@ -53,6 +54,21 @@ function Modal({ isOpen, onClose, title, children }) {
   const panelRef = useRef(null)
   // Remembers the element focused before opening, to restore focus on close.
   const previousActiveRef = useRef(null)
+  // Called unconditionally (Rules of Hooks) BEFORE any render branching so the
+  // hook order is stable. When the user requests reduced motion we neutralize
+  // the overlay/panel entrance+exit animations below (they render instantly).
+  const reduced = usePrefersReducedMotion()
+
+  // Motion props for the scrim and panel. When reduced motion is requested we
+  // pass no variants/initial/animate/exit, so both motion.div elements appear
+  // and disappear instantly — the dialog stays fully functional (still tracked
+  // by AnimatePresence), just without the fade/scale transitions.
+  const overlayMotion = reduced
+    ? {}
+    : { variants: fadeIn, initial: 'hidden', animate: 'visible', exit: 'hidden' }
+  const panelMotion = reduced
+    ? {}
+    : { variants: scaleIn, initial: 'hidden', animate: 'visible', exit: 'hidden' }
 
   useEffect(() => {
     // Only wire up dialog behavior while open; when closed the guard returns
@@ -120,19 +136,13 @@ function Modal({ isOpen, onClose, title, children }) {
       {isOpen && (
         <motion.div
           className={styles.overlay}
-          variants={fadeIn}
-          initial="hidden"
-          animate="visible"
-          exit="hidden"
+          {...overlayMotion}
           onClick={onClose}
         >
           <motion.div
             ref={panelRef}
             className={styles.panel}
-            variants={scaleIn}
-            initial="hidden"
-            animate="visible"
-            exit="hidden"
+            {...panelMotion}
             role="dialog"
             aria-modal="true"
             aria-labelledby={titleId}

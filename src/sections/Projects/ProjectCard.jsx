@@ -1,7 +1,7 @@
 import Card from '@/components/ui/Card'
 import Badge from '@/components/ui/Badge'
 import Button from '@/components/ui/Button'
-import { FaGithub, FaExternalLinkAlt } from 'react-icons/fa'
+import { FaGithub, FaExternalLinkAlt, FaCheckCircle } from 'react-icons/fa'
 import styles from './ProjectCard.module.css'
 
 /**
@@ -15,16 +15,17 @@ import styles from './ProjectCard.module.css'
  *
  * Composition follows the "always reuse primitives" rule (AAP §0.7.1): the
  * surface is the shared Card primitive (as an <article> for correct document
- * semantics), the tech tags are Badge chips, and every action is a Button.
- * Inner layout/typography come from ./ProjectCard.module.css, whose values all
- * resolve to the design tokens in src/styles/variables.css.
+ * semantics), the tech tags are Badge chips, the highlighted `features` are an
+ * accessible <ul>, and every action is a Button. Inner layout/typography come
+ * from ./ProjectCard.module.css, whose values all resolve to the design tokens
+ * in src/styles/variables.css.
  *
- * Interaction model: the whole card is a pointer convenience — clicking it
- * opens the details modal (onClick={onOpen} spreads through Card onto the
- * <article>). The explicit "Details" <button> is the keyboard/AT-accessible
- * trigger for the same action. The "Code" and "Demo" actions are real external
- * <a> links; their onClick={stop} halts propagation so a click on them opens
- * only the link (via href) and never also bubbles up to open the modal.
+ * Interaction model: the details modal is opened solely by the explicit,
+ * keyboard-focusable "Details" <button> (onClick={onOpen}); the card surface
+ * itself is intentionally NOT clickable. This keeps the trigger fully
+ * keyboard- and AT-operable, avoids any mouse-only behavior, and prevents a
+ * nested-interactive (button/link inside a clickable region) violation. The
+ * "Code" and "Demo" actions are real external <a> links that navigate via href.
  *
  * @param {object} props
  * @param {{ id: string, title: string, image: string, description: string,
@@ -37,25 +38,15 @@ import styles from './ProjectCard.module.css'
  * @returns {import('react').ReactElement} The rendered project card.
  */
 function ProjectCard({ project, onOpen }) {
-  // Prevent a click on the external Code/Demo links from also bubbling to the
-  // card's onClick (which would additionally open the modal). The anchor still
-  // navigates normally through its href.
-  const stop = (event) => event.stopPropagation()
-
-  // Open the details modal from the explicit, keyboard-focusable Details
-  // button; stopping propagation guarantees onOpen fires exactly once.
-  const handleDetails = (event) => {
-    event.stopPropagation()
-    onOpen()
-  }
-
   return (
-    <Card as='article' hover className={styles.card} onClick={onOpen}>
+    <Card as='article' hover className={styles.card}>
       <div className={styles.media}>
         <img
           className={styles.image}
           src={project.image}
           alt={project.title}
+          width='640'
+          height='360'
           loading='lazy'
           decoding='async'
         />
@@ -70,12 +61,23 @@ function ProjectCard({ project, onOpen }) {
             </li>
           ))}
         </ul>
+        <ul
+          className={styles.features}
+          aria-label={`Key features of ${project.title}`}
+        >
+          {project.features.map((feature) => (
+            <li key={feature} className={styles.feature}>
+              <FaCheckCircle className={styles.featureIcon} aria-hidden />
+              <span>{feature}</span>
+            </li>
+          ))}
+        </ul>
       </div>
       <div className={styles.actions}>
         <Button
           variant='ghost'
           size='sm'
-          onClick={handleDetails}
+          onClick={onOpen}
           aria-label={`View details for ${project.title}`}
         >
           Details
@@ -88,7 +90,6 @@ function ProjectCard({ project, onOpen }) {
           variant='outline'
           size='sm'
           icon={<FaGithub />}
-          onClick={stop}
           aria-label={`View ${project.title} source code on GitHub`}
         >
           Code
@@ -101,7 +102,6 @@ function ProjectCard({ project, onOpen }) {
           variant='primary'
           size='sm'
           icon={<FaExternalLinkAlt />}
-          onClick={stop}
           aria-label={`Open the live demo of ${project.title}`}
         >
           Demo

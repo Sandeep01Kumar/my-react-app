@@ -35,12 +35,12 @@
 
 import styles from './Loader.module.css'
 
-const Loader = ({
+function Loader({
   fullscreen = false,
   inline = false,
   label = 'Loading',
   className = '',
-}) => {
+}) {
   // Compose the wrapper class list: base + conditional mode modifiers + any
   // caller-supplied className. `.filter(Boolean)` drops the empty strings from
   // unselected modes / an omitted className so `.join(' ')` never emits stray

@@ -23,15 +23,16 @@
  */
 
 /* Full-height flex column so .actions can be pinned to the bottom
-   (margin-top: auto) for even alignment across a grid row. cursor: pointer
-   signals the whole card opens the project-details modal. Surface styling
-   (radius/border/background/shadow/padding/transition) is owned by Card. */
+   (margin-top: auto) for even alignment across a grid row. The card surface is
+   intentionally NOT clickable — the details modal is opened via the explicit,
+   keyboard-focusable "Details" button — so no cursor: pointer is applied.
+   Surface styling (radius/border/background/shadow/padding/transition) is owned
+   by Card. */
 .card {
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100%;
-  cursor: pointer;
 }
 
 /* Clip the image to a rounded rectangle; --color-surface is a neutral fallback
@@ -87,6 +88,35 @@
   flex-wrap: wrap;
   gap: var(--space-2);
   margin-top: var(--space-2);
+}
+
+/* Highlighted feature list — a compact vertical list of the project's key
+   features, each prefixed with a decorative success-colored check icon. The
+   list marker/padding reset comes from global.css, so none is repeated here. */
+.features {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+/* One feature row: check icon + label, top-aligned so a label that wraps to a
+   second line stays under the text rather than under the icon. */
+.feature {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+}
+
+/* Decorative check icon: never shrinks, nudged down to align with the first
+   line of text, and tinted with the success token to read as a positive mark. */
+.featureIcon {
+  flex-shrink: 0;
+  margin-top: var(--space-1);
+  color: var(--color-success);
 }
 
 /* Wrap-friendly action row (GitHub / Live Demo) pinned to the card bottom. */
