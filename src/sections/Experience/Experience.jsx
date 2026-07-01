@@ -34,7 +34,7 @@ import Container from '@/components/ui/Container'
 import TimelineItem from './TimelineItem'
 import styles from './Experience.module.css'
 
-const Experience = () => {
+function Experience() {
   return (
     <section id="experience" className={styles.experience} aria-labelledby="experience-title">
       <Container>

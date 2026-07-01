@@ -41,7 +41,7 @@ const TYPE_ICONS = {
  *   left/right side on the desktop alternating layout.
  * @returns {import('react').ReactElement} The rendered `<li>` timeline entry.
  */
-const TimelineItem = ({ item, index }) => {
+function TimelineItem({ item, index }) {
   const Icon = TYPE_ICONS[item.type] ?? FaBriefcase
   const sideClass = index % 2 === 0 ? styles.left : styles.right
   const itemClass = [styles.item, sideClass].filter(Boolean).join(' ')
