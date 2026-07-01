@@ -1,0 +1,95 @@
+/**
+ * Loader.module.css — scoped styles for the Loader UI primitive.
+ * --------------------------------------------------------------------------
+ * Token-driven CSS spinner (no third-party spinner library) consumed by
+ * Loader.jsx via `import styles from './Loader.module.css'`. It backs the
+ * app's loading animation: the <Suspense fallback> for lazy routes in
+ * src/App.jsx (`<Loader fullscreen />`), the initial load, and inline
+ * section-level fallbacks.
+ *
+ * Three presentation modes (composed by Loader.jsx):
+ *   default   -> .loader                    (centered inline, 32px spinner)
+ *   fullscreen-> .loader + .fullscreen       (full-viewport theme overlay, 48px)
+ *   inline    -> .loader + .inline           (smaller in-content, 24px spinner)
+ *
+ * Contract: the class names `.loader`, `.spinner`, `.fullscreen` and `.inline`
+ * are the interface with Loader.jsx (styles.loader / styles.spinner /
+ * styles.fullscreen / styles.inline) — do NOT rename them.
+ *
+ * Authoring rules: standard non-nested CSS; every value references a design
+ * token from src/styles/variables.css via var(--token). The only non-token
+ * values are the structural exempt literals (0, none, inset:0, the transform /
+ * rotate keyframe, layout keywords) plus the single sanctioned 3px spinner
+ * border width (there is no border-width token in the catalog).
+ */
+
+/* Base wrapper — default centered inline spinner (used when neither the
+   `fullscreen` nor the `inline` modifier is applied). */
+.loader {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+/* The spinning circle: a full ring in the border color with a single
+   royal-blue arc (border-top-color) that rotates to read as a spinner. */
+.spinner {
+  width: var(--space-8);
+  height: var(--space-8);
+  border: 3px solid var(--color-border); /* 3px: no border-width token exists; sanctioned literal per folder spec */
+  border-top-color: var(--color-primary);
+  border-radius: var(--radius-full);
+  animation: spin calc(var(--transition-slow) * 2) linear infinite;
+}
+
+/* Fullscreen overlay. Declared AFTER .loader on purpose: when the wrapper
+   carries BOTH .loader and .fullscreen, this `display: grid` overrides
+   .loader's `display: inline-flex` at equal specificity via later source
+   order, and centers the spinner with place-items. `--color-bg` is
+   theme-aware (white in light, navy in dark) so the overlay fully covers the
+   page in both themes, and `--z-modal` sits above the nav and back-to-top. */
+.fullscreen {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: var(--color-bg);
+  z-index: var(--z-modal);
+}
+
+/* Enlarge the spinner for the fullscreen state. Descendant selector — both
+   classes are scoped together by CSS Modules. */
+.fullscreen .spinner {
+  width: var(--space-12);
+  height: var(--space-12);
+}
+
+/* Inline modifier — the base already provides inline-flex centering; this
+   primarily pairs with the smaller spinner below for in-content loading. */
+.inline {
+  gap: var(--space-2);
+}
+
+.inline .spinner {
+  width: var(--space-6);
+  height: var(--space-6);
+}
+
+/* Rotation. CSS Modules scopes this keyframe name automatically and rewrites
+   the `animation` reference above to the scoped name, so the local `spin`
+   identifier is safe under Vite. */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Local reduced-motion guard. src/styles/global.css also neutralizes
+   animations globally under reduced-motion; this self-contained fallback
+   keeps the primitive robust on its own without over-engineering. */
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation: none;
+  }
+}

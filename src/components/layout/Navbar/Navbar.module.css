@@ -1,0 +1,103 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-nav);
+  width: 100%;
+  height: var(--nav-height);
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border-bottom: 1px solid var(--glass-border, var(--color-border));
+  transition: background-color var(--transition-base) var(--ease),
+    box-shadow var(--transition-base) var(--ease);
+}
+
+.scrolled {
+  box-shadow: var(--shadow-md);
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--nav-height);
+  gap: var(--space-4);
+}
+
+.links {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  list-style: none;
+}
+
+.links a,
+.mobileLinks a {
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-muted);
+  text-decoration: none;
+  transition: color var(--transition-fast) var(--ease);
+}
+
+.links a:hover,
+.mobileLinks a:hover,
+.active {
+  color: var(--color-primary);
+}
+
+.links a:focus-visible,
+.mobileLinks a:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.hamburger {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text);
+  font-size: var(--text-xl);
+}
+
+.mobileMenu {
+  position: absolute;
+  top: var(--nav-height);
+  left: 0;
+  right: 0;
+  overflow: hidden;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--glass-border, var(--color-border));
+  box-shadow: var(--shadow-lg);
+}
+
+.mobileLinks {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  list-style: none;
+  padding: var(--space-6) var(--space-4);
+}
+
+.mobileLinks a {
+  display: block;
+  padding-block: var(--space-2);
+}
+
+@media (max-width: 768px) {
+  .links {
+    display: none;
+  }
+
+  .hamburger {
+    display: inline-flex;
+  }
+}

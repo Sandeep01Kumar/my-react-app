@@ -1,0 +1,44 @@
+/**
+ * SkillCard.module.css — inner layout for one Skills-group card.
+ * --------------------------------------------------------------------------
+ * The card SURFACE (glass background, border, radius, shadow, padding) is
+ * supplied by the reusable Card primitive (variant="glass"). This module adds
+ * ONLY the internal flex layout — a category title above a vertical list of
+ * ProgressBars — plus a subtle hover lift. Every declared value resolves to a
+ * design token from src/styles/variables.css (app-wide zero-hardcoded-values
+ * rule); list-style, list padding/margin and section scroll-margin-top are
+ * handled globally in styles/global.css and are intentionally not repeated.
+ */
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  height: 100%;
+  transition: transform var(--transition-base) var(--ease), box-shadow var(--transition-base) var(--ease);
+}
+
+.card:hover {
+  transform: translateY(calc(var(--space-1) * -1));
+  box-shadow: var(--shadow-lg);
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-size: var(--text-xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--leading-tight);
+  color: var(--color-heading);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card:hover {
+    transform: none;
+  }
+}

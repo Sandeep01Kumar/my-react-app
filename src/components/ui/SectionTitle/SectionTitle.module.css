@@ -1,0 +1,62 @@
+/**
+ * SectionTitle.module.css — scoped styles for the SectionTitle primitive.
+ * --------------------------------------------------------------------------
+ * Renders the eyebrow -> <h2> -> subtitle heading block with a uniform
+ * typographic cadence across every section. Consumed by SectionTitle.jsx as
+ * `styles` (styles.sectionTitle / styles.center / styles.eyebrow /
+ * styles.title / styles.subtitle).
+ *
+ * Design-token contract: every value resolves to a CSS custom property
+ * defined in src/styles/variables.css (loaded once globally via
+ * styles/global.css), which enforces the app-wide zero-hardcoded-values rule
+ * and makes light/dark theming propagate automatically. The exempt literals
+ * are the app-wide set (0, none, auto, inherit, transparent, currentColor)
+ * plus CSS keywords. The ONLY intentional raw value is the eyebrow's
+ * `letter-spacing: 0.08em` — there is no
+ * letter-spacing token in variables.css and this exact value is mandated.
+ *
+ * The .title class re-declares family/size/weight/line-height/color/margin so
+ * the heading is correct in the SectionTitle context regardless of the global
+ * bare-<h2> base styling; `margin: 0` neutralizes any inherited heading margin.
+ */
+
+.sectionTitle {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.center {
+  align-items: center;
+  text-align: center;
+}
+
+.eyebrow {
+  color: var(--color-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.08em; /* authorized exception: no letter-spacing token exists */
+  text-transform: uppercase;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: var(--text-4xl);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--leading-tight);
+  color: var(--color-heading);
+}
+
+.subtitle {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--text-lg);
+  line-height: var(--leading-normal);
+}
+
+.center .subtitle {
+  max-width: calc(var(--container-max) - var(--space-32));
+  margin-inline: auto;
+}

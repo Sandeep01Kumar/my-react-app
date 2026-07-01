@@ -1,0 +1,95 @@
+/*
+ * Modal.module.css — CSS Module for the accessible dialog/popup primitive.
+ * --------------------------------------------------------------------------
+ * Locally-scoped styles consumed ONLY by the sibling ./Modal.jsx:
+ *   styles.overlay  -> full-viewport scrim that centers the dialog
+ *   styles.panel    -> the dialog surface (rounded, shadowed, scrollable)
+ *   styles.header   -> title row + close button
+ *   styles.title    -> dialog heading (target of aria-labelledby)
+ *   styles.close    -> icon-only close button (+ :hover / :focus-visible)
+ *   styles.body     -> scrollable dialog content
+ *
+ * Every value resolves to a design token from src/styles/variables.css
+ * (imported once globally through global.css). The navy scrim is derived from
+ * a token via color-mix() rather than a hardcoded color literal, so it reads
+ * correctly over both the light and dark themes while honoring the app-wide
+ * zero-hardcoded-values rule.
+ */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: grid;
+  place-items: center;
+  padding: var(--space-4);
+  background: color-mix(in srgb, var(--color-navy-900) 65%, transparent);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+}
+
+.panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  width: 100%;
+  max-width: calc(var(--container-max) - var(--space-32));
+  max-height: 85vh;
+  overflow: auto;
+  padding: var(--space-8);
+  background: var(--color-bg);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xl);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: var(--text-2xl);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--leading-tight);
+  color: var(--color-heading);
+}
+
+.close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--space-8);
+  height: var(--space-8);
+  font-size: var(--text-xl);
+  color: var(--color-text-muted);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: color var(--transition-fast) var(--ease),
+    background-color var(--transition-fast) var(--ease);
+}
+
+.close:hover {
+  color: var(--color-heading);
+  background: var(--color-surface);
+}
+
+.close:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.body {
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  color: var(--color-text);
+}

@@ -1,0 +1,45 @@
+/**
+ * StatCard.module.css — inner content layout + typography for the StatCard primitive.
+ * --------------------------------------------------------------------------
+ * SCOPE: This module contributes ONLY the centered vertical stack plus the
+ * typographic treatment of the stat's icon, value and label. The card SURFACE
+ * (padding, background, border, border-radius, box-shadow, hover-lift) is owned
+ * by the composed Card primitive (components/ui/Card) and MUST NOT be
+ * re-declared here — duplicating it would break the "always reuse components"
+ * rule. Every value references a design token from src/styles/variables.css
+ * (already global at runtime via global.css); there are no hardcoded values.
+ */
+
+/* Inner layout wrapper — merged onto the Card root via className. Card declares
+   no display/gap/text-align, so this cleanly adds the centered vertical stack;
+   the centered text alignment overrides the inherited #root left alignment. */
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-2);
+}
+
+/* Optional stat icon — applied directly to the react-icons SVG, which inherits
+   its size from font-size and its paint from color, so no wrapper is needed. */
+.icon {
+  font-size: var(--text-3xl);
+  color: var(--color-primary);
+}
+
+/* The big headline number — heading font at the largest fluid heading size,
+   bold and max-contrast heading color, with tight line-height for a compact figure. */
+.value {
+  font-family: var(--font-heading);
+  font-size: var(--text-4xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-heading);
+  line-height: var(--leading-tight);
+}
+
+/* The caption under the value — smaller, theme-aware muted-slate text. */
+.label {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}

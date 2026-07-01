@@ -1,0 +1,238 @@
+@import './variables.css';
+
+/**
+ * global.css — Global reset, token-based base styles & #root de-constraint
+ * --------------------------------------------------------------------------
+ * The application's ONE global stylesheet. It is imported EXACTLY ONCE, by
+ * src/main.jsx (`import './styles/global.css'`), and it:
+ *   1. Pulls in the design-token layer via @import (MUST be the first line —
+ *      per the CSS spec, @import has to precede every style rule).
+ *   2. Applies a modern, minimal CSS reset (box-sizing, margins, media,
+ *      form controls, buttons and lists).
+ *   3. Sets token-based base document + typography styles (Inter body copy,
+ *      Poppins headings, royal-blue links, monospace code).
+ *   4. De-constrains #root — replacing the old scaffold's fixed 1126px,
+ *      centered, side-bordered column with a full-width, left-aligned flex
+ *      column so sections can be full-bleed. Each section centers its content
+ *      through the Container primitive (max-width: var(--container-max)).
+ *   5. Enables smooth scrolling with a sticky-nav-aware anchor offset so
+ *      anchored sections are not hidden behind the fixed Navbar.
+ *   6. Provides accessible :focus-visible rings and a prefers-reduced-motion
+ *      guard.
+ *
+ * Theming is driven entirely by the [data-theme] attribute + tokens defined in
+ * variables.css (set and persisted by src/hooks/useTheme.jsx). There is
+ * DELIBERATELY no prefers-color-scheme media query here: it would fight the
+ * user-controlled dark-mode toggle. Every value that has a design token is
+ * written as var(--token) so themes and future tweaks propagate from a single
+ * source of truth.
+ *
+ * Supersedes the deleted scaffold src/index.css (this file + variables.css
+ * together fully replace it): the purple accent, the 1126px #root pin, the
+ * OS-preference dark block and the nested CSS are intentionally not carried
+ * over.
+ */
+
+/* ==========================================================================
+ * Phase B — Modern CSS reset
+ * ========================================================================== */
+
+/* Predictable sizing: borders and padding are included in element width. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Remove the default margins every UA applies to headings, paragraphs, etc. */
+* {
+  margin: 0;
+}
+
+/* Replaced/embedded media behaves as a block and never overflows its box. */
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* Form controls inherit typography and color rather than UA defaults. */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+/* Baseline button reset — <button> is reused as the Button UI primitive. */
+button {
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+/* List reset — navigation, footer and skills render token-styled lists. */
+ul,
+ol {
+  list-style: none;
+  padding: 0;
+}
+
+/* Keep long words / URLs from breaking the layout out of its container. */
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
+
+/* ==========================================================================
+ * Phase C — Base document + token-based typography
+ * ========================================================================== */
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100svh;
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--leading-normal);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-synthesis: none;
+  /* Smooth light/dark theme switch; neutralized under reduced-motion (Phase F). */
+  transition:
+    background-color var(--transition-base) var(--ease),
+    color var(--transition-base) var(--ease);
+}
+
+/* Headings share the display family, bold weight, tight leading and heading
+ * color; sizes come from the fluid type scale. Poppins is loaded at 500/600/700
+ * only, so heading weight stays >= 500 (700 here). */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--leading-tight);
+  color: var(--color-heading);
+}
+
+h1 {
+  font-size: var(--text-5xl);
+}
+
+h2 {
+  font-size: var(--text-4xl);
+}
+
+h3 {
+  font-size: var(--text-3xl);
+}
+
+h4 {
+  font-size: var(--text-2xl);
+}
+
+h5 {
+  font-size: var(--text-xl);
+}
+
+h6 {
+  font-size: var(--text-lg);
+}
+
+/* Links use the royal-blue primary token with a smooth hover transition. */
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color var(--transition-fast) var(--ease);
+}
+
+a:hover {
+  color: var(--color-primary-hover);
+}
+
+/* Monospace family for inline code and preformatted blocks. */
+code,
+pre {
+  font-family: var(--font-mono);
+}
+
+/* ==========================================================================
+ * Phase D — #root de-constraint (CRITICAL: replaces the old 1126px pin)
+ * The old scaffold pinned #root to width:1126px; margin:0 auto;
+ * text-align:center; border-inline:1px solid ... . Here it becomes a
+ * full-width, left-aligned flex column so sections render full-bleed (each
+ * centers its content via the Container primitive), and the column layout lets
+ * the Footer settle at the bottom of short pages. No max-width or border here.
+ * ========================================================================== */
+
+#root {
+  width: 100%;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+/* ==========================================================================
+ * Phase E — Sticky-nav anchor offset (smooth-scroll correctness)
+ * Every page section renders <section id="...">; offset scroll targets by the
+ * nav height plus a small breathing gap so anchored content clears the fixed
+ * Navbar instead of hiding behind it. :target covers non-<section> anchors too.
+ * ========================================================================== */
+
+section[id] {
+  scroll-margin-top: calc(var(--nav-height) + var(--space-4));
+}
+
+:target {
+  scroll-margin-top: calc(var(--nav-height) + var(--space-4));
+}
+
+/* ==========================================================================
+ * Phase F — Accessibility: focus rings + reduced-motion guard
+ * ========================================================================== */
+
+/* Visible keyboard focus indicator using the theme accent token. */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Honor the user's reduced-motion preference: neutralize animations,
+ * transitions and smooth scrolling (AAP §0.7.3). */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

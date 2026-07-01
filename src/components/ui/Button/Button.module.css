@@ -1,0 +1,187 @@
+/**
+ * Button.module.css — styles for the reusable Button / CTA primitive.
+ * --------------------------------------------------------------------------
+ * Foundational visual contract for EVERY call-to-action in the app (Hero,
+ * Resume, Contact submit, NotFound, ...). Consumed by Button.jsx via
+ * `import styles from './Button.module.css'`, which composes:
+ *   styles.button + styles[variant] + styles[size]
+ *   + (loading ? styles.loading : '')
+ * and wraps its children in styles.content / styles.icon, rendering
+ * styles.spinner while loading. The class names below therefore map 1:1 to
+ * the `variant` ({primary,secondary,outline,ghost}) and `size` ({sm,md,lg})
+ * prop string values — they MUST NOT be renamed.
+ *
+ * Every color / spacing / radius / shadow / font / motion value resolves
+ * through a design token from src/styles/variables.css (var(--token)); this is
+ * what enforces the app-wide zero-hardcoded-values rule. Dark mode "just works"
+ * here with no extra rules: the semantic tokens (--color-surface, --color-text,
+ * --color-heading, --color-border, --color-accent) are flipped globally by the
+ * [data-theme="dark"] attribute on <html>, while the brand tokens
+ * (--color-primary*) are intentionally theme-independent.
+ *
+ * The only non-token values are the sanctioned exemptions (0, none, transparent,
+ * currentColor) plus a few unavoidable STRUCTURAL values that have no token —
+ * each flagged inline where it appears (hairline/outline widths, centering
+ * percentages, the em-based spinner box, and the keyframe rotation).
+ */
+
+/* Phase A — Base button.
+   Shared layout, typography and transitions for all variants and sizes.
+   `position: relative` anchors the absolutely-positioned .spinner. */
+.button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  /* 1px structural hairline (no sub-4px width token; matches the Card/Timeline
+     1px/2px border precedent). Kept on every variant so switching variants —
+     e.g. ghost -> secondary/outline — never shifts the box size. */
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  font-weight: var(--font-weight-semibold);
+  /* Keep the visual identical when Button renders as an <a> (as / href props). */
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color var(--transition-fast) var(--ease),
+    color var(--transition-fast) var(--ease),
+    border-color var(--transition-fast) var(--ease),
+    box-shadow var(--transition-fast) var(--ease),
+    transform var(--transition-fast) var(--ease);
+}
+
+/* Phase B — Sizes. Padding and font-size scale from the shared token ramp. */
+.sm {
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--text-sm);
+}
+
+.md {
+  padding: var(--space-3) var(--space-6);
+  font-size: var(--text-base);
+}
+
+.lg {
+  padding: var(--space-4) var(--space-8);
+  font-size: var(--text-lg);
+}
+
+/* Phase C — Variants with hover / active states.
+   The translateY(-2px) hover lift is a deliberately subtle micro-interaction
+   (AAP §0.7.3 animation restraint); -2px and 0 are structural offsets. */
+.primary {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+}
+
+.primary:hover {
+  background-color: var(--color-primary-hover);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.primary:active {
+  background-color: var(--color-primary-active);
+  transform: translateY(0);
+}
+
+.secondary {
+  background-color: var(--color-surface);
+  color: var(--color-heading);
+  border-color: var(--color-border);
+}
+
+.secondary:hover {
+  box-shadow: var(--shadow-sm);
+  border-color: var(--color-primary);
+}
+
+.outline {
+  background-color: transparent;
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.outline:hover {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+}
+
+.ghost {
+  background-color: transparent;
+  color: var(--color-text);
+}
+
+.ghost:hover {
+  background-color: var(--color-surface);
+}
+
+/* Phase D — Keyboard focus ring (a11y). 2px outline + 2px offset are structural
+   hairline widths; the color is the themed accent token. */
+.button:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Phase E — Disabled & loading.
+   :disabled matches a native <button disabled>; .loading covers both button and
+   non-button (e.g. <a>) elements. opacity 0.65 is the single sanctioned raw
+   value (no dedicated token). While loading, hover feedback is neutralized so
+   the button reads as busy rather than interactive. */
+.button:disabled,
+.loading {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.loading:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+/* Phase F — Loading content + spinner (layout-stable overlay).
+   Button.jsx wraps the label/icon in .content. While loading, .content fades to
+   opacity 0 (kept in the DOM so the button's width does not collapse) and the
+   centered .spinner is revealed. */
+.content {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.loading .content {
+  opacity: 0;
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Spinner is centered with 50% offsets + negative half-size margins so the
+   `transform` property stays reserved purely for rotate() — centering with
+   translate(-50%,-50%) would be overwritten by the rotation and de-center it.
+   Sizing in em scales the spinner with the button's font-size. currentColor
+   inherits the variant's text color and stays visible because .loading only
+   fades .content, not the button's color. */
+.spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1em;
+  height: 1em;
+  margin: -0.5em 0 0 -0.5em;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: var(--radius-full);
+  animation: spin var(--transition-slow) linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
