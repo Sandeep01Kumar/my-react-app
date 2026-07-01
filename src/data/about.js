@@ -1,6 +1,6 @@
 export const about = {
   summary:
-    "I'm a detail-oriented Software QA Engineer and React Developer who bridges the gap between building and breaking software. I craft clean, reusable React interfaces and rigorously validate them across functional, regression, API, and UI testing — so the products I ship are as reliable as they are polished.",
+    'I\'m a detail-oriented Software QA Engineer and React Developer who bridges the gap between building and breaking software. I craft clean, reusable React interfaces and rigorously validate them across functional, regression, API, and UI testing — so the products I ship are as reliable as they are polished.',
   objective:
     'To combine my dual expertise in quality assurance and frontend development to help teams deliver fast, accessible, and defect-free web products.',
   education: [

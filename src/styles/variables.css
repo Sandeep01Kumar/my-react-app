@@ -121,6 +121,55 @@
   --nav-height: 72px;
   --container-max: 1120px;
 
+  /* Structural component tokens — the sub-ramp widths, focus-ring geometry,
+     opacity steps, hover lift, spinner geometry and typographic/utility values
+     that fall below the --space scale. All are theme-independent and exist so
+     every *.module.css can express these recurring structural values as
+     var(--token), keeping the app-wide zero-hardcoded-values rule truly
+     complete (only 0, none, auto, inherit, transparent and currentColor remain
+     exempt — there are no per-file exceptions). */
+
+  /* Border & line widths — the sub-4px widths below the --space ramp:
+     hairline = standard 1px borders (cards, inputs, nav, badges, buttons);
+     thin    = 2px lines (Experience timeline spine, typewriter caret, Hero
+               image ring, inline Button spinner ring);
+     thick   = the 3px Loader spinner ring. */
+  --border-width-hairline: 1px;
+  --border-width-thin: 2px;
+  --border-width-thick: 3px;
+
+  /* Focus ring — app-wide keyboard :focus-visible indicator geometry
+     (mirrors the width/offset used by global.css). */
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+
+  /* Opacity steps — disabled/loading controls and the decorative Hero blobs. */
+  --opacity-disabled: 0.65;
+  --opacity-blob: 0.12;
+
+  /* Interaction — the subtle translateY hover lift shared by CTA buttons (a
+     deliberately small micro-interaction; AAP §0.7.3 animation restraint). */
+  --lift-hover: -2px;
+
+  /* Loading spinner — em-based so the inline Button spinner scales with the
+     button font-size; --spinner-offset is the negative half of --spinner-size,
+     used to center the spinner via negative margins. */
+  --spinner-size: 1em;
+  --spinner-offset: -0.5em;
+
+  /* Typography extras — the uppercase eyebrow letter-spacing. */
+  --letter-spacing-eyebrow: 0.08em;
+
+  /* Single-line box heights — the typewriter caret height (one line) and the
+     min-height that reserves space for the Hero role/typewriter line so the
+     layout does not shift as the animated text cycles. */
+  --caret-height: 1em;
+  --role-min-height: 1.5em;
+
+  /* Screen-reader-only (visually hidden) clip box — the 1px size used by the
+     .srOnly utility; its negative margin is derived as calc(size * -1). */
+  --sr-only-size: 1px;
+
   /* Native control theming — makes browser-native UI (form controls,
      scrollbars) match the light theme. */
   color-scheme: light;

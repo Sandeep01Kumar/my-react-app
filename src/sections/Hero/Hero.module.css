@@ -20,7 +20,7 @@
   width: calc(var(--space-32) * 3);
   height: calc(var(--space-32) * 3);
   border-radius: var(--radius-full);
-  opacity: 0.12;
+  opacity: var(--opacity-blob);
   will-change: transform;
 }
 
@@ -67,7 +67,7 @@
   align-items: center;
   justify-content: center;
   gap: var(--space-1);
-  min-height: 1.5em;
+  min-height: var(--role-min-height);
   margin: 0;
   font-family: var(--font-heading);
   font-size: var(--text-2xl);
@@ -81,8 +81,8 @@
 
 .cursor {
   display: inline-block;
-  width: 2px;
-  height: 1em;
+  width: var(--border-width-thin);
+  height: var(--caret-height);
   background-color: var(--color-primary);
   animation: blink calc(var(--transition-slow) * 2.5) ease-in-out infinite;
 }
@@ -112,17 +112,17 @@
   height: auto;
   aspect-ratio: 1 / 1;
   object-fit: cover;
-  border: 2px solid var(--color-border);
+  border: var(--border-width-thin) solid var(--color-border);
   border-radius: var(--radius-full);
   box-shadow: var(--shadow-xl);
 }
 
 .srOnly {
   position: absolute;
-  width: 1px;
-  height: 1px;
+  width: var(--sr-only-size);
+  height: var(--sr-only-size);
   padding: 0;
-  margin: -1px;
+  margin: calc(var(--sr-only-size) * -1);
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;

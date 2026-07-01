@@ -7,7 +7,7 @@
   background: var(--glass-bg);
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
-  border-bottom: 1px solid var(--glass-border, var(--color-border));
+  border-bottom: var(--border-width-hairline) solid var(--glass-border, var(--color-border));
   transition: background-color var(--transition-base) var(--ease),
     box-shadow var(--transition-base) var(--ease);
 }
@@ -24,8 +24,11 @@
   gap: var(--space-4);
 }
 
+/* Mobile-first: the inline nav links are hidden by default and progressively
+   revealed at the wider-viewport breakpoint below; on small screens navigation
+   lives in the hamburger-triggered mobile menu. */
 .links {
-  display: flex;
+  display: none;
   align-items: center;
   gap: var(--space-6);
   list-style: none;
@@ -49,8 +52,8 @@
 
 .links a:focus-visible,
 .mobileLinks a:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 2px;
+  outline: var(--focus-ring-width) solid var(--color-accent);
+  outline-offset: var(--focus-ring-offset);
   border-radius: var(--radius-sm);
 }
 
@@ -60,8 +63,10 @@
   gap: var(--space-3);
 }
 
+/* Mobile-first: the hamburger is shown by default (mobile) and hidden at the
+   >=768px breakpoint below, where the inline links take over. */
 .hamburger {
-  display: none;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   color: var(--color-text);
@@ -75,7 +80,7 @@
   right: 0;
   overflow: hidden;
   background: var(--color-surface);
-  border-bottom: 1px solid var(--glass-border, var(--color-border));
+  border-bottom: var(--border-width-hairline) solid var(--glass-border, var(--color-border));
   box-shadow: var(--shadow-lg);
 }
 
@@ -92,12 +97,13 @@
   padding-block: var(--space-2);
 }
 
-@media (max-width: 768px) {
+/* Tablet/desktop and up: reveal the inline nav links and hide the hamburger. */
+@media (min-width: 768px) {
   .links {
-    display: none;
+    display: flex;
   }
 
   .hamburger {
-    display: inline-flex;
+    display: none;
   }
 }

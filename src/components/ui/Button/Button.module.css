@@ -19,10 +19,11 @@
  * [data-theme="dark"] attribute on <html>, while the brand tokens
  * (--color-primary*) are intentionally theme-independent.
  *
- * The only non-token values are the sanctioned exemptions (0, none, transparent,
- * currentColor) plus a few unavoidable STRUCTURAL values that have no token —
- * each flagged inline where it appears (hairline/outline widths, centering
- * percentages, the em-based spinner box, and the keyframe rotation).
+ * Every width (hairline border, focus ring), the hover lift, the disabled
+ * opacity and the em-based spinner box resolve to design tokens as well; the
+ * only remaining non-token values are the always-exempt keywords (0, none,
+ * transparent, currentColor) plus structural centering percentages and the
+ * keyframe rotation.
  */
 
 /* Phase A — Base button.
@@ -34,10 +35,9 @@
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
-  /* 1px structural hairline (no sub-4px width token; matches the Card/Timeline
-     1px/2px border precedent). Kept on every variant so switching variants —
-     e.g. ghost -> secondary/outline — never shifts the box size. */
-  border: 1px solid transparent;
+  /* Hairline border kept on every variant so switching variants — e.g.
+     ghost -> secondary/outline — never shifts the box size by a pixel. */
+  border: var(--border-width-hairline) solid transparent;
   border-radius: var(--radius-md);
   font-family: var(--font-sans);
   font-weight: var(--font-weight-semibold);
@@ -70,8 +70,8 @@
 }
 
 /* Phase C — Variants with hover / active states.
-   The translateY(-2px) hover lift is a deliberately subtle micro-interaction
-   (AAP §0.7.3 animation restraint); -2px and 0 are structural offsets. */
+   The --lift-hover translateY is a deliberately subtle micro-interaction
+   (AAP §0.7.3 animation restraint). */
 .primary {
   background-color: var(--color-primary);
   color: var(--color-white);
@@ -80,7 +80,7 @@
 .primary:hover {
   background-color: var(--color-primary-hover);
   box-shadow: var(--shadow-md);
-  transform: translateY(-2px);
+  transform: translateY(var(--lift-hover));
 }
 
 .primary:active {
@@ -119,22 +119,22 @@
   background-color: var(--color-surface);
 }
 
-/* Phase D — Keyboard focus ring (a11y). 2px outline + 2px offset are structural
-   hairline widths; the color is the themed accent token. */
+/* Phase D — Keyboard focus ring (a11y). Width and offset come from the shared
+   focus-ring tokens; the color is the themed accent token. */
 .button:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 2px;
+  outline: var(--focus-ring-width) solid var(--color-accent);
+  outline-offset: var(--focus-ring-offset);
 }
 
 /* Phase E — Disabled & loading.
    :disabled matches a native <button disabled>; .loading covers both button and
-   non-button (e.g. <a>) elements. opacity 0.65 is the single sanctioned raw
-   value (no dedicated token). While loading, hover feedback is neutralized so
-   the button reads as busy rather than interactive. */
+   non-button (e.g. <a>) elements. The dimmed state uses the --opacity-disabled
+   token. While loading, hover feedback is neutralized so the button reads as
+   busy rather than interactive. */
 .button:disabled,
 .loading {
   cursor: not-allowed;
-  opacity: 0.65;
+  opacity: var(--opacity-disabled);
 }
 
 .loading:hover {
@@ -164,17 +164,18 @@
 /* Spinner is centered with 50% offsets + negative half-size margins so the
    `transform` property stays reserved purely for rotate() — centering with
    translate(-50%,-50%) would be overwritten by the rotation and de-center it.
-   Sizing in em scales the spinner with the button's font-size. currentColor
-   inherits the variant's text color and stays visible because .loading only
-   fades .content, not the button's color. */
+   The em-based --spinner-size token scales the spinner with the button's
+   font-size (--spinner-offset is its negative half). currentColor inherits the
+   variant's text color and stays visible because .loading only fades .content,
+   not the button's color. */
 .spinner {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 1em;
-  height: 1em;
-  margin: -0.5em 0 0 -0.5em;
-  border: 2px solid currentColor;
+  width: var(--spinner-size);
+  height: var(--spinner-size);
+  margin: var(--spinner-offset) 0 0 var(--spinner-offset);
+  border: var(--border-width-thin) solid currentColor;
   border-top-color: transparent;
   border-radius: var(--radius-full);
   animation: spin var(--transition-slow) linear infinite;

@@ -17,10 +17,10 @@
  * styles.fullscreen / styles.inline) — do NOT rename them.
  *
  * Authoring rules: standard non-nested CSS; every value references a design
- * token from src/styles/variables.css via var(--token). The only non-token
- * values are the structural exempt literals (0, none, inset:0, the transform /
- * rotate keyframe, layout keywords) plus the single sanctioned 3px spinner
- * border width (there is no border-width token in the catalog).
+ * token from src/styles/variables.css via var(--token) — the spinner ring width
+ * uses --border-width-thick. The only non-token values are the structural
+ * exempt literals (0, none, inset:0, the transform / rotate keyframe, layout
+ * keywords).
  */
 
 /* Base wrapper — default centered inline spinner (used when neither the
@@ -37,7 +37,7 @@
 .spinner {
   width: var(--space-8);
   height: var(--space-8);
-  border: 3px solid var(--color-border); /* 3px: no border-width token exists; sanctioned literal per folder spec */
+  border: var(--border-width-thick) solid var(--color-border);
   border-top-color: var(--color-primary);
   border-radius: var(--radius-full);
   animation: spin calc(var(--transition-slow) * 2) linear infinite;

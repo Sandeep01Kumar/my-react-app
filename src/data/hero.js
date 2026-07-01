@@ -14,7 +14,7 @@
 import heroImage from '@/assets/hero.png'
 
 export const hero = {
-  greeting: "Hi, I'm",
+  greeting: 'Hi, I\'m',
   name: 'John Doe',
   roles: [
     'Software QA Engineer',

@@ -8,11 +8,10 @@
  *
  * Zero-hardcoded-values rule (AAP §0.5.5): every property value is a
  * var(--token) resolved from src/styles/variables.css (already global at
- * runtime via styles/global.css — so this file must NOT @import it). The only
- * non-token literals below are exempt keywords (fixed, inline-flex, center,
- * none, pointer), the arithmetic -1 multiplier inside calc(), and the
- * app-wide structural focus-ring literals (2px outline width + 2px offset —
- * matching styles/global.css :focus-visible, which has no width token).
+ * runtime via styles/global.css — so this file must NOT @import it). The focus
+ * ring uses the shared --focus-ring-width / --focus-ring-offset tokens. The
+ * only non-token literals below are exempt keywords (fixed, inline-flex,
+ * center, none, pointer) and the arithmetic -1 multiplier inside calc().
  *
  * Reduced motion: the global @media (prefers-reduced-motion: reduce) guard in
  * styles/global.css already neutralizes the transition below — no extra rule
@@ -45,10 +44,10 @@
   transform: translateY(calc(-1 * var(--space-1)));
 }
 
-/* Icon-only control: a visible keyboard focus ring is required. The 2px width
-   and 2px offset are the app-wide focus-ring literals (no ring-width token
-   exists); the color tracks the theme via --color-accent. */
+/* Icon-only control: a visible keyboard focus ring is required. Width and offset
+   use the shared focus-ring tokens; the color tracks the theme via
+   --color-accent. */
 .backToTop:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 2px;
+  outline: var(--focus-ring-width) solid var(--color-accent);
+  outline-offset: var(--focus-ring-offset);
 }

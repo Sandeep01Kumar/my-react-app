@@ -11,9 +11,8 @@
  * styles/global.css), which enforces the app-wide zero-hardcoded-values rule
  * and makes light/dark theming propagate automatically. The exempt literals
  * are the app-wide set (0, none, auto, inherit, transparent, currentColor)
- * plus CSS keywords. The ONLY intentional raw value is the eyebrow's
- * `letter-spacing: 0.08em` — there is no
- * letter-spacing token in variables.css and this exact value is mandated.
+ * plus CSS keywords. The eyebrow's uppercase tracking uses the
+ * --letter-spacing-eyebrow token.
  *
  * The .title class re-declares family/size/weight/line-height/color/margin so
  * the heading is correct in the SectionTitle context regardless of the global
@@ -36,7 +35,7 @@
   font-family: var(--font-sans);
   font-size: var(--text-sm);
   font-weight: var(--font-weight-semibold);
-  letter-spacing: 0.08em; /* authorized exception: no letter-spacing token exists */
+  letter-spacing: var(--letter-spacing-eyebrow);
   text-transform: uppercase;
 }
 

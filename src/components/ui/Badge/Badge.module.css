@@ -5,11 +5,10 @@
  * SkillCard) and project tech-stack tags (Projects ProjectCard / ProjectModal).
  *
  * Every value is a design token from src/styles/variables.css (the single
- * source of design truth); the only non-token literals are the transparent
- * base border and its 1px hairline width, both of which have no token
- * equivalent. The three variants deliberately share the base
- * `border: 1px solid transparent`, so switching variants never shifts the
- * pill's box dimensions by a pixel. `soft` is the default variant and is
+ * source of design truth). The three variants deliberately share the base
+ * `border: var(--border-width-hairline) solid transparent`, so switching
+ * variants never shifts the pill's box dimensions by a pixel. `soft` is the
+ * default variant and is
  * composed purely from theme-aware tokens (surface / primary / border), which
  * is why it recolors correctly across light and dark without any extra rules.
  *
@@ -28,7 +27,7 @@
   font-size: var(--text-xs);
   font-weight: var(--font-weight-medium);
   line-height: var(--leading-tight);
-  border: 1px solid transparent;
+  border: var(--border-width-hairline) solid transparent;
   white-space: nowrap;
 }
 

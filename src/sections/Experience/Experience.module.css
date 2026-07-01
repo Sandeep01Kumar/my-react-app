@@ -10,15 +10,15 @@
   gap: var(--space-8);
 }
 
-/* Vertical connecting spine. `2px` is an intentional structural hairline:
-   no sub-4px width token exists in variables.css (matches the Card 1px border precedent). */
+/* Vertical connecting spine — a thin line using the shared --border-width-thin
+   token; centered on the marker column via translateX(-50%). */
 .timeline::before {
   content: '';
   position: absolute;
   top: 0;
   bottom: 0;
   left: var(--space-6);
-  width: 2px;
+  width: var(--border-width-thin);
   transform: translateX(-50%);
   background: var(--color-border);
 }
