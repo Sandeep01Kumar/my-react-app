@@ -19,7 +19,7 @@ A modern, premium, fully responsive single-page portfolio built with **React 19*
 
 ## 🧰 Tech Stack
 
-| Technology | Version | Role |
+| Technology | Declared range | Role |
 | --- | --- | --- |
 | [React](https://react.dev) | `^19.2.7` | UI library — functional components and Hooks only. |
 | [Vite](https://vite.dev) | `^8.1.0` | Dev server, production build, and the `@` → `/src` path alias. |
@@ -28,6 +28,27 @@ A modern, premium, fully responsive single-page portfolio built with **React 19*
 | [React Icons](https://react-icons.github.io/react-icons/) (`react-icons`) | `^5.6.0` | Tree-shakable SVG icons for social links, skills, and services. |
 | CSS Modules + CSS Variables | — | Custom in-repo design-token system (no third-party UI library). |
 | [ESLint](https://eslint.org) (flat config) | `^10.5.0` | Code quality and the "no warnings" contract. |
+
+> **Declared ranges vs. installed versions.** The table above lists the
+> **declared** [caret (`^`) ranges](https://docs.npmjs.com/cli/v10/configuring-npm/package-json#dependencies)
+> from `package.json`; a caret range allows newer compatible minor/patch
+> releases. The exact versions resolved in `package-lock.json` (the source of
+> truth for a reproducible `npm ci` install) are:
+>
+> | Package | Declared | Installed (lockfile) |
+> | --- | --- | --- |
+> | `react` / `react-dom` | `^19.2.7` | `19.2.7` |
+> | `framer-motion` | `^12.42.2` | `12.42.2` |
+> | `react-router` | `^8.1.0` | `8.1.0` |
+> | `react-icons` | `^5.6.0` | `5.7.0` |
+> | `vite` | `^8.1.0` | `8.1.0` |
+> | `@vitejs/plugin-react` | `^6.0.2` | `6.0.3` |
+> | `eslint` | `^10.5.0` | `10.5.0` |
+>
+> `react-icons` (`5.7.0`) and `@vitejs/plugin-react` (`6.0.3`) resolve to a
+> newer compatible release than the declared base — expected caret-range
+> behavior, verified free of known vulnerabilities via `npm audit` (0
+> vulnerabilities). Run `npm ci` to install these exact lockfile versions.
 
 ## 📁 Project Structure
 

@@ -76,6 +76,10 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  /* 44x44 tap target (WCAG 2.5.5); the icon (font-size below) was ~32x22 which
+     failed the mobile touch-target audit (QA F3). Only the hit area grows. */
+  min-width: var(--tap-target-min);
+  min-height: var(--tap-target-min);
   color: var(--color-text);
   font-size: var(--text-xl);
 }
@@ -100,8 +104,12 @@
 }
 
 .mobileLinks a {
-  display: block;
-  padding-block: var(--space-2);
+  /* Flex + min-height gives each mobile-menu link a full-width, >=44px tall tap
+     target (WCAG 2.5.5); the previous `padding-block: var(--space-2)` yielded
+     only ~32px (QA F3). align-items keeps the label vertically centred. */
+  display: flex;
+  align-items: center;
+  min-height: var(--tap-target-min);
 }
 
 /* Desktop (>= lg / 1024px): reveal the inline nav links and hide the hamburger.

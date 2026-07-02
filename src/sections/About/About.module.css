@@ -123,6 +123,19 @@
     grid-template-columns: repeat(2, 1fr);
   }
 
+  /* When the Education and Experience columns sit side by side, the grid
+     stretches both to the taller column's height. Education has a single entry
+     while Experience has two, which previously left a large void below the lone
+     Education card (QA F: About visual rhythm). Letting that single card grow to
+     fill its column — and vertically centering its content — turns the void into
+     a balanced glass panel that reads as intentional opposite the two Experience
+     cards. Only the single-entry Education card carries `entryFill`, so the
+     multi-card Experience column is unaffected. */
+  .entryFill {
+    flex: 1;
+    justify-content: center;
+  }
+
   .achievementList {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -131,6 +144,11 @@
 @media (min-width: 1024px) {
   .intro {
     grid-template-columns: 1.5fr 1fr;
-    align-items: start;
+    /* Vertically center the (shorter) summary/objective text against the taller
+       2x2 stats grid. Previously `align-items: start` pinned both to the top,
+       leaving a large unbalanced blank region below the text column (QA F: About
+       visual rhythm). Centering distributes the residual height symmetrically so
+       the two blocks read as a balanced composition. */
+    align-items: center;
   }
 }

@@ -33,4 +33,10 @@
   height: 100%;
   background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
   border-radius: var(--radius-full);
+  /* Grow from the left edge when the fill animates via `scaleX` (see
+     ProgressBar.jsx). `will-change: transform` hints the compositor to promote
+     the element so the scaleX animation runs off the main thread (no layout /
+     forced reflow — QA F5). */
+  transform-origin: left center;
+  will-change: transform;
 }

@@ -16,12 +16,23 @@ function ProgressBar({ value = 0, label, showValue = false, animated = true }) {
   const percent = clampPercent(value)
   const shouldAnimate = animated && !reduced
 
+  // Animate the fill with a compositor-only `scaleX` (a unitless number) rather
+  // than `width: 0 -> "${percent}%"`. Animating width to a *percentage* forces
+  // Framer Motion to synchronously measure the track to resolve the value on
+  // every progress bar, which produced a measurable forced reflow across the
+  // Skills grid (QA F5: ~137ms forced reflow). The fill keeps its final
+  // `width: ${percent}%` statically and grows from `scaleX(0)` to `scaleX(1)`
+  // (transform-origin: left, set in CSS), so the settled visual is identical to
+  // the width-based version while the animation stays on the compositor (no
+  // layout, no reflow). Reduced-motion / non-animated renders skip the transform
+  // entirely and simply paint the fill at its final width.
   const fillProps = shouldAnimate
     ? {
-        initial: { width: 0 },
-        whileInView: { width: `${percent}%` },
+        initial: { scaleX: 0 },
+        whileInView: { scaleX: 1 },
         viewport: viewportOnce,
         transition: { duration: 0.8, ease: [0.4, 0, 0.2, 1] },
+        style: { width: `${percent}%` },
       }
     : { style: { width: `${percent}%` } }
 

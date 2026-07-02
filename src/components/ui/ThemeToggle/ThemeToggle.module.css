@@ -2,8 +2,11 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: var(--space-8);
-  height: var(--space-8);
+  /* 44x44 tap target (WCAG 2.5.5); was var(--space-8) (32px) which failed the
+     mobile touch-target audit (QA F3). The icon size (font-size below) is
+     unchanged, so only the hit area grows. */
+  width: var(--tap-target-min);
+  height: var(--tap-target-min);
   padding: 0;
   border: var(--border-width-hairline) solid var(--color-border);
   border-radius: var(--radius-full);

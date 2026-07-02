@@ -120,6 +120,12 @@
      max-width (keeps that width token-driven). */
   --nav-height: 72px;
   --container-max: 1120px;
+  /* Minimum interactive hit-area (WCAG 2.5.5 target size). Applied as a
+     min-width/min-height (or an inline-flex min-height on text links) to every
+     tappable control — buttons, the theme toggle, social icons, the nav
+     hamburger, the logo, nav/footer/contact links — so each meets the 44x44
+     CSS-px mobile touch-target floor (QA F3) without hardcoding the value. */
+  --tap-target-min: 44px;
 
   /* Structural component tokens — the sub-ramp widths, focus-ring geometry,
      opacity steps, hover lift, spinner geometry and typographic/utility values

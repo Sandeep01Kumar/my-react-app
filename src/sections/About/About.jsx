@@ -54,7 +54,7 @@ function About() {
           <Reveal className={styles.column}>
             <h3 className={styles.blockTitle}>Education</h3>
             {education.map((item) => (
-              <Card key={item.degree} variant="glass" className={styles.entry}>
+              <Card key={item.degree} variant="glass" className={`${styles.entry} ${styles.entryFill}`}>
                 <div className={styles.entryHead}>
                   <h4 className={styles.entryTitle}>{item.degree}</h4>
                   <Badge variant="outline">{item.period}</Badge>

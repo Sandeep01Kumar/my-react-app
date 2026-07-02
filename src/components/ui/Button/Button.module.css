@@ -35,6 +35,11 @@
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
+  /* Guarantee a >=44px tap target on every variant/size (WCAG 2.5.5). This
+     lifts the compact `sm` size (used by the Project card Details/Code/Demo
+     actions, previously ~40px tall) to the 44px mobile floor; `md`/`lg` already
+     exceed it, so it is a no-op for them. */
+  min-height: var(--tap-target-min);
   /* Hairline border kept on every variant so switching variants — e.g.
      ghost -> secondary/outline — never shifts the box size by a pixel. */
   border: var(--border-width-hairline) solid transparent;

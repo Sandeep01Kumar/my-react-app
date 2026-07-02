@@ -65,6 +65,16 @@
   transition: color var(--transition-fast) var(--ease);
 }
 
+/* Only the linked values (email, phone) become tap targets: inline-flex +
+   min-height gives them a >=44px tall hit area (WCAG 2.5.5); as plain text they
+   were ~26px tall and failed the mobile touch-target audit (QA F3). The
+   non-linked spans (location, availability) keep their natural height. */
+a.itemValue {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap-target-min);
+}
+
 a.itemValue:hover {
   color: var(--color-primary);
 }

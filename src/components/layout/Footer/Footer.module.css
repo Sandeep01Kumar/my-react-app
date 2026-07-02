@@ -49,6 +49,16 @@
 }
 
 .link {
+  /* Inline-flex + min-height/min-width gives each footer link (quick links and
+     the email link) a full >=44x44 tap target (WCAG 2.5.5); as plain text they
+     were ~17px tall (and short labels like "Home" were <44px wide) and failed
+     the mobile touch-target audit (QA F3). align-self:flex-start keeps the hit
+     area only as wide as needed (min 44px) so adjacent columns are unaffected. */
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  min-width: var(--tap-target-min);
+  min-height: var(--tap-target-min);
   font-family: var(--font-sans);
   font-size: var(--text-sm);
   color: var(--color-text-muted);

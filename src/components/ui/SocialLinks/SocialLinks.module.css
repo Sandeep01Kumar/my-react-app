@@ -15,8 +15,10 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: var(--space-8);
-  height: var(--space-8);
+  /* 44x44 tap target (WCAG 2.5.5) for the default (md) size; was var(--space-8)
+     (32px) which failed the mobile touch-target audit (QA F3). */
+  width: var(--tap-target-min);
+  height: var(--tap-target-min);
   font-size: var(--text-lg);
   color: var(--color-text-muted);
   background-color: var(--color-surface);
@@ -44,8 +46,8 @@
 }
 
 .md .link {
-  width: var(--space-8);
-  height: var(--space-8);
+  width: var(--tap-target-min);
+  height: var(--tap-target-min);
   font-size: var(--text-lg);
 }
 

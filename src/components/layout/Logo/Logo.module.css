@@ -2,6 +2,9 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
+  /* >=44px tall tap target (WCAG 2.5.5); the logo link was ~32px tall (QA F3).
+     It sits comfortably inside the 72px navbar and the footer brand column. */
+  min-height: var(--tap-target-min);
   font-family: var(--font-heading);
   color: var(--color-heading);
   text-decoration: none;
