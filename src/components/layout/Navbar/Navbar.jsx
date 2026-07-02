@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { FaBars, FaTimes } from 'react-icons/fa'
 import Container from '@/components/ui/Container'
@@ -27,6 +27,10 @@ function Navbar() {
   const reduced = usePrefersReducedMotion()
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  // Ref to the hamburger toggle so focus can be returned to it when the mobile
+  // menu is dismissed with Escape (keyboard users must not be dropped onto
+  // <body> when the currently-focused in-menu link unmounts on close).
+  const hamburgerRef = useRef(null)
 
   // The mobile dropdown is only meaningful at the mobile breakpoint. Deriving
   // its visibility from `isMobile` (instead of synchronizing it inside an
@@ -56,6 +60,26 @@ function Navbar() {
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  // Close the mobile menu on Escape and return focus to the hamburger toggle,
+  // mirroring the Escape-close affordance in `components/ui/Modal` (AAP §0.7.4
+  // keyboard accessibility; WAI-ARIA APG disclosure pattern). The listener is
+  // attached only while the menu is open, so it costs nothing when closed and
+  // is removed automatically when the menu closes or the viewport resizes back
+  // to desktop — both flip `mobileMenuOpen` to false, re-running this cleanup.
+  useEffect(() => {
+    if (!mobileMenuOpen) return
+
+    const handleKeyDown = (event) => {
+      if (event.key !== 'Escape') return
+      setMenuOpen(false)
+      const toggle = hamburgerRef.current
+      if (toggle && typeof toggle.focus === 'function') toggle.focus()
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [mobileMenuOpen])
 
   const handleNavClick = (event, id) => {
     event.preventDefault()
@@ -90,6 +114,7 @@ function Navbar() {
           <div className={styles.actions}>
             <ThemeToggle />
             <button
+              ref={hamburgerRef}
               type="button"
               className={styles.hamburger}
               aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
