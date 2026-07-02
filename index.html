@@ -1,13 +1,111 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <!-- ================================================================
+         Document basics — Vite scaffold contract preserved verbatim.
+         charset + viewport are kept unchanged; lang="en" stays on <html>.
+         ================================================================ -->
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>my-react-app</title>
+
+    <!-- Favicon — retained from the scaffold (served from public/favicon.svg). -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- ================================================================
+         Primary SEO metadata.
+         This static <head> is the SINGLE source of SEO metadata for the
+         SPA — there is no react-helmet / head-management library (per the
+         small-bundle rule). Title, author, and description mirror
+         src/data/siteMeta.js (name "John Doe", role "Software QA Engineer
+         & React Developer") so the whole app presents one consistent
+         identity. The literal "&" is written as "&amp;" for strict HTML5
+         validity; browsers decode it, so the tab reads
+         "John Doe | Software QA Engineer & React Developer".
+         ================================================================ -->
+    <title>John Doe | Software QA Engineer &amp; React Developer</title>
+    <meta
+      name="description"
+      content="Software QA Engineer &amp; React Developer building tested, accessible, and high-quality web applications."
+    />
+    <meta name="author" content="John Doe" />
+    <meta
+      name="keywords"
+      content="QA Engineer, Software QA Engineer, React Developer, Frontend Developer, Manual Testing, API Testing, Regression Testing, Functional Testing, UI Testing, Automation, JavaScript, React, Web Development, Portfolio"
+    />
+    <meta name="robots" content="index, follow" />
+    <!-- Mobile browser chrome color = royal-blue primary token (--color-primary). -->
+    <meta name="theme-color" content="#2563EB" />
+    <!-- Canonical URL — placeholder production domain pending user-supplied
+         content (example.com is RFC-2606 reserved, so it never resolves to a
+         real site by accident). -->
+    <link rel="canonical" href="https://johndoe.example.com/" />
+
+    <!-- ================================================================
+         Open Graph (Facebook / LinkedIn). Titles/descriptions mirror the
+         page title and meta description above. og:image is a flagged
+         PLACEHOLDER (/og-image.png) pending user-supplied artwork — it is
+         only fetched by social-share crawlers, never during page load, so
+         its absence never affects the running application.
+         ================================================================ -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="John Doe — Portfolio" />
+    <meta
+      property="og:title"
+      content="John Doe | Software QA Engineer &amp; React Developer"
+    />
+    <meta
+      property="og:description"
+      content="Software QA Engineer &amp; React Developer building tested, accessible, and high-quality web applications."
+    />
+    <meta property="og:image" content="/og-image.png" />
+    <meta
+      property="og:image:alt"
+      content="John Doe — Software QA Engineer &amp; React Developer portfolio"
+    />
+    <meta property="og:url" content="https://johndoe.example.com/" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- ================================================================
+         Twitter Card — mirrors the Open Graph tags above.
+         ================================================================ -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="John Doe | Software QA Engineer &amp; React Developer"
+    />
+    <meta
+      name="twitter:description"
+      content="Software QA Engineer &amp; React Developer building tested, accessible, and high-quality web applications."
+    />
+    <meta name="twitter:image" content="/og-image.png" />
+    <meta
+      name="twitter:image:alt"
+      content="John Doe — Software QA Engineer &amp; React Developer portfolio"
+    />
+
+    <!-- ================================================================
+         Web fonts — Google Fonts.
+         Inter  -> --font-sans, Poppins -> --font-heading; the family names
+         MUST match src/styles/variables.css verbatim or the loaded faces
+         will not apply. preconnect warms up the connections to Google's
+         font hosts (gstatic needs crossorigin because fonts are fetched
+         anonymously); display=swap paints text immediately with the
+         fallback stack, so the page degrades gracefully (no FOIT and no
+         console error) if the stylesheet is blocked. "&" is escaped as
+         "&amp;" for strict HTML5 validity.
+         ================================================================ -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Poppins:wght@500;600;700&amp;display=swap"
+    />
   </head>
   <body>
+    <!-- React mount point — consumed by createRoot(document.getElementById('root'))
+         in src/main.jsx. Must stay exactly as-is (Vite entry contract). -->
     <div id="root"></div>
+    <!-- Vite module entry — bundled from npm; do NOT add framework/CDN scripts. -->
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
