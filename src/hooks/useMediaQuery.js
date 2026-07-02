@@ -10,8 +10,10 @@ import { useCallback, useSyncExternalStore } from 'react'
  * changes between renders.
  *
  * This is the foundational responsive primitive for the app: `Navbar` uses it to
- * collapse into the mobile hamburger menu (e.g. `useMediaQuery('(max-width: 768px)')`)
- * and `usePrefersReducedMotion` reuses it for `'(prefers-reduced-motion: reduce)'`.
+ * collapse into the mobile hamburger menu at the `lg` breakpoint (e.g.
+ * `useMediaQuery('(max-width: 1023.98px)')`, the exact complement of the CSS
+ * `min-width: 1024px` rule) and `usePrefersReducedMotion` reuses it for
+ * `'(prefers-reduced-motion: reduce)'`.
  *
  * Implemented with React's `useSyncExternalStore` — the idiomatic React 19 API for
  * subscribing a component to an external store such as a `MediaQueryList`. It yields

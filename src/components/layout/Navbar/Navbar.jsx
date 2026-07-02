@@ -5,7 +5,7 @@ import Container from '@/components/ui/Container'
 import ThemeToggle from '@/components/ui/ThemeToggle'
 import Logo from '@/components/layout/Logo'
 import { navLinks } from '@/data'
-import { scrollToId } from '@/utils'
+import { scrollToId, BREAKPOINTS } from '@/utils'
 import { useActiveSection } from '@/hooks/useActiveSection'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
@@ -15,7 +15,15 @@ const SCROLL_THRESHOLD = 8
 
 function Navbar() {
   const activeId = useActiveSection()
-  const isMobile = useMediaQuery('(max-width: 768px)')
+  // Collapse to the mobile hamburger below the `lg` breakpoint (1024px). This
+  // query is the EXACT complement of the CSS `@media (min-width: 1024px)` in
+  // Navbar.module.css: `BREAKPOINTS.lg - 0.02` = 1023.98px, so at every integer
+  // viewport width JS and CSS agree — a width is never simultaneously treated as
+  // "mobile" here while the desktop links are shown. Collapsing at `lg` (not
+  // `md`/768px) is required because the full desktop row needs ~842px on one
+  // line; revealing it below 1024px overflowed ~19px and clipped the ThemeToggle
+  // across the ~768-786px band, and left the hamburger a dead control at 768px.
+  const isMobile = useMediaQuery(`(max-width: ${BREAKPOINTS.lg - 0.02}px)`)
   const reduced = usePrefersReducedMotion()
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
