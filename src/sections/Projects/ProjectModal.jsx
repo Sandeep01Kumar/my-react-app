@@ -58,6 +58,8 @@ function ProjectModal({ project, isOpen, onClose }) {
             className={styles.image}
             src={project.image}
             alt={project.title}
+            width='640'
+            height='360'
             loading='lazy'
             decoding='async'
           />

@@ -35,7 +35,7 @@
   gap: var(--space-4);
   width: 100%;
   max-width: calc(var(--container-max) - var(--space-32));
-  max-height: 85vh;
+  max-height: var(--modal-max-height);
   overflow: auto;
   padding: var(--space-8);
   background: var(--color-bg);

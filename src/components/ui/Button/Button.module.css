@@ -161,17 +161,18 @@
   align-items: center;
 }
 
-/* Spinner is centered with 50% offsets + negative half-size margins so the
-   `transform` property stays reserved purely for rotate() — centering with
-   translate(-50%,-50%) would be overwritten by the rotation and de-center it.
+/* Spinner is centered with --position-center offsets + negative half-size
+   margins so the `transform` property stays reserved purely for rotate() —
+   centering with translate(-50%,-50%) would be overwritten by the rotation and
+   de-center it.
    The em-based --spinner-size token scales the spinner with the button's
    font-size (--spinner-offset is its negative half). currentColor inherits the
    variant's text color and stays visible because .loading only fades .content,
    not the button's color. */
 .spinner {
   position: absolute;
-  top: 50%;
-  left: 50%;
+  top: var(--position-center);
+  left: var(--position-center);
   width: var(--spinner-size);
   height: var(--spinner-size);
   margin: var(--spinner-offset) 0 0 var(--spinner-offset);
@@ -183,6 +184,6 @@
 
 @keyframes spin {
   to {
-    transform: rotate(360deg);
+    transform: rotate(var(--rotate-full));
   }
 }

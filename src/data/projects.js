@@ -1,12 +1,18 @@
-// Placeholder project data. `image` reuses the retained hero.png as a stand-in
-// thumbnail; replace with real project images (e.g. under @/assets/images/) later.
-import projectImage from '@/assets/hero.png'
+// Project portfolio data. Each `image` is the project-specific placeholder
+// thumbnail authored under @/assets/images/projects/ (one SVG per project id);
+// replace with real project screenshots when supplied.
+import portfolioImage from '@/assets/images/projects/portfolio-website.svg'
+import ecommerceImage from '@/assets/images/projects/ecommerce-test-suite.svg'
+import taskManagerImage from '@/assets/images/projects/task-manager.svg'
+import apiTestingImage from '@/assets/images/projects/api-testing-framework.svg'
+import weatherImage from '@/assets/images/projects/weather-dashboard.svg'
+import bugTrackerImage from '@/assets/images/projects/bug-tracker.svg'
 
 export const projects = [
   {
     id: 'portfolio-website',
     title: 'Personal Portfolio Website',
-    image: projectImage,
+    image: portfolioImage,
     description:
       'A modern, responsive portfolio SPA with dark mode, scroll-reveal animations, and fully accessible, reusable components.',
     tech: ['React', 'Vite', 'CSS Modules', 'Framer Motion'],
@@ -22,7 +28,7 @@ export const projects = [
   {
     id: 'ecommerce-test-suite',
     title: 'E-Commerce Test Automation Suite',
-    image: projectImage,
+    image: ecommerceImage,
     description:
       'An end-to-end automated regression suite covering checkout, cart, and search flows for an e-commerce platform.',
     tech: ['Selenium', 'JavaScript', 'TestNG', 'Jenkins'],
@@ -38,7 +44,7 @@ export const projects = [
   {
     id: 'task-manager',
     title: 'Task Manager App',
-    image: projectImage,
+    image: taskManagerImage,
     description:
       'A React task manager with drag-and-drop boards, filtering, and offline persistence via localStorage.',
     tech: ['React', 'React Hooks', 'CSS Modules', 'localStorage'],
@@ -54,7 +60,7 @@ export const projects = [
   {
     id: 'api-testing-framework',
     title: 'API Testing Framework',
-    image: projectImage,
+    image: apiTestingImage,
     description:
       'A reusable REST API testing framework with data-driven test cases and JSON schema validation.',
     tech: ['Postman', 'Newman', 'JavaScript', 'REST'],
@@ -70,7 +76,7 @@ export const projects = [
   {
     id: 'weather-dashboard',
     title: 'Weather Dashboard',
-    image: projectImage,
+    image: weatherImage,
     description:
       'A React weather dashboard consuming a public API with city search, geolocation, and forecast charts.',
     tech: ['React', 'REST API', 'Chart.js', 'CSS Modules'],
@@ -86,7 +92,7 @@ export const projects = [
   {
     id: 'bug-tracker',
     title: 'Bug Tracking Dashboard',
-    image: projectImage,
+    image: bugTrackerImage,
     description:
       'A full-featured dashboard for logging, triaging, and monitoring defects across multiple projects.',
     tech: ['React', 'React Router', 'CSS Modules', 'Chart.js'],

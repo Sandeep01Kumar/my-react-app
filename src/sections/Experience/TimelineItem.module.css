@@ -7,7 +7,7 @@
   position: absolute;
   top: 0;
   left: var(--space-6);
-  transform: translateX(-50%);
+  transform: translateX(calc(var(--position-center) * -1));
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -82,7 +82,7 @@
 
 @media (min-width: 768px) {
   .item {
-    width: 50%;
+    width: var(--size-half);
     padding-left: 0;
   }
 
@@ -99,11 +99,11 @@
   .left .marker {
     left: auto;
     right: 0;
-    transform: translateX(50%);
+    transform: translateX(var(--position-center));
   }
 
   .right .marker {
     left: 0;
-    transform: translateX(-50%);
+    transform: translateX(calc(var(--position-center) * -1));
   }
 }

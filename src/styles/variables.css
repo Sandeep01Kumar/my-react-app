@@ -170,6 +170,36 @@
      .srOnly utility; its negative margin is derived as calc(size * -1). */
   --sr-only-size: 1px;
 
+  /* Structural geometry — the recurring layout percentages, viewport heights
+     and rotation that would otherwise be hardcoded in *.module.css. Promoting
+     them here keeps the app-wide zero-hardcoded-values rule complete. */
+
+  /* Center offset — the 50% used to place absolutely-positioned elements
+     (top/left) and to shift transforms by half an element's own size
+     (translateX/translateY) when centering. Shared by the Button loading
+     spinner, the Experience timeline spine, and the TimelineItem markers.
+     Negative offsets are derived as calc(var(--position-center) * -1). */
+  --position-center: 50%;
+
+  /* Half size — the 50% width of each item in the desktop two-column
+     Experience timeline (each item spans from its edge to the center line).
+     Named distinctly from --position-center because it expresses a dimension,
+     not a centering offset (both happen to equal 50%). */
+  --size-half: 50%;
+
+  /* Full-turn rotation for the Button loading-spinner keyframe. */
+  --rotate-full: 360deg;
+
+  /* Modal panel max height — caps the dialog at a fraction of the viewport so
+     long content scrolls inside the panel instead of overflowing the screen. */
+  --modal-max-height: 85vh;
+
+  /* Full-viewport section heights (the full-bleed Hero). --viewport-height is
+     the widely-supported fallback; --viewport-height-small uses small-viewport
+     units (svh) so mobile browser chrome never clips the Hero. */
+  --viewport-height: 100vh;
+  --viewport-height-small: 100svh;
+
   /* Native control theming — makes browser-native UI (form controls,
      scrollbars) match the light theme. */
   color-scheme: light;

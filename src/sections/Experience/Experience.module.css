@@ -19,7 +19,7 @@
   bottom: 0;
   left: var(--space-6);
   width: var(--border-width-thin);
-  transform: translateX(-50%);
+  transform: translateX(calc(var(--position-center) * -1));
   background: var(--color-border);
 }
 
@@ -33,6 +33,6 @@
   }
 
   .timeline::before {
-    left: 50%;
+    left: var(--position-center);
   }
 }
