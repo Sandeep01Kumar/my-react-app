@@ -33,6 +33,11 @@
   flex-direction: column;
   width: 100%;
   height: 100%;
+  /* As a grid item in the Projects grid, allow the card to shrink below its
+     content's intrinsic width (grid items default to min-width:auto) so an
+     unbreakable token in the title/description cannot widen the track and force
+     horizontal page overflow (QA F5). */
+  min-width: 0;
 }
 
 /* Clip the image to a rounded rectangle; --color-surface is a neutral fallback
@@ -57,6 +62,9 @@
   flex-direction: column;
   gap: var(--space-2);
   margin-top: var(--space-4);
+  /* Let the body (a flex child of .card) shrink below content width so its
+     text descendants can wrap rather than overflow (QA F5). */
+  min-width: 0;
 }
 
 /* Project name — heading family, matching the design-system heading color. */
@@ -67,6 +75,11 @@
   font-size: var(--text-xl);
   font-weight: var(--font-weight-semibold);
   line-height: var(--leading-tight);
+  /* `anywhere` lowers the min-content width (the global `break-word` does not),
+     so a long unbroken project name wraps instead of overflowing (QA F5).
+     Normal titles are unaffected. */
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 /* Summary clamped to 3 lines to keep card bodies visually balanced; the
@@ -80,6 +93,11 @@
   line-height: var(--leading-normal);
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
+  /* Belt-and-braces with the line-clamp above: `anywhere` lowers min-content
+     width so a long unbroken token wraps within the clamp instead of forcing
+     horizontal overflow (QA F5). Normal descriptions are unaffected. */
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 /* Wrap-friendly row of technology badges. */

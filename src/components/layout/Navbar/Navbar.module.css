@@ -44,9 +44,16 @@
   transition: color var(--transition-fast) var(--ease);
 }
 
+/* Active + hover share the royal-blue primary color. The active selectors are
+   deliberately qualified as `.links a.active` / `.mobileLinks a.active` (0,2,1)
+   so they OUTRANK the scoping rule `.links a` / `.mobileLinks a` (0,1,1) that
+   sets the muted resting color above. A bare `.active` (0,1,0) loses that
+   specificity battle, which is why the current-section link never rendered its
+   accent color (QA F1). The :hover selectors are already (0,2,1) and unaffected. */
 .links a:hover,
 .mobileLinks a:hover,
-.active {
+.links a.active,
+.mobileLinks a.active {
   color: var(--color-primary);
 }
 

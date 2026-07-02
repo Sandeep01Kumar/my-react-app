@@ -78,6 +78,14 @@
   gap: var(--space-2);
   margin-top: var(--space-12);
   padding-top: var(--space-8);
+  /* Reserve the fixed BackToTop FAB's bottom-right lane so it never obscures the
+     copyright/role text when scrolled to the page bottom (QA F3). The FAB owns a
+     lane of width var(--space-12) (its size) + var(--space-6) (its right offset)
+     measured from the viewport's right edge. This mobile bar is a CENTERED
+     column, so the reserve is applied symmetrically (padding-inline) to keep the
+     text visually centered while clearing the FAB on the right; the >=768px row
+     layout below narrows this to a right-only reserve. */
+  padding-inline: calc(var(--space-12) + var(--space-6));
   border-top: var(--border-width-hairline) solid var(--color-border);
   font-size: var(--text-sm);
   text-align: center;
@@ -96,5 +104,20 @@
     flex-direction: row;
     justify-content: space-between;
     text-align: left;
+    /* Row layout: copyright is the left child, the role is the right child, so
+       only the right edge sits under the FAB. Drop the left reserve and keep the
+       right reserve (still the same var(--space-12) + var(--space-6) lane). */
+    padding-left: 0;
+    padding-right: calc(var(--space-12) + var(--space-6));
+  }
+}
+
+/* At >= xl (1280px) the centered Container (max var(--container-max) = 1120px)
+   leaves more than the FAB lane of empty space to the right of the content, so
+   the FAB no longer overlaps the bottom bar. Remove the reserve so the role text
+   sits flush with the footer columns above it. */
+@media (min-width: 1280px) {
+  .copyright {
+    padding-inline: 0;
   }
 }

@@ -23,6 +23,11 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
+  /* Allow this block to shrink below its content's intrinsic width when it is
+     itself a flex/grid child, so an unbreakable string in the heading cannot
+     force horizontal page overflow (QA F5). Flex/grid items default to
+     min-width:auto, which otherwise defeats overflow-wrap on the descendants. */
+  min-width: 0;
 }
 
 .center {
@@ -46,6 +51,13 @@
   font-weight: var(--font-weight-bold);
   line-height: var(--leading-tight);
   color: var(--color-heading);
+  /* Defensive wrapping: `anywhere` (unlike the global `break-word`) also lowers
+     the element's min-content width, so an ultra-long unbroken token wraps
+     instead of overflowing the viewport (QA F5). min-width:0 lets the heading
+     shrink when it is a flex/grid child. Normal multi-word content is
+     unaffected. */
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .subtitle {
@@ -53,6 +65,10 @@
   color: var(--color-text-muted);
   font-size: var(--text-lg);
   line-height: var(--leading-normal);
+  /* Same defensive wrapping as .title so a long unbroken subtitle token cannot
+     overflow horizontally (QA F5); normal content is unaffected. */
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .center .subtitle {

@@ -7,11 +7,13 @@
  * buttons (Download Resume, Hire Me).
  *
  * The profile image is imported here (not in the component) so all content stays
- * fully externalized. Vite resolves the `@/assets/hero.png` import to a hashed
+ * fully externalized. Vite resolves the `@/assets/images/profile.svg` import to a
  * URL string at build time, which is exposed as `hero.image` for use as an
- * <img src>. Content values are placeholders pending user-supplied media.
+ * <img src>. The on-brand SVG placeholder (royal-blue -> navy gradient with a
+ * white avatar silhouette) stays within the design-token palette; it is a
+ * placeholder pending user-supplied media.
  */
-import heroImage from '@/assets/hero.png'
+import heroImage from '@/assets/images/profile.svg'
 
 export const hero = {
   greeting: 'Hi, I\'m',
