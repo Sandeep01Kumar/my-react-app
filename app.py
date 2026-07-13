@@ -43,7 +43,12 @@ def index():
 
 
 if __name__ == "__main__":
-    # Launch Flask's built-in development server. ``debug=True`` enables the
-    # interactive reloader/debugger for local development, matching the
-    # convenience of the former Vite dev server (``npm run dev``).
-    app.run(debug=True)
+    # Launch Flask's built-in development server for local development, mirroring
+    # the convenience of the former Vite dev server (``npm run dev``). Per the
+    # AAP (§0.4.1, §0.5.1), the entry point uses a plain ``app.run()`` with debug
+    # disabled (Flask's default). Running with debug off keeps the Werkzeug
+    # interactive debugger/evaluator from being exposed on the ``python app.py``
+    # path, so this command behaves identically to ``flask run`` (also debug off).
+    # For any non-local deployment, front the app with a production WSGI server
+    # (e.g. gunicorn or waitress), as the AAP notes optionally.
+    app.run()
