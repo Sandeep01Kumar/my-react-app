@@ -1,16 +1,53 @@
-# React + Vite
+# My Portfolio Website
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A minimal [Flask](https://flask.palletsprojects.com/) application that server-side-renders a single portfolio page — a "My Portfolio Website" header, an "About Me" section, and the text "I am learning React." It is a Flask port of a former React/Vite prototype, reproducing the same rendered page from the server.
 
-Currently, two official plugins are available:
+## Requirements
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Python 3.12** (Flask 3.1.3 requires Python 3.9 or newer)
+- **Flask 3.1.3** — installed via `requirements.txt` (see [Setup](#setup) below)
 
-## React Compiler
+## Project structure
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```text
+.
+├── app.py                  # Flask app; route "/" renders the page
+├── requirements.txt        # Python dependencies (Flask==3.1.3)
+├── templates/
+│   ├── index.html          # Jinja page (HTML shell + content)
+│   └── partials/
+│       └── header.html     # Header partial
+└── static/
+    ├── favicon.svg
+    └── css/
+        └── index.css       # Styles (theme tokens, dark mode, responsive)
+```
 
-## Expanding the ESLint configuration
+## Setup
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Create and activate a virtual environment, then install the dependencies:
+
+```bash
+python3 -m venv venv
+source venv/bin/activate      # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+## Run
+
+Start the development server with either of these equivalent commands:
+
+```bash
+flask run
+```
+
+```bash
+python app.py
+```
+
+Once the server is running, open the app in your browser at
+[http://127.0.0.1:5000/](http://127.0.0.1:5000/) (Flask's default port).
+
+> **Note:** `flask run` auto-detects `app.py`, so no extra configuration is
+> needed. If your environment does not auto-detect it, set `FLASK_APP=app.py`
+> before running.
