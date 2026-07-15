@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  sitemap.xml — John Doe portfolio.
+
+  This is a single-page application: all content lives on the home page and is
+  reached through in-page anchor links, so the sitemap contains the one
+  canonical URL. Served as a real static file from public/ (copied verbatim to
+  the site root by Vite) so /sitemap.xml resolves to valid XML rather than the
+  SPA index.html shell, keeping the robots.txt Sitemap directive consistent.
+  The host is the placeholder canonical domain used across index.html
+  (og:url / canonical) pending a user-supplied production domain.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://johndoe.example.com/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>

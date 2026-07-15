@@ -1,0 +1,65 @@
+/**
+ * Card.module.css — reusable Card surface primitive (CSS Module)
+ * --------------------------------------------------------------------------
+ * Canonical glass/solid surface of the design system: standardizes the large
+ * radius, hairline border, and soft blue-tinted shadow reused by ProjectCard,
+ * ServiceCard, About cards, Experience TimelineItem, and composed by StatCard.
+ * Imported by ./Card.jsx as `import styles from './Card.module.css'`; Card.jsx
+ * merges the base `.card` with a variant (`.glass` / `.solid`), a padding class
+ * accessed as styles[`pad-${padding}`], and an opt-in `.hover` lift.
+ *
+ * Token discipline: every value — including the hairline border-width — resolves
+ * to a var(--token) defined once in src/styles/variables.css (in scope globally
+ * via the :root / [data-theme="dark"] cascade — so this file does NOT @import
+ * it). Reduced-motion is handled globally by global.css's prefers-reduced-motion
+ * guard, so there is no per-file motion media query here.
+ */
+
+/* Base surface — applied to every Card. Neutral by design: no background
+   (the variant supplies it) and no position/overflow (consumers add those in
+   their own module classes). Transition animates both the hover lift and the
+   shadow elevation using the shared motion tokens. */
+.card {
+  border-radius: var(--radius-lg);
+  border: var(--border-width-hairline) solid var(--color-border);
+  box-shadow: var(--shadow-md);
+  transition: transform var(--transition-base) var(--ease),
+    box-shadow var(--transition-base) var(--ease);
+}
+
+/* Glassmorphism variant (default) — translucent tinted background with a
+   backdrop blur. The -webkit- prefix keeps the blur working in Safari. The
+   border-color override uses a defensive token fallback so the surface still
+   renders correctly even if --glass-border is not defined. */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border-color: var(--glass-border, var(--color-border));
+}
+
+/* Solid variant — opaque themed surface color. */
+.solid {
+  background: var(--color-surface);
+}
+
+/* Padding scale — hyphenated to match styles[`pad-${padding}`] in Card.jsx. */
+.pad-sm {
+  padding: var(--space-4);
+}
+
+.pad-md {
+  padding: var(--space-6);
+}
+
+.pad-lg {
+  padding: var(--space-8);
+}
+
+/* Opt-in hover lift — subtle rise of one spacing unit plus a stronger shadow
+   (animation restraint, AAP §0.7.3). The base `.card` transition eases both
+   properties on enter and return. */
+.hover:hover {
+  transform: translateY(calc(-1 * var(--space-1)));
+  box-shadow: var(--shadow-lg);
+}

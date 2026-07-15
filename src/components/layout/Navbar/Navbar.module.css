@@ -1,0 +1,134 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-nav);
+  width: 100%;
+  height: var(--nav-height);
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border-bottom: var(--border-width-hairline) solid var(--glass-border, var(--color-border));
+  transition: background-color var(--transition-base) var(--ease),
+    box-shadow var(--transition-base) var(--ease);
+}
+
+.scrolled {
+  box-shadow: var(--shadow-md);
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--nav-height);
+  gap: var(--space-4);
+}
+
+/* Mobile-first: the inline nav links are hidden by default and progressively
+   revealed at the wider-viewport breakpoint below; on small screens navigation
+   lives in the hamburger-triggered mobile menu. */
+.links {
+  display: none;
+  align-items: center;
+  gap: var(--space-6);
+  list-style: none;
+}
+
+.links a,
+.mobileLinks a {
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-muted);
+  text-decoration: none;
+  transition: color var(--transition-fast) var(--ease);
+}
+
+/* Active + hover share the royal-blue primary color. The active selectors are
+   deliberately qualified as `.links a.active` / `.mobileLinks a.active` (0,2,1)
+   so they OUTRANK the scoping rule `.links a` / `.mobileLinks a` (0,1,1) that
+   sets the muted resting color above. A bare `.active` (0,1,0) loses that
+   specificity battle, which is why the current-section link never rendered its
+   accent color (QA F1). The :hover selectors are already (0,2,1) and unaffected. */
+.links a:hover,
+.mobileLinks a:hover,
+.links a.active,
+.mobileLinks a.active {
+  color: var(--color-primary);
+}
+
+.links a:focus-visible,
+.mobileLinks a:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-accent);
+  outline-offset: var(--focus-ring-offset);
+  border-radius: var(--radius-sm);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* Mobile-first: the hamburger is shown by default and hidden at the
+   >=1024px (lg) breakpoint below, where the inline desktop links take over. */
+.hamburger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* 44x44 tap target (WCAG 2.5.5); the icon (font-size below) was ~32x22 which
+     failed the mobile touch-target audit (QA F3). Only the hit area grows. */
+  min-width: var(--tap-target-min);
+  min-height: var(--tap-target-min);
+  color: var(--color-text);
+  font-size: var(--text-xl);
+}
+
+.mobileMenu {
+  position: absolute;
+  top: var(--nav-height);
+  left: 0;
+  right: 0;
+  overflow: hidden;
+  background: var(--color-surface);
+  border-bottom: var(--border-width-hairline) solid var(--glass-border, var(--color-border));
+  box-shadow: var(--shadow-lg);
+}
+
+.mobileLinks {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  list-style: none;
+  padding: var(--space-6) var(--space-4);
+}
+
+.mobileLinks a {
+  /* Flex + min-height gives each mobile-menu link a full-width, >=44px tall tap
+     target (WCAG 2.5.5); the previous `padding-block: var(--space-2)` yielded
+     only ~32px (QA F3). align-items keeps the label vertically centred. */
+  display: flex;
+  align-items: center;
+  min-height: var(--tap-target-min);
+}
+
+/* Desktop (>= lg / 1024px): reveal the inline nav links and hide the hamburger.
+   The collapse point is deliberately the `lg` breakpoint (1024px), NOT `md`
+   (768px): the full desktop row (logo + all 8 links at gap var(--space-6) +
+   ThemeToggle + Container padding) needs ~842px on a single line, so revealing
+   it below 1024px forced the logo to wrap and pushed the ThemeToggle off-screen
+   (~19px horizontal overflow across the ~768-786px band). Collapsing to the
+   hamburger until 1024px guarantees no overflow and leaves comfortable headroom
+   (976px content area at 1024px), which also stays robust once the wider Inter
+   webfont loads. MUST stay in exact sync with the JS breakpoint in Navbar.jsx
+   (useMediaQuery `max-width: ${BREAKPOINTS.lg - 0.02}px` = 1023.98px, the
+   complement of this query) so a viewport is never both "mobile" and "desktop". */
+@media (min-width: 1024px) {
+  .links {
+    display: flex;
+  }
+
+  .hamburger {
+    display: none;
+  }
+}

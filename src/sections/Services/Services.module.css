@@ -1,0 +1,35 @@
+.services {
+  padding-block: var(--space-16);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-6);
+  margin-top: var(--space-12);
+}
+
+.item {
+  display: flex;
+}
+
+@media (min-width: 768px) {
+  /* Match the shared section rhythm: like About/Skills/Projects/Experience, the
+     vertical padding grows from var(--space-16) (64px) to var(--space-24) (96px)
+     at the >=768px breakpoint so Services no longer breaks the 96px desktop
+     cadence used by every other content section (QA F4). Contact/Resume reach
+     96px directly; this brings Services in line at 7/7. */
+  .services {
+    padding-block: var(--space-24);
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

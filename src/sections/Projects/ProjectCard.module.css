@@ -1,0 +1,147 @@
+/**
+ * ProjectCard.module.css — inner layout/typography for one project card.
+ * --------------------------------------------------------------------------
+ * ADDITIVE to the reusable Card primitive (src/components/ui/Card): the card
+ * SURFACE (border-radius, hairline border, glass background, box-shadow,
+ * padding, and the opt-in hover lift) is owned by Card and is deliberately NOT
+ * restated here — so there are no property collisions and no need for
+ * !important. This module supplies ONLY what Card does not: the full-height
+ * flex column layout that pins the actions row to the bottom, the media/image
+ * framing, and the body typography.
+ *
+ * Consumed by ProjectCard.jsx as styles.card (merged onto the Card element via
+ * className), styles.media, styles.image, styles.body, styles.title,
+ * styles.description, styles.tech, and styles.actions.
+ *
+ * Token discipline: every value resolves to a var(--token) from
+ * src/styles/variables.css (app-wide zero-hardcoded-values rule); the only
+ * non-token literals are structural (0, 100%, auto), the uniform image
+ * aspect ratio (16 / 9), and the line-clamp count (3). Global element resets
+ * (img display/max-width, button/list resets, box-sizing) and the
+ * prefers-reduced-motion guard live in src/styles/global.css and are
+ * intentionally not repeated.
+ */
+
+/* Full-height flex column so .actions can be pinned to the bottom
+   (margin-top: auto) for even alignment across a grid row. The card surface is
+   intentionally NOT clickable — the details modal is opened via the explicit,
+   keyboard-focusable "Details" button — so no cursor: pointer is applied.
+   Surface styling (radius/border/background/shadow/padding/transition) is owned
+   by Card. */
+.card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  /* As a grid item in the Projects grid, allow the card to shrink below its
+     content's intrinsic width (grid items default to min-width:auto) so an
+     unbreakable token in the title/description cannot widen the track and force
+     horizontal page overflow (QA F5). */
+  min-width: 0;
+}
+
+/* Clip the image to a rounded rectangle; --color-surface is a neutral fallback
+   behind the image while it loads. */
+.media {
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+/* Uniform 16:9 framing so all placeholder images render at the same shape
+   without layout shift. */
+.image {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+/* Vertical stack of title, description and tech badges below the media. */
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+  /* Let the body (a flex child of .card) shrink below content width so its
+     text descendants can wrap rather than overflow (QA F5). */
+  min-width: 0;
+}
+
+/* Project name — heading family, matching the design-system heading color. */
+.title {
+  margin: 0;
+  color: var(--color-heading);
+  font-family: var(--font-heading);
+  font-size: var(--text-xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--leading-tight);
+  /* `anywhere` lowers the min-content width (the global `break-word` does not),
+     so a long unbroken project name wraps instead of overflowing (QA F5).
+     Normal titles are unaffected. */
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Summary clamped to 3 lines to keep card bodies visually balanced; the
+   -webkit-box / -webkit-line-clamp lines are the standard line-clamp idiom. */
+.description {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  /* Belt-and-braces with the line-clamp above: `anywhere` lowers min-content
+     width so a long unbroken token wraps within the clamp instead of forcing
+     horizontal overflow (QA F5). Normal descriptions are unaffected. */
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Wrap-friendly row of technology badges. */
+.tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+/* Highlighted feature list — a compact vertical list of the project's key
+   features, each prefixed with a decorative success-colored check icon. The
+   list marker/padding reset comes from global.css, so none is repeated here. */
+.features {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+/* One feature row: check icon + label, top-aligned so a label that wraps to a
+   second line stays under the text rather than under the icon. */
+.feature {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+}
+
+/* Decorative check icon: never shrinks, nudged down to align with the first
+   line of text, and tinted with the success token to read as a positive mark. */
+.featureIcon {
+  flex-shrink: 0;
+  margin-top: var(--space-1);
+  color: var(--color-success);
+}
+
+/* Wrap-friendly action row (GitHub / Live Demo) pinned to the card bottom. */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: auto;
+  padding-top: var(--space-4);
+}

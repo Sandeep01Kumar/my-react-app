@@ -1,0 +1,77 @@
+/**
+ * SectionTitle.module.css — scoped styles for the SectionTitle primitive.
+ * --------------------------------------------------------------------------
+ * Renders the eyebrow -> <h2> -> subtitle heading block with a uniform
+ * typographic cadence across every section. Consumed by SectionTitle.jsx as
+ * `styles` (styles.sectionTitle / styles.center / styles.eyebrow /
+ * styles.title / styles.subtitle).
+ *
+ * Design-token contract: every value resolves to a CSS custom property
+ * defined in src/styles/variables.css (loaded once globally via
+ * styles/global.css), which enforces the app-wide zero-hardcoded-values rule
+ * and makes light/dark theming propagate automatically. The exempt literals
+ * are the app-wide set (0, none, auto, inherit, transparent, currentColor)
+ * plus CSS keywords. The eyebrow's uppercase tracking uses the
+ * --letter-spacing-eyebrow token.
+ *
+ * The .title class re-declares family/size/weight/line-height/color/margin so
+ * the heading is correct in the SectionTitle context regardless of the global
+ * bare-<h2> base styling; `margin: 0` neutralizes any inherited heading margin.
+ */
+
+.sectionTitle {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  /* Allow this block to shrink below its content's intrinsic width when it is
+     itself a flex/grid child, so an unbreakable string in the heading cannot
+     force horizontal page overflow (QA F5). Flex/grid items default to
+     min-width:auto, which otherwise defeats overflow-wrap on the descendants. */
+  min-width: 0;
+}
+
+.center {
+  align-items: center;
+  text-align: center;
+}
+
+.eyebrow {
+  color: var(--color-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-eyebrow);
+  text-transform: uppercase;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: var(--text-4xl);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--leading-tight);
+  color: var(--color-heading);
+  /* Defensive wrapping: `anywhere` (unlike the global `break-word`) also lowers
+     the element's min-content width, so an ultra-long unbroken token wraps
+     instead of overflowing the viewport (QA F5). min-width:0 lets the heading
+     shrink when it is a flex/grid child. Normal multi-word content is
+     unaffected. */
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.subtitle {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--text-lg);
+  line-height: var(--leading-normal);
+  /* Same defensive wrapping as .title so a long unbroken subtitle token cannot
+     overflow horizontally (QA F5); normal content is unaffected. */
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.center .subtitle {
+  max-width: calc(var(--container-max) - var(--space-32));
+  margin-inline: auto;
+}

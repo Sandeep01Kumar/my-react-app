@@ -1,0 +1,50 @@
+/**
+ * Projects.module.css — Projects section shell + responsive card grid.
+ * --------------------------------------------------------------------------
+ * Consumed by Projects.jsx as `styles.section`, `styles.grid`, `styles.gridItem`.
+ *
+ * Contract notes:
+ *   - Zero hardcoded values: every property value is a var(--token) from
+ *     src/styles/variables.css, except the allowed structural literals (grid
+ *     track values 1fr / repeat(n, 1fr)) and media-query breakpoint pixels
+ *     (media conditions cannot use var()).
+ *   - Global element resets and shared behaviors live in src/styles/global.css
+ *     and are deliberately not restated here (list-marker removal, anchor
+ *     offset for section ids, focus rings, and the reduced-motion guard). The
+ *     .grid element renders as a <Reveal as="ul"> and each .gridItem as a <li>,
+ *     so list styling is already normalized globally, and motion is owned by
+ *     Reveal plus the global guard.
+ *   - Mobile-first: base rules target the smallest viewport (single column);
+ *     min-width media queries only add/upgrade columns and spacing.
+ */
+
+.section {
+  padding-block: var(--space-16);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-6);
+  margin-top: var(--space-12);
+}
+
+.gridItem {
+  display: flex;
+}
+
+@media (min-width: 768px) {
+  .section {
+    padding-block: var(--space-24);
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

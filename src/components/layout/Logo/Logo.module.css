@@ -1,0 +1,37 @@
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  /* >=44px tall tap target (WCAG 2.5.5); the logo link was ~32px tall (QA F3).
+     It sits comfortably inside the 72px navbar and the footer brand column. */
+  min-height: var(--tap-target-min);
+  font-family: var(--font-heading);
+  color: var(--color-heading);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color var(--transition-fast) var(--ease);
+}
+
+.mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-8);
+  height: var(--space-8);
+  border-radius: var(--radius-md);
+  background: var(--color-primary);
+  color: var(--color-white);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--text-base);
+  transition: background-color var(--transition-fast) var(--ease);
+}
+
+.name {
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--text-lg);
+  color: var(--color-heading);
+}
+
+.logo:hover .mark {
+  background: var(--color-primary-hover);
+}

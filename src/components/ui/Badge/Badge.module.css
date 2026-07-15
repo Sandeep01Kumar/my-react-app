@@ -1,0 +1,62 @@
+/*
+ * Badge.module.css — CSS Module for the Badge UI primitive.
+ * --------------------------------------------------------------------------
+ * A small, non-interactive pill/chip used for skill tech pills (Skills
+ * SkillCard) and project tech-stack tags (Projects ProjectCard / ProjectModal).
+ *
+ * Every value is a design token from src/styles/variables.css (the single
+ * source of design truth). The three variants deliberately share the base
+ * `border: var(--border-width-hairline) solid transparent`, so switching
+ * variants never shifts the pill's box dimensions by a pixel. `soft` is the
+ * default variant and is
+ * composed purely from theme-aware tokens (surface / primary / border), which
+ * is why it recolors correctly across light and dark without any extra rules.
+ *
+ * Class names map 1:1 to the CSS Module keys consumed by Badge.jsx:
+ *   styles.badge | styles.solid | styles.outline | styles.soft | styles.icon
+ */
+
+/* Base pill — shared box, typography and layout for every variant. */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--leading-tight);
+  border: var(--border-width-hairline) solid transparent;
+  white-space: nowrap;
+}
+
+/* Solid — royal-blue fill with white text; theme-independent by design. */
+.solid {
+  background: var(--color-primary);
+  color: var(--color-white);
+}
+
+/* Outline — transparent fill with the current text color and a hairline
+   border; recolors with the theme via --color-text / --color-border. */
+.outline {
+  background: transparent;
+  color: var(--color-text);
+  border-color: var(--color-border);
+}
+
+/* Soft (default) — subtle surface fill with royal-blue text and a hairline
+   border; theme-aware via --color-surface / --color-border. */
+.soft {
+  background: var(--color-surface);
+  color: var(--color-primary);
+  border-color: var(--color-border);
+}
+
+/* Icon wrapper — keeps a decorative (aria-hidden) React-Icons glyph aligned
+   with the label. Spacing is provided by the .badge gap, so no margin here. */
+.icon {
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--text-xs);
+}

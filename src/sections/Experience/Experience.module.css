@@ -1,0 +1,38 @@
+.experience {
+  padding-block: var(--space-16);
+}
+
+.timeline {
+  position: relative;
+  margin-top: var(--space-12);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+/* Vertical connecting spine — a thin line using the shared --border-width-thin
+   token; centered on the marker column via translateX(-50%). */
+.timeline::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--space-6);
+  width: var(--border-width-thin);
+  transform: translateX(calc(var(--position-center) * -1));
+  background: var(--color-border);
+}
+
+@media (min-width: 768px) {
+  .experience {
+    padding-block: var(--space-24);
+  }
+
+  .timeline {
+    margin-top: var(--space-16);
+  }
+
+  .timeline::before {
+    left: var(--position-center);
+  }
+}

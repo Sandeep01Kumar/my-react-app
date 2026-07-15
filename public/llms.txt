@@ -1,0 +1,32 @@
+# John Doe — Software QA Engineer & React Developer
+
+> Personal portfolio of John Doe, a Software QA Engineer and React Developer who
+> builds tested, accessible, high-quality web applications. The site is a
+> single-page React application presenting skills, projects, professional
+> experience, and services, with a validated contact form for inquiries.
+
+This portfolio is a client-side single-page application (React 19 + Vite). All
+content lives on the home page and is reachable via in-page anchor links; there
+is no backend API and the contact form is validated entirely client-side. The
+site supports light and dark themes and respects the user's reduced-motion
+preference.
+
+## Sections
+
+- [Home / Hero](https://johndoe.example.com/#home): Introduction, headline role, and primary calls to action (download resume, hire me).
+- [About](https://johndoe.example.com/#about): Professional summary, career objective, education, experience, and key achievements.
+- [Skills](https://johndoe.example.com/#skills): Frontend, backend basics, testing, and automation proficiencies with proficiency levels.
+- [Projects](https://johndoe.example.com/#projects): Selected projects with descriptions, technology stacks, features, and links to source code and live demos.
+- [Experience](https://johndoe.example.com/#experience): Timeline of education, QA experience, the React learning journey, and certifications.
+- [Services](https://johndoe.example.com/#services): Website development, React development, frontend development, QA testing, API testing, and automation support.
+- [Resume](https://johndoe.example.com/#resume): Actions to download and view the resume.
+- [Contact](https://johndoe.example.com/#contact): Validated contact form (name, email, subject, message) and direct contact details.
+
+## Resources
+
+- [Resume (PDF)](https://johndoe.example.com/resume.pdf): Downloadable resume document.
+
+## Notes
+
+- Contact email: john.doe@example.com
+- Production URLs and content shown on the site are placeholders pending final user-supplied details.

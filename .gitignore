@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Blitzy agent artifacts (screenshots, screen recordings) — not part of the app
+blitzy/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

@@ -1,0 +1,58 @@
+.socials {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.item {
+  display: inline-flex;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* 44x44 tap target (WCAG 2.5.5) for the default (md) size; was var(--space-8)
+     (32px) which failed the mobile touch-target audit (QA F3). */
+  width: var(--tap-target-min);
+  height: var(--tap-target-min);
+  font-size: var(--text-lg);
+  color: var(--color-text-muted);
+  background-color: var(--color-surface);
+  border: var(--border-width-hairline) solid var(--color-border);
+  border-radius: var(--radius-full);
+  transition: color var(--transition-fast) var(--ease),
+    background-color var(--transition-fast) var(--ease),
+    transform var(--transition-fast) var(--ease);
+}
+
+.link:hover {
+  color: var(--color-primary);
+  transform: translateY(calc(-1 * var(--space-1)));
+}
+
+.link:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-accent);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.sm .link {
+  width: var(--space-6);
+  height: var(--space-6);
+  font-size: var(--text-base);
+}
+
+.md .link {
+  width: var(--tap-target-min);
+  height: var(--tap-target-min);
+  font-size: var(--text-lg);
+}
+
+.lg .link {
+  width: var(--space-12);
+  height: var(--space-12);
+  font-size: var(--text-xl);
+}

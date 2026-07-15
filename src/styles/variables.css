@@ -1,0 +1,230 @@
+/**
+ * variables.css — Design Token Catalog (single source of design truth)
+ * --------------------------------------------------------------------------
+ * Custom, in-repo CSS-variable design system (v1.0) for the portfolio SPA.
+ * There is NO third-party UI library (Material UI, Ant Design, etc. are
+ * intentionally not used). Every *.module.css across the app references these
+ * tokens via var(--token), which is what enforces the app-wide
+ * "zero-hardcoded-values" rule (only 0, none, auto, inherit, transparent and
+ * currentColor are exempt).
+ *
+ * Layout of this file:
+ *   :root                 -> light theme + ALL theme-independent tokens
+ *   [data-theme="dark"]   -> dark-theme semantic overrides (MUST follow :root)
+ *
+ * Dark-mode mechanism: the theme is driven by a `data-theme` attribute on the
+ * <html> element, set and persisted to localStorage by src/hooks/useTheme.jsx.
+ * The OS color-scheme preference only SEEDS the initial value inside that hook
+ * — it is deliberately NOT read here. This is why no OS-preference media query
+ * appears anywhere in this file: such a query would fight the manual toggle and
+ * regress the user-controlled dark mode.
+ *
+ * Supersedes the old scaffold src/index.css, whose purple accent token is
+ * replaced by the royal-blue / dark-blue corporate palette below.
+ */
+
+:root {
+  /* Brand & feedback — theme-independent (identical in light & dark) */
+  --color-primary: #2563EB;          /* royal blue (replaces old purple --accent) */
+  --color-primary-hover: #1D4ED8;
+  --color-primary-active: #1E40AF;
+  --color-navy-900: #0A1A3F;         /* dark blue */
+  --color-navy-800: #0F2557;
+  --color-navy-700: #16346E;
+  --color-white: #FFFFFF;
+  --color-success: #16A34A;
+  --color-error: #DC2626;
+  --color-warning: #D97706;
+
+  /* Semantic colors — LIGHT values (overridden in the dark block below) */
+  --color-bg: #FFFFFF;
+  --color-surface: #F8FAFC;
+  --color-text: #1E293B;
+  --color-text-muted: #64748B;
+  --color-heading: #0A1A3F;
+  --color-border: #E2E8F0;
+  --color-accent: #2563EB;
+  --glass-bg: rgba(255, 255, 255, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.3);
+
+  /* Spacing — 4px base scale (--space-N == N x 4px) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-24: 96px;
+  --space-32: 128px;
+
+  /* Radius */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  /* Shadow — soft, navy/blue-tinted elevations (base rgba is --color-navy-800) */
+  --shadow-sm: 0 1px 2px rgba(15, 37, 87, 0.06), 0 1px 3px rgba(15, 37, 87, 0.10);
+  --shadow-md: 0 4px 6px -1px rgba(15, 37, 87, 0.10), 0 2px 4px -2px rgba(15, 37, 87, 0.08);
+  --shadow-lg: 0 10px 15px -3px rgba(15, 37, 87, 0.12), 0 4px 6px -4px rgba(15, 37, 87, 0.10);
+  --shadow-xl: 0 20px 25px -5px rgba(15, 37, 87, 0.14), 0 8px 10px -6px rgba(15, 37, 87, 0.10);
+
+  /* Typography — font families.
+     Primaries MUST be 'Inter' and 'Poppins' verbatim to match the Google Fonts
+     loaded by the root index.html, or the loaded faces will not apply. */
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-heading: 'Poppins', 'Inter', system-ui, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', Consolas, 'Liberation Mono', monospace;
+
+  /* Type scale — fixed rem for body sizes, clamp() for fluid heading sizes */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: clamp(1.5rem, 1.3rem + 1vw, 1.75rem);
+  --text-3xl: clamp(1.875rem, 1.55rem + 1.6vw, 2.25rem);
+  --text-4xl: clamp(2.25rem, 1.8rem + 2.2vw, 3rem);
+  --text-5xl: clamp(2.75rem, 2.1rem + 3.2vw, 3.75rem);
+
+  /* Font weights — Poppins is only loaded at 500/600/700, so headings never
+     use 400 (regular is reserved for body copy). */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Line heights */
+  --leading-tight: 1.2;
+  --leading-normal: 1.6;
+
+  /* Motion */
+  --transition-fast: 150ms;
+  --transition-base: 250ms;
+  --transition-slow: 400ms;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --glass-blur: 12px;
+
+  /* Z-index layering */
+  --z-nav: 100;
+  --z-backtotop: 200;
+  --z-modal: 1000;
+
+  /* Layout tokens — cross-file coordination.
+     --nav-height feeds global.css scroll-margin-top and the Navbar height, and
+     MUST equal the JS NAV_HEIGHT (72) in src/utils/constants.js used for
+     programmatic smooth-scroll offsets. --container-max is the inner Container
+     max-width (keeps that width token-driven). */
+  --nav-height: 72px;
+  --container-max: 1120px;
+  /* Minimum interactive hit-area (WCAG 2.5.5 target size). Applied as a
+     min-width/min-height (or an inline-flex min-height on text links) to every
+     tappable control — buttons, the theme toggle, social icons, the nav
+     hamburger, the logo, nav/footer/contact links — so each meets the 44x44
+     CSS-px mobile touch-target floor (QA F3) without hardcoding the value. */
+  --tap-target-min: 44px;
+
+  /* Structural component tokens — the sub-ramp widths, focus-ring geometry,
+     opacity steps, hover lift, spinner geometry and typographic/utility values
+     that fall below the --space scale. All are theme-independent and exist so
+     every *.module.css can express these recurring structural values as
+     var(--token), keeping the app-wide zero-hardcoded-values rule truly
+     complete (only 0, none, auto, inherit, transparent and currentColor remain
+     exempt — there are no per-file exceptions). */
+
+  /* Border & line widths — the sub-4px widths below the --space ramp:
+     hairline = standard 1px borders (cards, inputs, nav, badges, buttons);
+     thin    = 2px lines (Experience timeline spine, typewriter caret, Hero
+               image ring, inline Button spinner ring);
+     thick   = the 3px Loader spinner ring. */
+  --border-width-hairline: 1px;
+  --border-width-thin: 2px;
+  --border-width-thick: 3px;
+
+  /* Focus ring — app-wide keyboard :focus-visible indicator geometry
+     (mirrors the width/offset used by global.css). */
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+
+  /* Opacity steps — disabled/loading controls and the decorative Hero blobs. */
+  --opacity-disabled: 0.65;
+  --opacity-blob: 0.12;
+
+  /* Interaction — the subtle translateY hover lift shared by CTA buttons (a
+     deliberately small micro-interaction; AAP §0.7.3 animation restraint). */
+  --lift-hover: -2px;
+
+  /* Loading spinner — em-based so the inline Button spinner scales with the
+     button font-size; --spinner-offset is the negative half of --spinner-size,
+     used to center the spinner via negative margins. */
+  --spinner-size: 1em;
+  --spinner-offset: -0.5em;
+
+  /* Typography extras — the uppercase eyebrow letter-spacing. */
+  --letter-spacing-eyebrow: 0.08em;
+
+  /* Single-line box heights — the typewriter caret height (one line) and the
+     min-height that reserves space for the Hero role/typewriter line so the
+     layout does not shift as the animated text cycles. */
+  --caret-height: 1em;
+  --role-min-height: 1.5em;
+
+  /* Screen-reader-only (visually hidden) clip box — the 1px size used by the
+     .srOnly utility; its negative margin is derived as calc(size * -1). */
+  --sr-only-size: 1px;
+
+  /* Structural geometry — the recurring layout percentages, viewport heights
+     and rotation that would otherwise be hardcoded in *.module.css. Promoting
+     them here keeps the app-wide zero-hardcoded-values rule complete. */
+
+  /* Center offset — the 50% used to place absolutely-positioned elements
+     (top/left) and to shift transforms by half an element's own size
+     (translateX/translateY) when centering. Shared by the Button loading
+     spinner, the Experience timeline spine, and the TimelineItem markers.
+     Negative offsets are derived as calc(var(--position-center) * -1). */
+  --position-center: 50%;
+
+  /* Half size — the 50% width of each item in the desktop two-column
+     Experience timeline (each item spans from its edge to the center line).
+     Named distinctly from --position-center because it expresses a dimension,
+     not a centering offset (both happen to equal 50%). */
+  --size-half: 50%;
+
+  /* Full-turn rotation for the Button loading-spinner keyframe. */
+  --rotate-full: 360deg;
+
+  /* Modal panel max height — caps the dialog at a fraction of the viewport so
+     long content scrolls inside the panel instead of overflowing the screen. */
+  --modal-max-height: 85vh;
+
+  /* Full-viewport section heights (the full-bleed Hero). --viewport-height is
+     the widely-supported fallback; --viewport-height-small uses small-viewport
+     units (svh) so mobile browser chrome never clips the Hero. */
+  --viewport-height: 100vh;
+  --viewport-height-small: 100svh;
+
+  /* Native control theming — makes browser-native UI (form controls,
+     scrollbars) match the light theme. */
+  color-scheme: light;
+}
+
+/* Dark theme — overrides ONLY the semantic colors, glass surfaces and
+   color-scheme. All other groups (brand/feedback, spacing, radius, shadow,
+   typography, motion, z-index, layout) are inherited from :root.
+   This block MUST appear AFTER :root: the two selectors have equal
+   specificity, so later source order wins. */
+[data-theme="dark"] {
+  --color-bg: #0A1A3F;
+  --color-surface: #0F2557;
+  --color-text: #CBD5E1;
+  --color-text-muted: #94A3B8;
+  --color-heading: #FFFFFF;
+  --color-border: rgba(148, 163, 184, 0.2);
+  --color-accent: #4F83FF;
+  --glass-bg: rgba(15, 37, 87, 0.5);
+  --glass-border: rgba(148, 163, 184, 0.15);
+  color-scheme: dark;
+}

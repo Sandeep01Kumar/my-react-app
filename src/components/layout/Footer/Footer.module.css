@@ -1,0 +1,133 @@
+.footer {
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  border-top: var(--border-width-hairline) solid var(--color-border);
+  padding-top: var(--space-16);
+  padding-bottom: var(--space-8);
+}
+
+.grid {
+  display: grid;
+  gap: var(--space-8);
+  grid-template-columns: 1fr;
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-4);
+}
+
+.tagline {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.heading {
+  font-family: var(--font-heading);
+  font-size: var(--text-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-heading);
+}
+
+.links,
+.contact {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.link {
+  /* Inline-flex + min-height/min-width gives each footer link (quick links and
+     the email link) a full >=44x44 tap target (WCAG 2.5.5); as plain text they
+     were ~17px tall (and short labels like "Home" were <44px wide) and failed
+     the mobile touch-target audit (QA F3). align-self:flex-start keeps the hit
+     area only as wide as needed (min 44px) so adjacent columns are unaffected. */
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  min-width: var(--tap-target-min);
+  min-height: var(--tap-target-min);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  text-decoration: none;
+  transition: color var(--transition-fast) var(--ease);
+}
+
+.link:hover {
+  color: var(--color-primary);
+}
+
+.link:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-accent);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.contactItem {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.copyright {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-12);
+  padding-top: var(--space-8);
+  /* Reserve the fixed BackToTop FAB's bottom-right lane so it never obscures the
+     copyright/role text when scrolled to the page bottom (QA F3). The FAB owns a
+     lane of width var(--space-12) (its size) + var(--space-6) (its right offset)
+     measured from the viewport's right edge. This mobile bar is a CENTERED
+     column, so the reserve is applied symmetrically (padding-inline) to keep the
+     text visually centered while clearing the FAB on the right; the >=768px row
+     layout below narrows this to a right-only reserve. */
+  padding-inline: calc(var(--space-12) + var(--space-6));
+  border-top: var(--border-width-hairline) solid var(--color-border);
+  font-size: var(--text-sm);
+  text-align: center;
+}
+
+.role {
+  color: var(--color-text-muted);
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: 2fr 1fr 1fr;
+  }
+
+  .copyright {
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
+    /* Row layout: copyright is the left child, the role is the right child, so
+       only the right edge sits under the FAB. Drop the left reserve and keep the
+       right reserve (still the same var(--space-12) + var(--space-6) lane). */
+    padding-left: 0;
+    padding-right: calc(var(--space-12) + var(--space-6));
+  }
+}
+
+/* At >= xl (1280px) the centered Container (max var(--container-max) = 1120px)
+   leaves more than the FAB lane of empty space to the right of the content, so
+   the FAB no longer overlaps the bottom bar. Remove the reserve so the role text
+   sits flush with the footer columns above it. */
+@media (min-width: 1280px) {
+  .copyright {
+    padding-inline: 0;
+  }
+}

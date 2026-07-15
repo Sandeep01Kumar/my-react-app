@@ -1,0 +1,13 @@
+# robots.txt — John Doe, Software QA Engineer & React Developer portfolio
+#
+# Served as a real static file from public/ (Vite copies public/ verbatim to
+# the site root at build time, so this resolves at /robots.txt with a
+# text/plain content type rather than falling through to the SPA index.html
+# shell). Allows all well-behaved crawlers to index the entire single-page
+# site and advertises the XML sitemap location.
+
+User-agent: *
+Allow: /
+
+# XML sitemap (also a real static file — see public/sitemap.xml).
+Sitemap: https://johndoe.example.com/sitemap.xml

@@ -1,0 +1,109 @@
+.item {
+  position: relative;
+  padding-left: var(--space-12);
+}
+
+.marker {
+  position: absolute;
+  top: 0;
+  left: var(--space-6);
+  transform: translateX(calc(var(--position-center) * -1));
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-8);
+  height: var(--space-8);
+  border-radius: var(--radius-full);
+  color: var(--color-white);
+  background: var(--color-primary);
+  font-size: var(--text-lg);
+  box-shadow: 0 0 0 var(--space-1) var(--color-bg);
+}
+
+.marker[data-type='Education'] {
+  background: var(--color-primary);
+}
+
+.marker[data-type='Experience'] {
+  background: var(--color-navy-800);
+}
+
+.marker[data-type='Journey'] {
+  background: var(--color-success);
+}
+
+.marker[data-type='Certification'] {
+  background: var(--color-warning);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-1);
+}
+
+.period {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: var(--text-xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--leading-tight);
+  color: var(--color-heading);
+}
+
+.org {
+  margin: 0;
+  color: var(--color-primary);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.description {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+}
+
+@media (min-width: 768px) {
+  .item {
+    width: var(--size-half);
+    padding-left: 0;
+  }
+
+  .left {
+    align-self: flex-start;
+    padding-right: var(--space-8);
+  }
+
+  .right {
+    align-self: flex-end;
+    padding-left: var(--space-8);
+  }
+
+  .left .marker {
+    left: auto;
+    right: 0;
+    transform: translateX(var(--position-center));
+  }
+
+  .right .marker {
+    left: 0;
+    transform: translateX(calc(var(--position-center) * -1));
+  }
+}

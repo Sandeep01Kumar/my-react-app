@@ -1,0 +1,50 @@
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* 44x44 tap target (WCAG 2.5.5); was var(--space-8) (32px) which failed the
+     mobile touch-target audit (QA F3). The icon size (font-size below) is
+     unchanged, so only the hit area grows. */
+  width: var(--tap-target-min);
+  height: var(--tap-target-min);
+  padding: 0;
+  border: var(--border-width-hairline) solid var(--color-border);
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--color-text);
+  font-size: var(--text-lg);
+  cursor: pointer;
+  transition: background-color var(--transition-fast) var(--ease),
+              color var(--transition-fast) var(--ease),
+              border-color var(--transition-fast) var(--ease);
+}
+
+.toggle:hover {
+  background: var(--color-surface);
+  color: var(--color-primary);
+}
+
+.toggle:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-accent);
+  outline-offset: var(--focus-ring-offset);
+}
+
+/* Icon wrapper — centers the (optionally animated) icon; react-icons SVG scales via 1em from the button's font-size */
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Optional size modifiers — default (md) uses the base .toggle sizing above */
+.sm {
+  width: var(--space-6);
+  height: var(--space-6);
+  font-size: var(--text-base);
+}
+
+.lg {
+  width: var(--space-12);
+  height: var(--space-12);
+  font-size: var(--text-xl);
+}

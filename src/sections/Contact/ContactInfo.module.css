@@ -1,0 +1,93 @@
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.heading {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: var(--text-2xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--leading-tight);
+  color: var(--color-heading);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--space-12);
+  height: var(--space-12);
+  font-size: var(--text-lg);
+  color: var(--color-primary);
+  background-color: var(--color-surface);
+  border-radius: var(--radius-md);
+}
+
+.itemBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.itemLabel {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.itemValue {
+  color: var(--color-text);
+  font-weight: var(--font-weight-medium);
+  text-decoration: none;
+  transition: color var(--transition-fast) var(--ease);
+}
+
+/* Only the linked values (email, phone) become tap targets: inline-flex +
+   min-height gives them a >=44px tall hit area (WCAG 2.5.5); as plain text they
+   were ~26px tall and failed the mobile touch-target audit (QA F3). The
+   non-linked spans (location, availability) keep their natural height. */
+a.itemValue {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap-target-min);
+}
+
+a.itemValue:hover {
+  color: var(--color-primary);
+}
+
+.socials {
+  margin-top: var(--space-2);
+}
+
+.map {
+  display: block;
+  width: 100%;
+  min-height: calc(var(--space-32) * 2);
+  border: 0;
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface);
+}

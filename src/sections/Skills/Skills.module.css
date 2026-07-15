@@ -1,0 +1,22 @@
+.skills {
+  background-color: var(--color-surface);
+  padding-block: var(--space-16);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-6);
+  margin-top: var(--space-12);
+}
+
+@media (min-width: 768px) {
+  .skills {
+    padding-block: var(--space-24);
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-8);
+  }
+}
