@@ -12,11 +12,14 @@ import { validateContactForm } from '@/utils'
  * helper), invalid submissions are blocked, and a successful submit is
  * simulated client-side.
  *
- * There is intentionally NO backend call here. Per AAP §0.3.2 / §0.6.1 an
- * email-delivery integration (e.g. `@emailjs/browser`) is an explicitly
- * out-of-scope future enhancement; the submit is a short simulated async delay
- * that resolves into the success state. Swap the simulated `Promise` for a real
- * request when a delivery service is wired up.
+ * Submit delivery is env-guarded. When `VITE_EMAILJS_SERVICE_ID`,
+ * `VITE_EMAILJS_TEMPLATE_ID`, and `VITE_EMAILJS_PUBLIC_KEY` are all set, the
+ * submit sends the message via `@emailjs/browser`, loaded lazily through a
+ * dynamic (`@vite-ignore`) import so the bundler never resolves it at build
+ * time. When they are not all set (the default), the submit falls back to the
+ * existing simulated client-side delay — so the form works out of the box with
+ * no configuration. `@emailjs/browser` is an optional post-merge install and is
+ * intentionally NOT a declared dependency (see `.env.example`).
  *
  * Design notes (why it is shaped this way):
  * - `errors` and `isValid` are DERIVED from `values` with `useMemo`, never
@@ -63,6 +66,19 @@ import { validateContactForm } from '@/utils'
 // Empty field values, reused for both the initial state and the post-success
 // reset so the two can never drift apart.
 const INITIAL_VALUES = { name: '', email: '', subject: '', message: '' }
+
+// EmailJS placeholder wiring (AAP §0.6.2). These Vite env vars are read at
+// module scope so they are not reactive dependencies of any hook callback.
+// They are EMPTY by default (no `.env` file / see `.env.example`), so
+// `isEmailJsConfigured` is false and the real-send branch below is inert —
+// the form always falls back to the existing simulated submit. Real delivery
+// is activated post-merge by installing `@emailjs/browser` and setting these.
+const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID
+const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID
+const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+const isEmailJsConfigured = Boolean(
+  EMAILJS_SERVICE_ID && EMAILJS_TEMPLATE_ID && EMAILJS_PUBLIC_KEY,
+)
 
 export function useContactForm() {
   const [values, setValues] = useState(INITIAL_VALUES)
@@ -111,8 +127,46 @@ export function useContactForm() {
       }
 
       setStatus('submitting')
+
+      // Real delivery path — only when all EmailJS env vars are present. Uses a
+      // DYNAMIC import with `@vite-ignore` so the bundler never tries to resolve
+      // the (intentionally uninstalled) `@emailjs/browser` package at build
+      // time. This branch is inert by default because the env vars are empty.
+      if (isEmailJsConfigured) {
+        try {
+          // Hold the package name in a variable so BOTH Vite's dev
+          // import-analysis and Rollup's build analysis treat this as a fully
+          // runtime dynamic import and never try to resolve the intentionally
+          // uninstalled `@emailjs/browser` package. `@vite-ignore` suppresses
+          // the dev-only "dynamic import cannot be analyzed" warning. (A bare
+          // inline string literal here is eagerly resolved by the dev server
+          // and would 500 the whole app whenever the package is absent.)
+          const emailjsModule = '@emailjs/browser'
+          const { default: emailjs } = await import(/* @vite-ignore */ emailjsModule)
+          await emailjs.send(
+            EMAILJS_SERVICE_ID,
+            EMAILJS_TEMPLATE_ID,
+            {
+              from_name: values.name,
+              reply_to: values.email,
+              subject: values.subject,
+              message: values.message,
+            },
+            { publicKey: EMAILJS_PUBLIC_KEY },
+          )
+          setStatus('success')
+          setValues(INITIAL_VALUES)
+          setTouched({})
+        } catch {
+          setStatus('error')
+        }
+        return
+      }
+
       try {
-        // Simulated async submit (client-side only; swap for a real request later).
+        // Simulated async submit — the backward-compatible fallback used
+        // whenever EmailJS is not configured (the default). The form works out
+        // of the box client-side with no env configuration required.
         await new Promise((resolve) => setTimeout(resolve, 1200))
         setStatus('success')
         setValues(INITIAL_VALUES)
@@ -121,7 +175,7 @@ export function useContactForm() {
         setStatus('error')
       }
     },
-    [isValid],
+    [isValid, values],
   )
 
   return {
