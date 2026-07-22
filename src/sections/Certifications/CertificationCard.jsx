@@ -9,7 +9,7 @@ import styles from './Certifications.module.css'
  * --------------------------------------------------------------------------
  * Presents a single professional certification: the issuing organization's
  * logo, the credential name, the issuing organization (as a Badge), the issue
- * date, and an outline "View credential" button that opens the credential URL
+ * date, and a primary "View credential" button that opens the credential URL
  * safely in a new tab. Purely presentational: it owns no state and uses no
  * hooks — the parent (Certifications) supplies the data — mirroring the
  * ServiceCard/ProjectCard colocated convention.
@@ -42,14 +42,14 @@ function CertificationCard({ cert }) {
         decoding="async"
       />
       <h3 className={styles.name}>{cert.name}</h3>
-      <Badge variant="soft">{cert.org}</Badge>
+      <Badge variant="outline">{cert.org}</Badge>
       <p className={styles.date}>{cert.date}</p>
       <Button
         as="a"
         href={cert.credentialUrl}
         target="_blank"
         rel="noopener noreferrer"
-        variant="outline"
+        variant="primary"
         size="sm"
         className={styles.action}
       >

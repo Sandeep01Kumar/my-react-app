@@ -111,7 +111,7 @@ The site ships with a light/dark theme toggle. The selected theme is persisted t
 
 The **Contact form works out of the box** with a client-side **simulated submit** — it validates every field and shows success/error states without requiring any backend or third-party account.
 
-To enable **real email delivery**, the form can be wired to [EmailJS](https://www.emailjs.com) through three **Vite** environment variables. Vite only exposes variables prefixed with `VITE_` to client-side code, so the following names are used:
+To enable **real email delivery**, the form can be wired to [EmailJS](https://www.emailjs.com). Note that this takes **more than setting environment variables**: the EmailJS SDK is intentionally not installed or bundled by default, so enabling delivery also requires installing the SDK and a small one-line code change (plus a rebuild) — the full walkthrough is under **Post-Merge Manual Steps** below. Delivery is configured through three **Vite** environment variables; Vite only exposes variables prefixed with `VITE_` to client-side code, so the following names are used:
 
 | Variable | Purpose |
 | --- | --- |
@@ -125,9 +125,9 @@ The repository ships an `.env.example` documenting these variables. Copy it to a
 cp .env.example .env.local
 ```
 
-The project's `.gitignore` already ignores `*.local`, so your credentials stay out of version control. When these variables are **absent**, `useContactForm` transparently falls back to the simulated submit — so the app never breaks whether or not EmailJS is configured.
+The project's `.gitignore` already ignores `*.local`, so your credentials stay out of version control. When these variables are **absent** (the default), `useContactForm` transparently falls back to the simulated submit — so the app never breaks. Setting the variables alone does **not** switch on real delivery until the SDK is installed and wired in (see **Post-Merge Manual Steps**); until then the form continues to use the simulated submit.
 
-> **Note:** No email dependency is bundled by default — installing the EmailJS browser SDK is an optional step documented under **Post-Merge Manual Steps** below.
+> **Note:** No email dependency is bundled by default. The `@vite-ignore` dynamic import in `useContactForm` is deliberately left unresolved so the build stays green while the SDK is absent — which also means a production build carries an unresolvable bare import until you both install the SDK **and** convert that import into a statically analyzable one. Installing and wiring in the EmailJS browser SDK is an optional step documented under **Post-Merge Manual Steps** below.
 
 ## 🎨 Customization
 
@@ -147,7 +147,13 @@ All display content is data-driven and lives in `src/data/*`, so the portfolio c
 
 Everything in this project builds and runs with placeholder content. After merging, complete these steps to swap in real content and (optionally) enable live email delivery:
 
-- [ ] **Enable EmailJS (optional).** Install the browser SDK with `npm install @emailjs/browser` (v4.x), create an EmailJS service and email template, then set `VITE_EMAILJS_SERVICE_ID`, `VITE_EMAILJS_TEMPLATE_ID`, and `VITE_EMAILJS_PUBLIC_KEY` in `.env.local` (copy from `.env.example`). Until these are configured, the Contact form keeps using the built-in simulated submit.
+- [ ] **Enable EmailJS (optional).** Real delivery is a multi-step change — environment variables alone are **not** enough:
+  1. Install the browser SDK: `npm install @emailjs/browser` (v4.x).
+  2. In `src/hooks/useContactForm.js`, convert the deferred `@vite-ignore` dynamic import in the real-send branch into a statically analyzable import (e.g. a top-level `import emailjs from '@emailjs/browser'`, or a plain `await import('@emailjs/browser')` without `@vite-ignore`) so Vite bundles the SDK into a resolvable chunk. The default deferred form keeps the build green while the package is absent, but leaves an unresolvable bare specifier in the output that the browser cannot load.
+  3. Create an EmailJS service and email template, then set `VITE_EMAILJS_SERVICE_ID`, `VITE_EMAILJS_TEMPLATE_ID`, and `VITE_EMAILJS_PUBLIC_KEY` in `.env.local` (copy from `.env.example`).
+  4. Rebuild with `npm run build`.
+
+  Until all of the above are done, the Contact form keeps using the built-in simulated submit.
 - [ ] **Resume.** Replace the `public/resume.pdf` placeholder with the real PDF — it backs the Hero, the Resume section, and the new Footer download link.
 - [ ] **Images.** Replace the placeholder SVGs under `src/assets/images/**` — certification/organization logos, testimonial photos, company logos, and project gallery images.
 - [ ] **URLs & content.** Update placeholder values with real ones: credential links in `src/data/certifications.js`, testimonial content in `src/data/testimonials.js`, statistics in `src/data/stats.js`, social/profile URLs in `src/data/socials.js`, and project GitHub / Live Demo URLs in `src/data/projects.js`. Once a real domain exists, update the canonical / OpenGraph / JSON-LD host in `index.html` (and `public/sitemap.xml` and `public/robots.txt`).

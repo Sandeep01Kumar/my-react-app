@@ -88,6 +88,12 @@ function ContactForm() {
             Please fix the highlighted fields and try again.
           </p>
         )}
+        {status === 'submitError' && (
+          <p className={styles.errorBanner} role="alert">
+            Something went wrong sending your message. Please try again in a
+            moment, or email me directly.
+          </p>
+        )}
 
         <Button
           className={styles.submit}

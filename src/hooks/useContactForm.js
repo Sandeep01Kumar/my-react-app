@@ -14,12 +14,25 @@ import { validateContactForm } from '@/utils'
  *
  * Submit delivery is env-guarded. When `VITE_EMAILJS_SERVICE_ID`,
  * `VITE_EMAILJS_TEMPLATE_ID`, and `VITE_EMAILJS_PUBLIC_KEY` are all set, the
- * submit sends the message via `@emailjs/browser`, loaded lazily through a
- * dynamic (`@vite-ignore`) import so the bundler never resolves it at build
- * time. When they are not all set (the default), the submit falls back to the
- * existing simulated client-side delay — so the form works out of the box with
- * no configuration. `@emailjs/browser` is an optional post-merge install and is
- * intentionally NOT a declared dependency (see `.env.example`).
+ * submit ATTEMPTS to send the message via `@emailjs/browser`, loaded lazily
+ * through a dynamic (`@vite-ignore`) import so the bundler never resolves it at
+ * build time. When they are not all set (the default), the submit falls back to
+ * the existing simulated client-side delay — so the form works out of the box
+ * with no configuration.
+ *
+ * IMPORTANT — activating real delivery is a multi-part change, NOT just env
+ * vars. `@emailjs/browser` is intentionally NOT a declared dependency (see
+ * `.env.example`), and the `@vite-ignore` dynamic import below is deliberately
+ * left unbundled so the build stays green while the package is absent. Because
+ * the bundler therefore never includes the SDK, a production build would carry
+ * an unresolved bare specifier the browser cannot load — so setting the three
+ * env vars ALONE does not enable delivery. To actually enable it you must:
+ * (1) `npm install @emailjs/browser` (v4.x); (2) convert the deferred
+ * `@vite-ignore` dynamic import below into a statically analyzable import — e.g.
+ * a top-level `import emailjs from '@emailjs/browser'`, or a plain
+ * `await import('@emailjs/browser')` WITHOUT `@vite-ignore` — so Vite bundles
+ * the SDK into a resolvable chunk; (3) set the three env vars and rebuild. See
+ * the README "Contact Form & EmailJS" section for the full walkthrough.
  *
  * Design notes (why it is shaped this way):
  * - `errors` and `isValid` are DERIVED from `values` with `useMemo`, never
@@ -42,14 +55,17 @@ import { validateContactForm } from '@/utils'
  * @returns {{
  *   values: { name: string, email: string, subject: string, message: string },
  *   errors: { name: string, email: string, subject: string, message: string },
- *   status: 'idle' | 'submitting' | 'success' | 'error',
+ *   status: 'idle' | 'submitting' | 'success' | 'error' | 'submitError',
  *   isValid: boolean,
  *   handleChange: (event: import('react').ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void,
  *   handleBlur: (event: import('react').FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => void,
  *   handleSubmit: (event: import('react').FormEvent<HTMLFormElement>) => Promise<void>,
  * }} The form model: current `values`, `touched`-gated `errors`, submit
  *   `status`, overall `isValid` flag (use it to disable the submit control),
- *   and the `handleChange` / `handleBlur` / `handleSubmit` handlers.
+ *   and the `handleChange` / `handleBlur` / `handleSubmit` handlers. The
+ *   `status` distinguishes a submit blocked by validation (`'error'`) from a
+ *   delivery failure of an otherwise-valid submission (`'submitError'`) so the
+ *   consumer can surface the correct message for each case.
  *
  * @example
  * const { values, errors, status, isValid, handleChange, handleBlur, handleSubmit } = useContactForm()
@@ -106,8 +122,11 @@ export function useContactForm() {
   const handleChange = useCallback((event) => {
     const { name, value } = event.target
     setValues((prev) => ({ ...prev, [name]: value }))
-    // Clear a prior success/error banner as soon as the user edits again.
-    setStatus((prev) => (prev === 'success' || prev === 'error' ? 'idle' : prev))
+    // Clear a prior success / validation-error / delivery-error banner as soon
+    // as the user edits again.
+    setStatus((prev) =>
+      prev === 'success' || prev === 'error' || prev === 'submitError' ? 'idle' : prev,
+    )
   }, [])
 
   const handleBlur = useCallback((event) => {
@@ -132,6 +151,11 @@ export function useContactForm() {
       // DYNAMIC import with `@vite-ignore` so the bundler never tries to resolve
       // the (intentionally uninstalled) `@emailjs/browser` package at build
       // time. This branch is inert by default because the env vars are empty.
+      // NOTE: because this import is intentionally left unbundled, setting the
+      // env vars alone is NOT sufficient to deliver mail — activation also
+      // requires installing `@emailjs/browser` and converting this deferred
+      // import into a statically analyzable one so Vite bundles the SDK (see the
+      // hook's header JSDoc and the README "Contact Form & EmailJS" section).
       if (isEmailJsConfigured) {
         try {
           // Hold the package name in a variable so BOTH Vite's dev
@@ -158,7 +182,10 @@ export function useContactForm() {
           setValues(INITIAL_VALUES)
           setTouched({})
         } catch {
-          setStatus('error')
+          // Delivery failed on an otherwise-valid submission — surface the
+          // distinct delivery-error state, NOT the validation `error` state,
+          // so the UI does not misleadingly tell the user to fix their fields.
+          setStatus('submitError')
         }
         return
       }
@@ -172,7 +199,9 @@ export function useContactForm() {
         setValues(INITIAL_VALUES)
         setTouched({})
       } catch {
-        setStatus('error')
+        // A failure of the simulated submit is a delivery failure, not a
+        // validation problem — use the distinct delivery-error state.
+        setStatus('submitError')
       }
     },
     [isValid, values],
