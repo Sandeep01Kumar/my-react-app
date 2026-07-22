@@ -1,5 +1,5 @@
 import Card from '@/components/ui/Card'
-import ProgressBar from '@/components/ui/ProgressBar'
+import CircularProgress from '@/components/ui/CircularProgress'
 import styles from './SkillCard.module.css'
 
 function SkillCard({ group }) {
@@ -9,11 +9,10 @@ function SkillCard({ group }) {
       <ul className={styles.list}>
         {group.skills.map((skill) => (
           <li key={skill.name}>
-            <ProgressBar
+            <CircularProgress
               value={skill.level}
               label={skill.name}
               showValue
-              animated
             />
           </li>
         ))}

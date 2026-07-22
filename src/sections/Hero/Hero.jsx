@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { hero, socials } from '@/data'
 import { useTypewriter } from '@/hooks/useTypewriter'
@@ -11,6 +12,20 @@ import styles from './Hero.module.css'
 function Hero() {
   const reduced = usePrefersReducedMotion()
   const typed = useTypewriter(hero.roles, { reduced })
+
+  const particleCount = hero.particles?.count ?? 18
+  const particles = useMemo(
+    () =>
+      Array.from({ length: particleCount }, (_, i) => ({
+        id: i,
+        left: `${(i * 100) / particleCount}%`,
+        top: `${(i * 61) % 100}%`,
+        drift: 16 + (i % 4) * 8,
+        duration: 8 + (i % 5) * 2,
+        delay: (i % 6) * 0.5,
+      })),
+    [particleCount],
+  )
 
   const copyMotion = reduced
     ? {}
@@ -50,7 +65,27 @@ function Hero() {
           animate={reduced ? undefined : { x: [0, -28, 0], y: [0, 26, 0], scale: [1, 1.12, 1] }}
           transition={reduced ? undefined : { duration: 16, repeat: Infinity, ease: 'easeInOut' }}
         />
+        {!reduced && (
+          <div className={styles.particles} aria-hidden="true">
+            {particles.map((particle) => (
+              <motion.span
+                key={particle.id}
+                className={styles.particle}
+                style={{ left: particle.left, top: particle.top }}
+                animate={{ y: [0, -particle.drift, 0] }}
+                transition={{
+                  duration: particle.duration,
+                  delay: particle.delay,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                }}
+              />
+            ))}
+          </div>
+        )}
       </div>
+
+      <SocialLinks items={socials} size="md" className={styles.rail} />
 
       <Container className={styles.grid}>
         <motion.div className={styles.copy} {...copyMotion}>

@@ -1,6 +1,7 @@
 import Container from '@/components/ui/Container'
 import SocialLinks from '@/components/ui/SocialLinks'
 import BackToTop from '@/components/ui/BackToTop'
+import Button from '@/components/ui/Button'
 import Logo from '@/components/layout/Logo'
 import { navLinks, siteMeta, socials } from '@/data'
 import { scrollToId } from '@/utils'
@@ -22,6 +23,9 @@ function Footer() {
             <Logo />
             <p className={styles.tagline}>{siteMeta.tagline}</p>
             <SocialLinks items={socials} />
+            <Button as="a" href={siteMeta.resumeUrl} download variant="outline" size="sm">
+              Download Resume
+            </Button>
           </div>
 
           <nav className={styles.column} aria-label="Footer">
