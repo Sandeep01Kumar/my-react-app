@@ -1,19 +1,26 @@
+import { motion, AnimatePresence } from 'framer-motion'
 import Modal from '@/components/ui/Modal'
 import Badge from '@/components/ui/Badge'
 import Button from '@/components/ui/Button'
-import { FaGithub, FaExternalLinkAlt, FaCheck } from 'react-icons/fa'
+import { useCarousel } from '@/hooks/useCarousel'
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
+import { FaGithub, FaExternalLinkAlt, FaCheck, FaChevronLeft, FaChevronRight } from 'react-icons/fa'
 import styles from './ProjectModal.module.css'
 
 /**
  * ProjectModal — co-located details-modal subcomponent for the Projects section.
  * --------------------------------------------------------------------------
  * Wraps the shared Modal primitive (components/ui/Modal) and renders the full
- * details of the currently selected project: hero image, description, tech
- * stack, key features, and the "View Code" / "Live Demo" actions. Purely
- * presentational — it owns no state, uses no hooks, and never imports
- * framer-motion. The Modal primitive alone supplies the overlay, the animated
- * open/close (AnimatePresence), the focus trap, ESC / overlay / close-button
- * dismissal, and body scroll-lock; this component only composes body content.
+ * details of the currently selected project: an image gallery carousel,
+ * description, tech stack, key features, and the "View Code" / "Live Demo"
+ * actions. The gallery is composed here from the `useCarousel` hook (active
+ * index + prev / next / goTo navigation, with autoplay OFF so a details dialog
+ * never auto-advances moving content) and `framer-motion`'s `AnimatePresence`,
+ * with the slide transition gated on `usePrefersReducedMotion` (the slide swaps
+ * instantly under reduced motion). The Modal primitive still owns the overlay,
+ * the animated open/close (its own AnimatePresence), the focus trap, ESC /
+ * overlay / close-button dismissal, and body scroll-lock; this component only
+ * composes body content.
  *
  * Composition follows the "always reuse primitives" rule (AAP §0.7.1): the tech
  * tags are Badge chips and both actions are Button (rendered as external <a>
@@ -36,11 +43,15 @@ import styles from './ProjectModal.module.css'
  * which is why no useRef / local content cache is needed.
  *
  * @param {object} props
- * @param {{ id: string, title: string, image: string, description: string,
- *   tech: string[], github: string, demo: string, features: string[] } | null}
+ * @param {{ id: string, title: string, image: string, gallery: string[],
+ *   description: string, tech: string[], github: string, demo: string,
+ *   features: string[] } | null}
  *   props.project The currently selected project record from `@/data`
  *   `projects`, or `null` while the modal is closed. `project.image` is an
- *   already-resolved asset URL rendered directly (no asset import happens here).
+ *   already-resolved asset URL; `project.gallery` is the ordered list of
+ *   already-resolved gallery image URLs shown in the carousel (`gallery[0]`
+ *   equals `image`, and it always has at least one entry). Both are rendered
+ *   directly (no asset import happens here).
  * @param {boolean} props.isOpen Whether the modal is open (the parent passes
  *   `selected !== null`).
  * @param {() => void} props.onClose Clears the selection and closes the modal
@@ -50,19 +61,100 @@ import styles from './ProjectModal.module.css'
  *   project's details (empty body while closed).
  */
 function ProjectModal({ project, isOpen, onClose }) {
+  const reduced = usePrefersReducedMotion()
+  // Gallery images: prefer the project's `gallery`, otherwise fall back to the
+  // single `image` so a project without a gallery still renders one slide. This
+  // is empty ONLY while the modal is closed (`project` is null), which is what
+  // lets the hooks below stay unconditional (Rules of Hooks) — `useCarousel` is
+  // a no-op at length 0 and returns `activeIndex: 0`.
+  const images = project?.gallery?.length
+    ? project.gallery
+    : project
+      ? [project.image]
+      : []
+  // Manual-only gallery: autoplay OFF so a details dialog never auto-advances
+  // moving content. `activeIndex` is already wrap-safe/in-range for any length,
+  // so no reset effect is needed when the selected project (and thus `length`)
+  // changes.
+  const { activeIndex, next, prev, goTo } = useCarousel({
+    length: images.length,
+    autoPlay: false,
+  })
+
+  // Slide transition props. Under reduced motion this is an empty object, so the
+  // slide swaps INSTANTLY (no fade) while still being tracked by AnimatePresence
+  // — mirroring the Modal primitive's own reduced-motion pattern.
+  const slideMotion = reduced
+    ? {}
+    : {
+        initial: { opacity: 0 },
+        animate: { opacity: 1 },
+        exit: { opacity: 0 },
+        transition: { duration: 0.3 },
+      }
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={project?.title ?? ''}>
       {project && (
         <div className={styles.content}>
-          <img
-            className={styles.image}
-            src={project.image}
-            alt={project.title}
-            width='640'
-            height='360'
-            loading='lazy'
-            decoding='async'
-          />
+          <div
+            className={styles.gallery}
+            role='group'
+            aria-roledescription='carousel'
+            aria-label={`${project.title} images`}
+          >
+            <div className={styles.viewport} aria-live='polite'>
+              <AnimatePresence mode='wait' initial={false}>
+                <motion.img
+                  key={activeIndex}
+                  className={styles.slide}
+                  src={images[activeIndex]}
+                  alt={`${project.title} — image ${activeIndex + 1} of ${images.length}`}
+                  width='640'
+                  height='360'
+                  loading='lazy'
+                  decoding='async'
+                  {...slideMotion}
+                />
+              </AnimatePresence>
+            </div>
+            {images.length > 1 && (
+              <div className={styles.galleryControls}>
+                <Button
+                  variant='outline'
+                  size='sm'
+                  className={styles.galleryButton}
+                  onClick={prev}
+                  aria-label='Previous image'
+                  icon={<FaChevronLeft />}
+                />
+                <div className={styles.dots}>
+                  {images.map((image, index) => (
+                    <button
+                      key={image}
+                      type='button'
+                      className={
+                        index === activeIndex
+                          ? `${styles.dot} ${styles.dotActive}`
+                          : styles.dot
+                      }
+                      onClick={() => goTo(index)}
+                      aria-label={`Go to image ${index + 1}`}
+                      aria-current={index === activeIndex}
+                    />
+                  ))}
+                </div>
+                <Button
+                  variant='outline'
+                  size='sm'
+                  className={styles.galleryButton}
+                  onClick={next}
+                  aria-label='Next image'
+                  icon={<FaChevronRight />}
+                />
+              </div>
+            )}
+          </div>
           <p className={styles.description}>{project.description}</p>
           <ul className={styles.tech}>
             {project.tech.map((tech) => (

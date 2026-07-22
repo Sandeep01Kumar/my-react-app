@@ -28,11 +28,14 @@ import styles from './ProjectCard.module.css'
  * "Code" and "Demo" actions are real external <a> links that navigate via href.
  *
  * @param {object} props
- * @param {{ id: string, title: string, image: string, description: string,
- *   tech: string[], github: string, demo: string, features: string[] }}
+ * @param {{ id: string, title: string, category: string, image: string,
+ *   description: string, tech: string[], github: string, demo: string,
+ *   features: string[] }}
  *   props.project A single project record from `@/data` `projects`.
  *   `project.image` is already a resolved/imported asset URL and is rendered
- *   directly (no asset import happens here).
+ *   directly (no asset import happens here). `project.category` renders as a
+ *   soft Badge above the title (guarded, so it is skipped when a project
+ *   omits it).
  * @param {() => void} props.onOpen Callback that opens the details modal for
  *   this project (the parent passes `() => setSelected(project)`).
  * @returns {import('react').ReactElement} The rendered project card.
@@ -52,6 +55,11 @@ function ProjectCard({ project, onOpen }) {
         />
       </div>
       <div className={styles.body}>
+        {project.category && (
+          <Badge variant='soft' className={styles.category}>
+            {project.category}
+          </Badge>
+        )}
         <h3 className={styles.title}>{project.title}</h3>
         <p className={styles.description}>{project.description}</p>
         <ul className={styles.tech}>
