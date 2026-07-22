@@ -61,13 +61,17 @@
   color: var(--color-heading);
 }
 
+/* Icon-only close control. Sized to the 44px minimum tap target
+   (--tap-target-min) so it is comfortably touch-accessible on every surface that
+   reuses the Modal primitive; inline-flex centering keeps the glyph centered at
+   the larger box, and flex-shrink: 0 stops the header row from squeezing it. */
 .close {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: var(--space-8);
-  height: var(--space-8);
+  width: var(--tap-target-min);
+  height: var(--tap-target-min);
   font-size: var(--text-xl);
   color: var(--color-text-muted);
   background: transparent;

@@ -14,6 +14,27 @@
  * `Object.values(errors).every((e) => !e)`.
  */
 
+/**
+ * Maximum accepted length (in characters) for each contact-form field.
+ *
+ * Single source of truth for the upper bounds enforced BOTH in the UI (as the
+ * native `maxLength` attribute on each input/textarea in
+ * `sections/Contact/ContactForm`) AND here in the validators, so an oversized
+ * value can never pass validation and reach the (future) send path — a paste or
+ * programmatic value that slips past the input attribute is still rejected,
+ * flipping the form's derived `isValid` to `false` and blocking submit.
+ *
+ * Bounds are pragmatic: `email` uses the RFC 5321 maximum address length (254);
+ * the rest are generous limits that comfortably fit legitimate input while
+ * capping abusive payloads.
+ */
+export const FIELD_MAX_LENGTHS = Object.freeze({
+  name: 100,
+  email: 254,
+  subject: 150,
+  message: 2000,
+})
+
 // Pragmatic, robust email shape: one-or-more non-space/non-`@` characters, an
 // `@`, a domain label, a literal dot, and a TLD. Kept module-private on
 // purpose — it is an implementation detail of `validateEmail`.
@@ -29,6 +50,8 @@ export function validateName(value) {
   const v = (value ?? '').trim()
   if (!v) return 'Please enter your name.'
   if (v.length < 2) return 'Name must be at least 2 characters.'
+  if (v.length > FIELD_MAX_LENGTHS.name)
+    return `Name must be at most ${FIELD_MAX_LENGTHS.name} characters.`
   return ''
 }
 
@@ -41,6 +64,8 @@ export function validateName(value) {
 export function validateEmail(value) {
   const v = (value ?? '').trim()
   if (!v) return 'Please enter your email address.'
+  if (v.length > FIELD_MAX_LENGTHS.email)
+    return `Email must be at most ${FIELD_MAX_LENGTHS.email} characters.`
   if (!EMAIL_REGEX.test(v)) return 'Please enter a valid email address.'
   return ''
 }
@@ -55,6 +80,8 @@ export function validateSubject(value) {
   const v = (value ?? '').trim()
   if (!v) return 'Please enter a subject.'
   if (v.length < 3) return 'Subject must be at least 3 characters.'
+  if (v.length > FIELD_MAX_LENGTHS.subject)
+    return `Subject must be at most ${FIELD_MAX_LENGTHS.subject} characters.`
   return ''
 }
 
@@ -68,6 +95,8 @@ export function validateMessage(value) {
   const v = (value ?? '').trim()
   if (!v) return 'Please enter a message.'
   if (v.length < 10) return 'Message must be at least 10 characters.'
+  if (v.length > FIELD_MAX_LENGTHS.message)
+    return `Message must be at most ${FIELD_MAX_LENGTHS.message} characters.`
   return ''
 }
 

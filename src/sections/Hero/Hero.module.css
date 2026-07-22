@@ -146,6 +146,19 @@
   border: 0;
 }
 
+/* Fixed floating social rail. Hidden by default and revealed only at the xl
+   breakpoint (>=1280px) in the media block below — NOT at lg (1024px). The rail
+   is viewport-fixed at left: var(--space-4) (~16px) and is ~44px wide, so it
+   occupies roughly x=16..60. The Hero copy lives inside the centered Container
+   (max-width var(--container-max) = 1120px, inline padding var(--space-6) = 24px
+   at >=768px). Below ~1224px the Container spans nearly the full viewport, so its
+   left content edge sits at ~24px and the fixed rail overlaps the greeting/name/
+   role copy. Only once the viewport exceeds the Container max does a side gutter
+   open up: at 1280px the side margin is (1280-1120)/2 = 80px, giving a ~44px
+   clear gap between the rail (ends ~60px) and the copy (starts ~104px). Revealing
+   the rail at 1280px therefore guarantees adequate lateral space at every width
+   where it is visible; below that the inline social row inside the copy still
+   provides the social links. */
 .rail {
   position: fixed;
   left: var(--space-4);
@@ -200,7 +213,14 @@
   .image {
     max-width: calc(var(--space-32) * 3);
   }
+}
 
+/* Reveal the fixed social rail only at the xl breakpoint (>=1280px), where the
+   viewport exceeds the Container max width and a side gutter guarantees the rail
+   no longer overlaps the Hero copy (see the .rail rule above for the geometry).
+   At lg (1024px) the copy still spans the full content width, so the rail stays
+   hidden and the inline social row remains the social affordance. */
+@media (min-width: 1280px) {
   .rail {
     display: inline-flex;
   }

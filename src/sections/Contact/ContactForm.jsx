@@ -1,4 +1,5 @@
 import { useContactForm } from '@/hooks/useContactForm'
+import { FIELD_MAX_LENGTHS } from '@/utils'
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
 import styles from './ContactForm.module.css'
@@ -40,6 +41,7 @@ function ContactForm() {
                 type={field.type}
                 autoComplete={field.autoComplete}
                 placeholder={field.placeholder}
+                maxLength={FIELD_MAX_LENGTHS[field.name]}
                 value={values[field.name]}
                 onChange={handleChange}
                 onBlur={handleBlur}
@@ -64,6 +66,7 @@ function ContactForm() {
             id="contact-message"
             name="message"
             rows={5}
+            maxLength={FIELD_MAX_LENGTHS.message}
             placeholder="Tell me about your project..."
             value={values.message}
             onChange={handleChange}

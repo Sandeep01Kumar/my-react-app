@@ -73,12 +73,16 @@ function ProjectModal({ project, isOpen, onClose }) {
       ? [project.image]
       : []
   // Manual-only gallery: autoplay OFF so a details dialog never auto-advances
-  // moving content. `activeIndex` is already wrap-safe/in-range for any length,
-  // so no reset effect is needed when the selected project (and thus `length`)
-  // changes.
+  // moving content. `resetKey` is the selected project's id, so switching to a
+  // different project — or closing (id -> undefined) and reopening the same one —
+  // snaps the gallery back to the first image instead of resuming the stale index
+  // left over from the previously viewed project. `useCarousel` applies this
+  // reset DURING RENDER (comparing the key to its previous value), so it needs no
+  // effect, and `activeIndex` also stays wrap-safe/in-range for any length.
   const { activeIndex, next, prev, goTo } = useCarousel({
     length: images.length,
     autoPlay: false,
+    resetKey: project?.id,
   })
 
   // Slide transition props. Under reduced motion this is an empty object, so the
@@ -131,7 +135,7 @@ function ProjectModal({ project, isOpen, onClose }) {
                 <div className={styles.dots}>
                   {images.map((image, index) => (
                     <button
-                      key={image}
+                      key={`${project.id}-${index}`}
                       type='button'
                       className={
                         index === activeIndex

@@ -1,14 +1,14 @@
 # Portfolio — Software QA Engineer & React Developer
 
-A modern, premium, fully responsive single-page portfolio built with **React 19** and **Vite**. It presents a professional's work through a sticky navigation bar, a hero with an animated typing effect, and content sections for about, skills (with animated progress bars), projects (with a details modal), an experience timeline, services, resume actions, and a validated contact form — all with light/dark theme support.
+A modern, premium, fully responsive single-page portfolio built with **React 19** and **Vite**. It presents a professional's work through a sticky navigation bar, a hero with an animated typing effect, and content sections for about, animated statistics, skills (with circular progress indicators), projects (with category filtering, search, and a details modal), an experience timeline, certifications, services, resume actions, testimonials, and a validated contact form — all with light/dark theme support.
 
 ## ✨ Features
 
 - **Sticky navigation** with smooth scrolling, active-section highlighting, and a mobile menu.
 - **Hero** with a large heading, animated typing effect, profile image, call-to-action buttons, and social links.
 - **About** section with a professional summary, career objective, education, experience, achievements, and statistics cards.
-- **Skills** grouped into Frontend, Backend basics, Testing, and Automation, presented with animated progress bars.
-- **Projects** as responsive cards (image, description, tech stack, GitHub & Live Demo buttons, features) that open an accessible details modal.
+- **Skills** grouped into Frontend, Backend basics, Testing, and Automation, presented with circular progress indicators.
+- **Projects** as responsive cards (image, description, tech stack, GitHub & Live Demo buttons, features) with category filtering and text search, each opening an accessible details modal with an image carousel.
 - **Experience timeline** covering education, QA experience, the React learning journey, and certifications.
 - **Services** grid highlighting the offerings (Website, React, Frontend, QA Testing, API Testing, Automation Support).
 - **Resume** actions to download and view the resume.
@@ -51,8 +51,15 @@ A modern, premium, fully responsive single-page portfolio built with **React 19*
 >
 > `react-icons` (`5.7.0`) and `@vitejs/plugin-react` (`6.0.3`) resolve to a
 > newer compatible release than the declared base — expected caret-range
-> behavior, verified free of known vulnerabilities via `npm audit` (0
-> vulnerabilities). Run `npm ci` to install these exact lockfile versions.
+> behavior. Run `npm ci` to install these exact lockfile versions.
+>
+> **Security audit.** Production dependencies are clean: `npm audit --omit=dev`
+> reports **0 vulnerabilities**. A full `npm audit` (which also scans dev-only
+> tooling) reports **1 high-severity advisory and 0 critical** — a transitive
+> **dev-only** dependency (`brace-expansion`, pulled in through the ESLint
+> toolchain). It is a build/lint-time dependency only: it is **not bundled into
+> the production build and never runs in the browser**, so it does not affect
+> shipped code. Maintainers may clear it at their discretion with `npm audit fix`.
 
 ## 📁 Project Structure
 
@@ -88,9 +95,15 @@ The `public/` folder holds the browser `favicon.svg` and a downloadable `resume.
 
 ### Install
 
+Install the exact, reproducible dependency versions from `package-lock.json`:
+
 ```bash
-npm install
+npm ci
 ```
+
+> Use `npm ci` for a clean, reproducible install that matches the lockfile
+> (`lockfileVersion 3`). Use `npm install` only when you intend to add, update,
+> or remove a dependency — it may modify `package-lock.json`.
 
 ## 📜 Scripts
 

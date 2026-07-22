@@ -41,6 +41,16 @@
   padding-block: var(--space-16);
 }
 
+/* Empty state shown when there are no testimonials (role="status" in the JSX):
+   centered, muted, and given the same top rhythm the carousel would occupy so
+   the section height stays consistent whether populated or empty. */
+.empty {
+  margin-top: var(--space-12);
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: var(--text-lg);
+}
+
 /* ==========================================================================
  * Carousel structure
  * ========================================================================== */
@@ -57,17 +67,23 @@
   margin-top: var(--space-12);
 }
 
-/* Slide clipping region (wraps the AnimatePresence; aria-live="polite" in the
-   JSX). overflow: hidden clips the horizontal slide translate during
-   transitions so only the active slide is visible. */
+/* Slide stacking region (aria-live in the JSX). Every slide is placed in the
+   SAME grid cell (see `.slide { grid-area: 1 / 1 }`) so all slides overlap
+   perfectly and the region always sizes to the TALLEST slide. Because the
+   height is fixed by the tallest testimonial, it never changes as slides
+   advance, so the controls below never shift (F-15: no moving targets).
+   overflow: hidden guards against any sub-pixel bleed during the crossfade. */
 .viewport {
   position: relative;
+  display: grid;
   overflow: hidden;
 }
 
-/* A single slide fills the viewport width so the horizontal enter/exit
-   transition reads as a full-width swap. */
+/* Every slide is stacked into the single grid cell and fills the viewport
+   width, so the crossfade reads as a full-width swap in place while the
+   shorter slides still reserve the tallest slide's height. */
 .slide {
+  grid-area: 1 / 1;
   width: 100%;
 }
 
@@ -140,12 +156,16 @@
  * ========================================================================== */
 
 /* Inner layout only: a centered vertical stack that fills the card height so
-   adjacent cards align. Surface styling (glass bg/border, radius, shadow,
-   padding) is owned by <Card variant="glass" padding="lg">. */
+   adjacent cards align. justify-content: center vertically centers shorter
+   testimonials within the tallest-slide height reserved by the grid stack
+   (F-15), so every slide reads as centered rather than top-aligned. Surface
+   styling (glass bg/border, radius, shadow, padding) is owned by
+   <Card variant="glass" padding="lg">. */
 .card {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   text-align: center;
   gap: var(--space-4);
   height: 100%;

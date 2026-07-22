@@ -9,11 +9,28 @@ import SocialLinks from '@/components/ui/SocialLinks'
 import { fadeInUp, viewportOnce, scrollToId } from '@/utils'
 import styles from './Hero.module.css'
 
+// Decorative particle-layer bounds (robustness). The particle count comes from
+// optional, user-editable data (`hero.particles.count`) and is fed straight into
+// `Array.from({ length })`, so it MUST resolve to a safe, finite, in-range
+// integer: a non-finite value (Infinity / NaN) would throw a RangeError, and a
+// very large finite value would allocate and animate thousands of nodes and
+// freeze the UI. These bounds keep the layer purely decorative and cheap.
+const DEFAULT_PARTICLE_COUNT = 18
+const MAX_PARTICLE_COUNT = 60
+
 function Hero() {
   const reduced = usePrefersReducedMotion()
   const typed = useTypewriter(hero.roles, { reduced })
 
-  const particleCount = hero.particles?.count ?? 18
+  // Coerce the optional configured count to a finite, non-negative integer and
+  // clamp it to the documented safe maximum BEFORE it ever reaches
+  // `Array.from({ length })`. Nullish / non-finite values fall back to the
+  // default; negatives clamp to 0 (no particles); oversized values clamp to the
+  // maximum — so malformed data can never throw or freeze the render.
+  const configuredParticleCount = hero.particles?.count
+  const particleCount = Number.isFinite(configuredParticleCount)
+    ? Math.min(Math.max(Math.floor(configuredParticleCount), 0), MAX_PARTICLE_COUNT)
+    : DEFAULT_PARTICLE_COUNT
   const particles = useMemo(
     () =>
       Array.from({ length: particleCount }, (_, i) => ({

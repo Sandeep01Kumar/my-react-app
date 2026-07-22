@@ -51,11 +51,14 @@
 }
 
 /* Ensures each category Button meets the 44px minimum tap target (WCAG 2.5.5)
-   on top of the Button primitive's own sizing. The active/inactive look is
-   handled by swapping the Button variant (primary vs outline) in the JSX, so no
-   separate active class is needed here. */
+   in BOTH dimensions on top of the Button primitive's own sizing: min-height
+   guarantees the vertical target and min-width guarantees the horizontal one, so
+   even the shortest label ("All", previously ~43.5px wide) is >= 44px. The
+   active/inactive look is handled by swapping the Button variant (primary vs
+   outline) in the JSX, so no separate active class is needed here. */
 .filterButton {
   min-height: var(--tap-target-min);
+  min-width: var(--tap-target-min);
 }
 
 /* Search field grows to fill the remaining bar width; drops to its own full

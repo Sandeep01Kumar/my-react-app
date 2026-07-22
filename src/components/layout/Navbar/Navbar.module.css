@@ -145,6 +145,15 @@
        unaffected; equal specificity (0,1,1) means this later rule wins only when
        the viewport is >=1024px. */
     font-size: var(--text-sm);
+    /* Grow each desktop link to the 44px minimum tap target
+       (--tap-target-min) WITHOUT affecting horizontal layout: inline-flex keeps
+       the links inline in the single row while align-items centers the label
+       vertically within the taller hit area. min-height (not height) lets the
+       row settle at 44px yet never clips the text. Width is unchanged, so the
+       11-link row still fits the 976px content area at 1024px. */
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap-target-min);
   }
 
   .hamburger {
