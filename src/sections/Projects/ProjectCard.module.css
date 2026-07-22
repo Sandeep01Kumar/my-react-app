@@ -145,3 +145,12 @@
   margin-top: auto;
   padding-top: var(--space-4);
 }
+
+/* Category chip rendered as the first child of .body (above the title). The
+   soft Badge is a <span> made a flex item by .body's column layout, so
+   align-self keeps it hugging its own content instead of stretching to the full
+   body width. Spacing above/below is handled by .body's existing gap token, so
+   no margin is needed here. */
+.category {
+  align-self: flex-start;
+}

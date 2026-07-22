@@ -1,0 +1,85 @@
+/**
+ * CircularProgress.module.css — SVG-ring progress primitive (CSS Module)
+ * --------------------------------------------------------------------------
+ * Fills the ONE genuine design-system gap identified in AAP §0.5.4: the system
+ * previously shipped only the LINEAR ProgressBar, so this module is the
+ * presentation layer for the new circular (radial) progress primitive consumed
+ * by SkillCard. Imported by ./CircularProgress.jsx as
+ * `import styles from './CircularProgress.module.css'`.
+ *
+ * SCOPE: This module contributes ONLY (a) the ring container layout and (b) the
+ * optional centered numeric value typography. The ring GEOMETRY — radius, the
+ * track/arc stroke-width, the stroke-dasharray/offset sweep, and the −90° start
+ * rotation — is supplied by the JSX as SVG presentation ATTRIBUTES (numeric,
+ * and thus outside the token system), NOT declared here. This mirrors how
+ * StatCard.module.css owns only inner typography while delegating the surface
+ * to the Card primitive: keep the module minimal like ProgressBar.module.css.
+ *
+ * SURFACE: This is a bare ring, NOT a Card — so background / border /
+ * border-radius / box-shadow are intentionally NOT declared. Re-declaring a
+ * surface here would duplicate the Card primitive and break the reuse rule.
+ *
+ * Token discipline: every value resolves to a var(--token) defined once in
+ * src/styles/variables.css (in scope globally via the :root / [data-theme]
+ * cascade, so this file does NOT @import it); there are no hardcoded design
+ * values. The track, arc, and value colors are SEMANTIC tokens
+ * (--color-border, --color-primary, --color-heading) — the first and third
+ * already carry [data-theme="dark"] overrides — so the component renders
+ * correctly in BOTH light and dark automatically with no per-theme rule here.
+ *
+ * Accessibility / motion: the global :focus-visible ring and the
+ * prefers-reduced-motion guard are inherited from src/styles/global.css, so
+ * there is no per-file focus or motion media query. The sweep animation is
+ * driven by framer-motion in the JSX (also reduced-motion aware there).
+ *
+ * Class names map 1:1 to the CSS Module keys consumed by CircularProgress.jsx:
+ *   .root · .svg · .track · .progress · .value
+ */
+
+/* Ring container — establishes the positioning context so the optional value
+   can be absolutely centered over the SVG, and centers the SVG itself. Sized
+   intrinsically by the inline SVG width/height set in the JSX. */
+.root {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* The SVG element carrying the <circle> track and the <motion.circle> arc.
+   `block` removes the inline-baseline gap so the ring sits flush in .root. */
+.svg {
+  display: block;
+}
+
+/* Track ring — the unfilled circle. Colored via the semantic border token,
+   which already has a [data-theme="dark"] override in variables.css so the
+   track lightens/darkens with the theme automatically. */
+.track {
+  stroke: var(--color-border);
+}
+
+/* Progress arc — the filled sweep drawn over the track. Primary brand color
+   (theme-independent royal blue) for maximum affordance in both themes. */
+.progress {
+  stroke: var(--color-primary);
+}
+
+/* Centered numeric value (rendered only when showValue is true). Absolutely
+   centered inside .root using the documented --position-center (50%) token for
+   top/left and the derived negative translate. tabular-nums matches
+   ProgressBar's .value so the digits do not jitter while the value animates. */
+.value {
+  position: absolute;
+  top: var(--position-center);
+  left: var(--position-center);
+  transform: translate(
+    calc(var(--position-center) * -1),
+    calc(var(--position-center) * -1)
+  );
+  font-family: var(--font-heading);
+  font-size: var(--text-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-heading);
+  font-variant-numeric: tabular-nums;
+}

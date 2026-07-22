@@ -16,6 +16,10 @@ A modern, premium, fully responsive single-page portfolio built with **React 19*
 - **Light/dark theme** toggle persisted to `localStorage` and seeded from the OS `prefers-color-scheme`.
 - **Accessible & SEO-friendly**: semantic landmarks, keyboard support, `aria-label`s, `alt` text, and contrast-checked colors.
 - **Performant**: route-level code splitting via `React.lazy` + `Suspense`, memoization, optimized images, and a small bundle.
+- **Statistics** section with animated count-up counters (projects completed, years of experience, technologies learned, and happy clients) that animate when scrolled into view and respect reduced-motion.
+- **Certifications** as a responsive grid of cards showing the certification name, issuing organization, issue date, and a "View credential" link.
+- **Testimonials** as an accessible, auto-sliding carousel with star ratings, photos, quotes, and role/company — pausing on hover/focus and disabled under reduced-motion.
+- **Enhanced sections**: the Hero adds a lightweight animated particle background and a floating social icon rail; Skills adds circular progress indicators; the Experience timeline now shows company logos, technology badges, and achievements; Projects adds category filtering, text search, and an image carousel in the details modal; the Footer adds a resume-download link; and the Contact form adds an optional, environment-variable-guarded EmailJS integration that falls back to the existing simulated submit when unconfigured.
 
 ## 🧰 Tech Stack
 
@@ -60,16 +64,17 @@ my-react-app/
 ├─ index.html              # HTML shell (title, meta, #root mount)
 ├─ vite.config.js          # Vite config (React plugin, @ → /src alias, build target)
 ├─ eslint.config.js        # Flat ESLint config (core + React Hooks + React Refresh)
+├─ .env.example            # EmailJS placeholder env vars (VITE_EMAILJS_*), copy to .env.local
 └─ src/
    ├─ main.jsx             # App bootstrap: createRoot + StrictMode, ThemeProvider, Router
    ├─ App.jsx              # Route table (/ → Home, * → NotFound) with lazy + Suspense
-   ├─ components/          # Reusable UI primitives (ui/) and the layout shell (layout/)
-   ├─ sections/            # Page sections: Hero, About, Skills, Projects, Experience, Services, Resume, Contact
+   ├─ components/          # Reusable UI primitives (ui/, incl. new CircularProgress) and the layout shell (layout/)
+   ├─ sections/            # Page sections: Hero, About, Statistics, Skills, Projects, Experience, Certifications, Services, Resume, Testimonials, Contact
    ├─ pages/               # Route pages: Home (composes all sections) and NotFound (404)
    ├─ assets/              # Images and static imports (profile & project placeholders)
-   ├─ hooks/               # Custom hooks: useTheme, useTypewriter, useActiveSection, useScrollToTop, useContactForm, useMediaQuery, usePrefersReducedMotion
+   ├─ hooks/               # Custom hooks: useTheme, useTypewriter, useActiveSection, useScrollToTop, useContactForm, useMediaQuery, usePrefersReducedMotion, useCountUp, useCarousel, useProjectFilter
    ├─ utils/               # Helpers: validators, scroll, constants, animations, and a barrel index
-   ├─ data/                # Content data modules: navLinks, hero, about, skills, projects, experience, services, socials, siteMeta
+   ├─ data/                # Content data modules: navLinks, hero, about, skills, projects, experience, services, socials, siteMeta, stats, certifications, testimonials
    └─ styles/              # Global design tokens (variables.css) and reset/base styles (global.css)
 ```
 
@@ -102,6 +107,28 @@ The following npm scripts are defined in `package.json`:
 
 The site ships with a light/dark theme toggle. The selected theme is persisted to `localStorage` and, on first visit, seeded from the operating system's `prefers-color-scheme` preference.
 
+## 📧 Contact Form & EmailJS (optional)
+
+The **Contact form works out of the box** with a client-side **simulated submit** — it validates every field and shows success/error states without requiring any backend or third-party account.
+
+To enable **real email delivery**, the form can be wired to [EmailJS](https://www.emailjs.com) through three **Vite** environment variables. Vite only exposes variables prefixed with `VITE_` to client-side code, so the following names are used:
+
+| Variable | Purpose |
+| --- | --- |
+| `VITE_EMAILJS_SERVICE_ID` | EmailJS service identifier. |
+| `VITE_EMAILJS_TEMPLATE_ID` | EmailJS email-template identifier. |
+| `VITE_EMAILJS_PUBLIC_KEY` | EmailJS public (publishable) key. |
+
+The repository ships an `.env.example` documenting these variables. Copy it to a git-ignored local env file and fill in your real values:
+
+```bash
+cp .env.example .env.local
+```
+
+The project's `.gitignore` already ignores `*.local`, so your credentials stay out of version control. When these variables are **absent**, `useContactForm` transparently falls back to the simulated submit — so the app never breaks whether or not EmailJS is configured.
+
+> **Note:** No email dependency is bundled by default — installing the EmailJS browser SDK is an optional step documented under **Post-Merge Manual Steps** below.
+
 ## 🎨 Customization
 
 All display content is data-driven and lives in `src/data/*`, so the portfolio can be tailored without touching component code. The following are **placeholders** intended to be replaced with real, user-supplied content:
@@ -111,3 +138,17 @@ All display content is data-driven and lives in `src/data/*`, so the portfolio c
 - **Google Maps** — the Contact section embeds a placeholder `<iframe>`; replace it with a real embed.
 - **Project & demo URLs** — the GitHub and Live Demo links in `src/data/projects.js` are placeholders; point them at real repositories and deployments.
 - **Biographical content** — summary text, education, experience, certifications, and social links in `src/data/*` are sample values pending real content.
+- **Statistics** — the counters in `src/data/stats.js` (projects completed, years of experience, technologies learned, and happy clients) are sample values.
+- **Certifications** — the entries in `src/data/certifications.js` (name, issuing organization, issue date, credential URL, and logo) are placeholders.
+- **Testimonials** — the entries in `src/data/testimonials.js` (name, role/company, photo, rating, and quote) are placeholders.
+- **Section images** — the placeholder SVGs under `src/assets/images/**` (certification/organization logos, testimonial photos, company logos, and project gallery images) should be replaced with real artwork.
+
+## ✅ Post-Merge Manual Steps
+
+Everything in this project builds and runs with placeholder content. After merging, complete these steps to swap in real content and (optionally) enable live email delivery:
+
+- [ ] **Enable EmailJS (optional).** Install the browser SDK with `npm install @emailjs/browser` (v4.x), create an EmailJS service and email template, then set `VITE_EMAILJS_SERVICE_ID`, `VITE_EMAILJS_TEMPLATE_ID`, and `VITE_EMAILJS_PUBLIC_KEY` in `.env.local` (copy from `.env.example`). Until these are configured, the Contact form keeps using the built-in simulated submit.
+- [ ] **Resume.** Replace the `public/resume.pdf` placeholder with the real PDF — it backs the Hero, the Resume section, and the new Footer download link.
+- [ ] **Images.** Replace the placeholder SVGs under `src/assets/images/**` — certification/organization logos, testimonial photos, company logos, and project gallery images.
+- [ ] **URLs & content.** Update placeholder values with real ones: credential links in `src/data/certifications.js`, testimonial content in `src/data/testimonials.js`, statistics in `src/data/stats.js`, social/profile URLs in `src/data/socials.js`, and project GitHub / Live Demo URLs in `src/data/projects.js`. Once a real domain exists, update the canonical / OpenGraph / JSON-LD host in `index.html` (and `public/sitemap.xml` and `public/robots.txt`).
+- [ ] **Verify.** Run `npm run lint`, `npm run build`, and `npm run dev` to confirm the project is still green.

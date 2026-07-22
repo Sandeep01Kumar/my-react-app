@@ -80,6 +80,51 @@
   line-height: var(--leading-normal);
 }
 
+/* Organization/company logo — a small contained square, shown only when the
+   entry provides a `logo`. Sized and rounded via tokens; object-fit keeps the
+   artwork's aspect ratio inside the box. */
+.logo {
+  width: var(--space-12);
+  height: var(--space-12);
+  border-radius: var(--radius-md);
+  object-fit: contain;
+}
+
+/* Wrap-friendly row of technology/tool Badges (rendered only when the entry
+   provides `tech`). Mirrors the Projects card tech row. */
+.tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+/* Vertical list of key achievements (rendered only when the entry provides
+   `achievements`). The list marker/padding reset comes from global.css. */
+.achievements {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* One achievement row: decorative check icon + text, top-aligned so text that
+   wraps to a second line stays under the text rather than under the icon. */
+.achievement {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+}
+
+/* Decorative check icon: never shrinks, nudged down to align with the first
+   line of text, and tinted with the success token to read as a positive mark. */
+.achievementIcon {
+  flex-shrink: 0;
+  margin-top: var(--space-1);
+  color: var(--color-success);
+}
+
 @media (min-width: 768px) {
   .item {
     width: var(--size-half);

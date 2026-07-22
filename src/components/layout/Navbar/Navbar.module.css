@@ -30,7 +30,14 @@
 .links {
   display: none;
   align-items: center;
-  gap: var(--space-6);
+  /* Desktop inline-row gap. Reduced from var(--space-6) (24px) to
+     var(--space-3) (12px) so the 11-entry desktop link row (grown from 8 after
+     the Statistics/Certifications/Testimonials sections were added) fits on a
+     single line at exactly 1024px alongside the logo + ThemeToggle. Paired with
+     the desktop-only `.links a` font-size reduction inside the @media block
+     below; the two together keep the row from wrapping or clipping the
+     ThemeToggle (reducing the gap alone was insufficient at var(--text-base)). */
+  gap: var(--space-3);
   list-style: none;
 }
 
@@ -114,18 +121,30 @@
 
 /* Desktop (>= lg / 1024px): reveal the inline nav links and hide the hamburger.
    The collapse point is deliberately the `lg` breakpoint (1024px), NOT `md`
-   (768px): the full desktop row (logo + all 8 links at gap var(--space-6) +
-   ThemeToggle + Container padding) needs ~842px on a single line, so revealing
-   it below 1024px forced the logo to wrap and pushed the ThemeToggle off-screen
-   (~19px horizontal overflow across the ~768-786px band). Collapsing to the
-   hamburger until 1024px guarantees no overflow and leaves comfortable headroom
-   (976px content area at 1024px), which also stays robust once the wider Inter
-   webfont loads. MUST stay in exact sync with the JS breakpoint in Navbar.jsx
-   (useMediaQuery `max-width: ${BREAKPOINTS.lg - 0.02}px` = 1023.98px, the
-   complement of this query) so a viewport is never both "mobile" and "desktop". */
+   (768px): the full desktop row (logo + the inline links + ThemeToggle +
+   Container padding) must fit on a single line, and revealing it below 1024px
+   forced the logo to wrap and pushed the ThemeToggle off-screen. With the link
+   row grown from 8 to 11 entries (Statistics/Certifications/Testimonials), the
+   `.links` gap above was reduced to var(--space-3) (12px) and the desktop link
+   font-size below to var(--text-sm) (14px) so all 11 links still fit within the
+   976px content area at 1024px (1024 - 2*var(--space-6) Container padding),
+   staying robust once the wider Inter webfont loads. MUST stay in exact sync with
+   the JS breakpoint in Navbar.jsx (useMediaQuery `max-width: ${BREAKPOINTS.lg -
+   0.02}px` = 1023.98px, the complement of this query) so a viewport is never both
+   "mobile" and "desktop". */
 @media (min-width: 1024px) {
   .links {
     display: flex;
+  }
+
+  .links a {
+    /* Desktop-only link font-size. Reduced to var(--text-sm) (14px) from the
+       base var(--text-base) (16px) so the 11-link inline row fits on one line at
+       1024px. Scoped to `.links a` (NOT `.mobileLinks a`) and to this >=1024px
+       media block, so the mobile-menu link size (base var(--text-base)) is
+       unaffected; equal specificity (0,1,1) means this later rule wins only when
+       the viewport is >=1024px. */
+    font-size: var(--text-sm);
   }
 
   .hamburger {
