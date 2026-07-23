@@ -42,7 +42,7 @@ function CertificationCard({ cert }) {
         decoding="async"
       />
       <h3 className={styles.name}>{cert.name}</h3>
-      <Badge variant="soft">{cert.org}</Badge>
+      <Badge variant="soft" className={styles.org}>{cert.org}</Badge>
       <p className={styles.date}>{cert.date}</p>
       <Button
         as="a"

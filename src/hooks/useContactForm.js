@@ -13,40 +13,37 @@ import { validateContactForm } from '@/utils'
  * activated — a submit is acknowledged HONESTLY as a local demo (never faked as
  * "sent").
  *
- * Submit delivery is env-guarded behind an EXPLICIT activation flag. Real
- * delivery is attempted ONLY when `VITE_EMAILJS_ENABLED` is exactly `"true"`
- * AND all three credentials (`VITE_EMAILJS_SERVICE_ID`,
- * `VITE_EMAILJS_TEMPLATE_ID`, `VITE_EMAILJS_PUBLIC_KEY`) are set. Setting the
- * credential vars ALONE never switches on delivery — the form stays in the safe
- * simulated "demo" mode — so the documented setup contract is literally true
- * and populating keys can never put the form into a broken/error state.
+ * Submit delivery is env-guarded by the EXACT-THREE credential contract
+ * (AAP §0.2.3, §0.6.2). Real delivery is attempted when — and only when — all
+ * three credentials (`VITE_EMAILJS_SERVICE_ID`, `VITE_EMAILJS_TEMPLATE_ID`,
+ * `VITE_EMAILJS_PUBLIC_KEY`) are set. There is no separate opt-in flag: the
+ * presence of all three credentials IS the activation switch. When any of them
+ * is missing (the default — no `.env` file ships), the form stays in the safe
+ * simulated "demo" mode.
  *
  * Behavior by configuration (see `.env.example` + README "Contact Form"):
- * - Default (flag unset / credentials absent) → DEMO: the submit is validated,
+ * - Default / partial (any credential absent) → DEMO: the submit is validated,
  *   a short delay is simulated, then the status is `'demo'` and the entered
  *   values are PRESERVED (never cleared). The UI states no message was sent.
- * - Credentials set but flag unset → DEMO (identical to above). Keys alone are
- *   inert by design.
- * - Flag `"true"` but credentials missing → controlled `'submitError'`: a
- *   partial/misconfigured activation is surfaced honestly rather than pretended.
- * - Flag `"true"` + all credentials + the post-merge SDK wiring → real send via
+ * - All three credentials set → the controlled real-send path is attempted via
  *   `@emailjs/browser`; on confirmed delivery the status is `'success'` and the
- *   form is reset.
+ *   form is reset. Because the SDK is intentionally absent until the post-merge
+ *   wiring (below), the attempt fails visibly and recoverably as `'submitError'`
+ *   rather than a false confirmation — never a blank page or infinite loading.
  *
  * IMPORTANT — activating real delivery is a multi-part change, NOT just env
  * vars. `@emailjs/browser` is intentionally NOT a declared dependency (see
  * `.env.example`), and the `@vite-ignore` dynamic import below is deliberately
  * left unbundled so the build stays green while the package is absent. Because
- * the bundler therefore never includes the SDK, even with the flag + credentials
- * a production build would carry an unresolved bare specifier the browser cannot
+ * the bundler therefore never includes the SDK, even with all three credentials
+ * a production build carries an unresolved bare specifier the browser cannot
  * load — surfaced here as the controlled `'submitError'`. To actually enable
  * delivery you must: (1) `npm install @emailjs/browser` (v4.x); (2) convert the
  * deferred `@vite-ignore` dynamic import below into a statically analyzable
  * import — e.g. a top-level `import emailjs from '@emailjs/browser'`, or a plain
  * `await import('@emailjs/browser')` WITHOUT `@vite-ignore` — so Vite bundles the
- * SDK into a resolvable chunk; (3) set `VITE_EMAILJS_ENABLED="true"` plus the
- * three credentials and rebuild. See the README "Contact Form" section for the
- * full walkthrough.
+ * SDK into a resolvable chunk; (3) set the three credentials and rebuild. See
+ * the README "Contact Form" section for the full walkthrough.
  *
  * Design notes (why it is shaped this way):
  * - `errors` and `isValid` are DERIVED from `values` with `useMemo`, never
@@ -110,24 +107,22 @@ const INITIAL_VALUES = { name: '', email: '', subject: '', message: '' }
 // literal buried in the handler.
 const SIMULATED_SUBMIT_DELAY_MS = 1200
 
-// EmailJS activation contract (AAP §0.6.2). Real delivery requires an EXPLICIT
-// opt-in flag AND all three credentials AND the post-merge SDK wiring. Reading
-// these at module scope keeps them out of every hook callback's dependency
-// array. `VITE_EMAILJS_ENABLED` must be exactly the string "true"; the
-// credential vars are EMPTY by default (no `.env` file / see `.env.example`).
-// Because activation is gated on the flag, setting the credentials alone leaves
-// the form in the safe simulated "demo" mode — it never attempts (and never
-// fails) a send, so the documented setup instructions can be followed without
-// ever entering a broken state.
-const EMAILJS_ENABLED = import.meta.env.VITE_EMAILJS_ENABLED === 'true'
+// EmailJS activation contract (AAP §0.2.3, §0.6.2) — the EXACT-THREE credential
+// contract. Real delivery is activated by the presence of ALL THREE credentials;
+// the credentials themselves ARE the switch, with no separate opt-in flag.
+// Reading these at module scope keeps them out of every hook callback's
+// dependency array. The credential vars are EMPTY by default (no `.env` file
+// ships / see `.env.example`), so out of the box `isEmailJsActivated` is false
+// and the form stays in the safe simulated "demo" mode. A partial configuration
+// (one or two credentials) is also treated as NOT activated, so it likewise
+// falls back to demo — never a broken state.
 const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID
 const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID
 const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY
-const hasEmailJsCredentials = Boolean(
+// Real delivery is attempted only when fully credentialed (all three present).
+const isEmailJsActivated = Boolean(
   EMAILJS_SERVICE_ID && EMAILJS_TEMPLATE_ID && EMAILJS_PUBLIC_KEY,
 )
-// Real delivery is attempted only when explicitly enabled AND fully credentialed.
-const isEmailJsActivated = EMAILJS_ENABLED && hasEmailJsCredentials
 
 export function useContactForm() {
   const [values, setValues] = useState(INITIAL_VALUES)
@@ -250,11 +245,12 @@ export function useContactForm() {
         }
       }
 
-      // Real delivery path — only when EmailJS is fully activated (explicit flag
-      // + all credentials). Credentials without the flag never reach here, so
-      // the "credentials alone stay in demo mode" contract holds (P4-F3). Uses a
-      // DYNAMIC import with `@vite-ignore` so the bundler never resolves the
-      // (intentionally uninstalled) `@emailjs/browser` package at build time.
+      // Real delivery path — attempted only when EmailJS is fully activated
+      // (all three credentials present, AAP §0.6.2). Uses a DYNAMIC import with
+      // `@vite-ignore` so the bundler never resolves the (intentionally
+      // uninstalled) `@emailjs/browser` package at build time; with the package
+      // absent the import throws and the catch below surfaces a controlled
+      // delivery error (`'submitError'`) rather than a false confirmation.
       if (isEmailJsActivated) {
         try {
           // Hold the package name in a variable so BOTH Vite's dev
@@ -291,19 +287,12 @@ export function useContactForm() {
         return
       }
 
-      // Partial/misconfigured activation — enabled but credentials missing — is
-      // surfaced as a controlled delivery error rather than pretending to send
-      // (P4-F3). No values are cleared.
-      if (EMAILJS_ENABLED && !hasEmailJsCredentials) {
-        isSubmittingRef.current = false
-        safeSetStatus('submitError')
-        return
-      }
-
-      // Demo / unconfigured path (default). Simulate a short async delay via a
-      // RETAINED timer (cleared on unmount, P4-F4), then TRUTHFULLY report a
-      // local demo — nothing was sent — and PRESERVE the user's input (never
-      // clear it) so the form makes no false "sent" claim (P4-F2 / P7-F1).
+      // Demo / unconfigured path (default — reached whenever the three
+      // credentials are not all present, including partial configuration).
+      // Simulate a short async delay via a RETAINED timer (cleared on unmount,
+      // P4-F4), then TRUTHFULLY report a local demo — nothing was sent — and
+      // PRESERVE the user's input (never clear it) so the form makes no false
+      // "sent" claim (P4-F2 / P7-F1).
       timeoutRef.current = setTimeout(() => {
         timeoutRef.current = null
         isSubmittingRef.current = false

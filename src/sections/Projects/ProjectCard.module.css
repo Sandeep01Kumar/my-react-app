@@ -16,7 +16,7 @@
  * Token discipline: every value resolves to a var(--token) from
  * src/styles/variables.css (app-wide zero-hardcoded-values rule); the only
  * non-token literals are structural (0, 100%, auto), the uniform image
- * aspect ratio (16 / 9), and the line-clamp count (3). Global element resets
+ * aspect ratio (16 / 10), and the line-clamp count (3). Global element resets
  * (img display/max-width, button/list resets, box-sizing) and the
  * prefers-reduced-motion guard live in src/styles/global.css and are
  * intentionally not repeated.
@@ -48,11 +48,21 @@
   background: var(--color-surface);
 }
 
-/* Uniform 16:9 framing so all placeholder images render at the same shape
-   without layout shift. */
+/* Uniform 16:10 framing so all placeholder images render at the same shape
+   without layout shift. The ratio matches the intrinsic size of the project
+   thumbnail SVGs (viewBox 0 0 640 400 = 16:10), so object-fit:cover neither
+   crops nor stretches them (QA ISSUE-06), and it agrees with the html
+   width/height attributes (640×400) on the <img> to prevent layout shift.
+   height:auto is REQUIRED: the <img>'s html height="400" attribute maps to a
+   presentational-hint height that, together with width:100%, would fix BOTH
+   box dimensions and cause aspect-ratio to be ignored (the box would render at
+   the raw 400px attribute height — a portrait 291×400 box, QA ISSUE-06).
+   height:auto (an author declaration, so it beats the presentational hint)
+   frees the height so aspect-ratio:16/10 governs the box shape from width. */
 .image {
   width: 100%;
-  aspect-ratio: 16 / 9;
+  height: auto;
+  aspect-ratio: 16 / 10;
   object-fit: cover;
 }
 

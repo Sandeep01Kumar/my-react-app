@@ -49,7 +49,7 @@ function ProjectCard({ project, onOpen }) {
           src={project.image}
           alt={project.title}
           width='640'
-          height='360'
+          height='400'
           loading='lazy'
           decoding='async'
         />

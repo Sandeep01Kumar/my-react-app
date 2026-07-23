@@ -29,9 +29,12 @@
 }
 
 /* Image gallery carousel (replaces the former single hero image). The viewport
-   is a stable 16:9 box so absolutely-positioned slides can cross-fade via the
+   is a stable 16:10 box so absolutely-positioned slides can cross-fade via the
    framer-motion AnimatePresence in ProjectModal.jsx with NO layout shift, and so
-   the box never collapses during the brief exit/enter gap. */
+   the box never collapses during the brief exit/enter gap. The 16:10 ratio
+   matches the intrinsic size of the gallery SVGs (viewBox 0 0 640 400) and the
+   Projects grid card thumbnail, so the same asset renders identically (no crop
+   or stretch) in the card and the modal (QA ISSUE-06). */
 .gallery {
   display: flex;
   flex-direction: column;
@@ -41,7 +44,7 @@
 .viewport {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 16 / 10;
   overflow: hidden;
   border-radius: var(--radius-lg);
   background: var(--color-surface);

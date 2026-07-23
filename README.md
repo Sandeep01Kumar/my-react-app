@@ -128,10 +128,11 @@ To enable **real email delivery**, the form can be wired to [EmailJS](https://ww
 
 | Variable | Purpose |
 | --- | --- |
-| `VITE_EMAILJS_ENABLED` | Master opt-in switch. Must be exactly `"true"` to attempt real delivery; any other value (including unset) keeps the safe demo mode. |
 | `VITE_EMAILJS_SERVICE_ID` | EmailJS service identifier. |
 | `VITE_EMAILJS_TEMPLATE_ID` | EmailJS email-template identifier. |
 | `VITE_EMAILJS_PUBLIC_KEY` | EmailJS public (publishable) key. |
+
+Setting **all three** of these is what activates real delivery — the credentials themselves are the switch, so there is **no separate on/off flag**.
 
 The repository ships an `.env.example` documenting these variables. Copy it to a git-ignored local env file and fill in your real values:
 
@@ -139,7 +140,7 @@ The repository ships an `.env.example` documenting these variables. Copy it to a
 cp .env.example .env.local
 ```
 
-The project's `.gitignore` already ignores `*.local`, so your credentials stay out of version control. When real delivery is **not activated** (the default), `useContactForm` runs a safe client-side **demo submit**: a valid message is validated and acknowledged honestly as a local demo, **no email is sent**, and your input is preserved (never cleared). Real delivery is gated behind an explicit `VITE_EMAILJS_ENABLED="true"` flag **in addition to** the three credentials, so **setting the credentials alone never switches on delivery and never puts the form into an error state** — it simply stays in demo mode. Turning the flag on also requires installing and wiring in the SDK (see **Post-Merge Manual Steps**); enabling the flag without completing those steps surfaces a controlled "couldn't send" message rather than a false confirmation.
+The project's `.gitignore` already ignores `*.local`, so your credentials stay out of version control. When real delivery is **not activated** (the default), `useContactForm` runs a safe client-side **demo submit**: a valid message is validated and acknowledged honestly as a local demo, **no email is sent**, and your input is preserved (never cleared). Real delivery is activated by the presence of **all three credentials** — a partial configuration (one or two set) stays in demo mode, so **setting only some keys never switches on delivery and never puts the form into an error state**. Activating delivery also requires installing and wiring in the SDK (see **Post-Merge Manual Steps**); once all three credentials are set but the SDK has not yet been wired in, a submit surfaces a controlled "couldn't send" message rather than a false confirmation.
 
 > **Note:** No email dependency is bundled by default. The `@vite-ignore` dynamic import in `useContactForm` is deliberately left unresolved so the build stays green while the SDK is absent — which also means a production build carries an unresolvable bare import until you both install the SDK **and** convert that import into a statically analyzable one. Installing and wiring in the EmailJS browser SDK is an optional step documented under **Post-Merge Manual Steps** below.
 
@@ -164,11 +165,10 @@ Everything in this project builds and runs with placeholder content. After mergi
 - [ ] **Enable EmailJS (optional).** Real delivery is a multi-step change — environment variables alone are **not** enough:
   1. Install the browser SDK: `npm install @emailjs/browser` (v4.x).
   2. In `src/hooks/useContactForm.js`, convert the deferred `@vite-ignore` dynamic import in the real-send branch into a statically analyzable import (e.g. a top-level `import emailjs from '@emailjs/browser'`, or a plain `await import('@emailjs/browser')` without `@vite-ignore`) so Vite bundles the SDK into a resolvable chunk. The default deferred form keeps the build green while the package is absent, but leaves an unresolvable bare specifier in the output that the browser cannot load.
-  3. Create an EmailJS service and email template, then set `VITE_EMAILJS_SERVICE_ID`, `VITE_EMAILJS_TEMPLATE_ID`, and `VITE_EMAILJS_PUBLIC_KEY` in `.env.local` (copy from `.env.example`).
-  4. Flip the master switch: set `VITE_EMAILJS_ENABLED="true"` in `.env.local`. (Until this flag is `"true"`, the credentials stay inert and the form remains in demo mode.)
-  5. Rebuild with `npm run build`.
+  3. Create an EmailJS service and email template, then set all three of `VITE_EMAILJS_SERVICE_ID`, `VITE_EMAILJS_TEMPLATE_ID`, and `VITE_EMAILJS_PUBLIC_KEY` in `.env.local` (copy from `.env.example`). Setting all three is what activates delivery — there is no separate flag.
+  4. Rebuild with `npm run build`.
 
-  Until all of the above are done, the Contact form stays in its built-in demo mode (a valid submit is acknowledged honestly as a local demo and no email is sent). If you flip `VITE_EMAILJS_ENABLED="true"` before finishing the credential/SDK steps, the form surfaces a controlled "couldn't send" message rather than a false confirmation.
+  Until all of the above are done, the Contact form stays in its built-in demo mode (a valid submit is acknowledged honestly as a local demo and no email is sent). If you set all three credentials before finishing the SDK wiring step, the form surfaces a controlled "couldn't send" message rather than a false confirmation.
 - [ ] **Resume.** Replace the `public/resume.pdf` placeholder with the real PDF — it backs the Hero, the Resume section, and the new Footer download link.
 - [ ] **Images.** Replace the placeholder SVGs under `src/assets/images/**` — certification/organization logos, testimonial photos, company logos, and project gallery images.
 - [ ] **URLs & content.** Update placeholder values with real ones: credential links in `src/data/certifications.js`, testimonial content in `src/data/testimonials.js`, statistics in `src/data/stats.js`, social/profile URLs in `src/data/socials.js`, and project GitHub / Live Demo URLs in `src/data/projects.js`. Once a real domain exists, update the canonical / OpenGraph / JSON-LD host in `index.html` (and `public/sitemap.xml` and `public/robots.txt`).

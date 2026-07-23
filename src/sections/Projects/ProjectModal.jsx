@@ -118,7 +118,7 @@ function ProjectModal({ project, isOpen, onClose }) {
                   src={images[activeIndex]}
                   alt={`${project.title} — image ${activeIndex + 1} of ${images.length}`}
                   width='640'
-                  height='360'
+                  height='400'
                   loading='lazy'
                   decoding='async'
                   {...slideMotion}

@@ -43,7 +43,12 @@ import styles from './Projects.module.css'
  *
  * Motion: scroll-reveal (and its `prefers-reduced-motion` guard) is delegated
  * entirely to the Reveal primitive, so this component imports no framer-motion
- * and contains no manual animation code.
+ * and contains no manual animation code. The grid passes `amount='some'` to
+ * Reveal: on mobile the single-column grid is several thousand pixels tall, so
+ * Reveal's default ~20% in-view threshold can never be satisfied at once and
+ * would leave the grid stuck at `opacity:0`; `'some'` fires the reveal the moment
+ * the grid's top edge scrolls into view, reliably on any viewport height
+ * (ISSUE-03).
  *
  * Modal lifecycle: `selected` is `null` while the modal is closed and holds the
  * chosen project record while open. A card's "Details" trigger calls
@@ -109,7 +114,7 @@ function Projects() {
             No projects match your filters.
           </p>
         ) : (
-          <Reveal as='ul' className={styles.grid}>
+          <Reveal as='ul' className={styles.grid} amount='some'>
             {filteredProjects.map((project) => (
               <li key={project.id} className={styles.gridItem}>
                 <ProjectCard project={project} onOpen={() => setSelected(project)} />

@@ -26,13 +26,18 @@
 
 .grid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-6);
   margin-top: var(--space-12);
 }
 
+/* min-width:0 lets a grid item shrink below its content's min-content width, so
+   an unusually long unbroken organization string wraps INSIDE the card instead
+   of stretching its column and unbalancing the row (QA ISSUE-09). Paired with
+   the minmax(0, 1fr) tracks below, which also permit tracks to shrink. */
 .item {
   display: flex;
+  min-width: 0;
 }
 
 /* Card inner layout: full-height vertical stack, left-aligned, token gap so all
@@ -72,6 +77,16 @@
   overflow-wrap: anywhere;
 }
 
+/* Issuing organization (soft Badge). The base Badge pill is `white-space:nowrap`,
+   which would force an unusually long unbroken org string to stretch its grid
+   column (QA ISSUE-09). Scoped here (not on the shared Badge) so only the cert
+   org wraps: cap at the card width and allow the label to break mid-token. */
+.org {
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
 /* Issue date — muted supporting text. */
 .date {
   margin: 0;
@@ -92,12 +107,12 @@
   }
 
   .grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (min-width: 1024px) {
   .grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
