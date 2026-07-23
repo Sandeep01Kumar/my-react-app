@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="AWS Certified Cloud Practitioner certification logo placeholder">
+  <title>AWS Certified Cloud Practitioner certification logo placeholder</title>
+  <defs>
+    <linearGradient id="certAwsBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2563EB"/>
+      <stop offset="1" stop-color="#0A1A3F"/>
+    </linearGradient>
+  </defs>
+  <rect width="200" height="200" rx="24" fill="url(#certAwsBg)"/>
+  <circle cx="100" cy="100" r="64" fill="#FFFFFF" fill-opacity="0.10" stroke="#FFFFFF" stroke-opacity="0.30" stroke-width="2"/>
+  <text x="100" y="118" text-anchor="middle" font-family="Poppins, Inter, system-ui, sans-serif" font-size="56" font-weight="700" fill="#FFFFFF">AWS</text>
+</svg>

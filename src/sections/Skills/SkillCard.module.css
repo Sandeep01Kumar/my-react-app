@@ -3,11 +3,12 @@
  * --------------------------------------------------------------------------
  * The card SURFACE (glass background, border, radius, shadow, padding) is
  * supplied by the reusable Card primitive (variant="glass"). This module adds
- * ONLY the internal flex layout — a category title above a vertical list of
- * ProgressBars — plus a subtle hover lift. Every declared value resolves to a
- * design token from src/styles/variables.css (app-wide zero-hardcoded-values
- * rule); list-style, list padding/margin and section scroll-margin-top are
- * handled globally in styles/global.css and are intentionally not repeated.
+ * ONLY the internal flex layout — a category title above a wrapping row of
+ * CircularProgress dials — plus a subtle hover lift on the card and on each
+ * dial. Every declared value resolves to a design token from
+ * src/styles/variables.css (app-wide zero-hardcoded-values rule); list-style,
+ * list padding/margin and section scroll-margin-top are handled globally in
+ * styles/global.css and are intentionally not repeated.
  */
 
 .card {
@@ -33,12 +34,46 @@
 
 .list {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-6);
+}
+
+.list li {
+  transition: transform var(--transition-base) var(--ease);
+}
+
+.list li:hover {
+  transform: translateY(var(--lift-hover));
+}
+
+/* Each item stacks its CircularProgress dial above the visible skill name and
+   centers both. The hover lift is declared on `.list li` above and still
+   applies to this same element. */
+.skill {
+  display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* Visible skill name beneath the dial (P4-F1). The body-text token keeps the
+   label at >=4.5:1 contrast in both light and dark; centered under the dial and
+   allowed to wrap for longer names so the wrapping card layout is preserved. */
+.skillName {
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--leading-normal);
+  color: var(--color-text);
+  text-align: center;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .card:hover {
+    transform: none;
+  }
+
+  .list li:hover {
     transform: none;
   }
 }

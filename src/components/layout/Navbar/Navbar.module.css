@@ -21,7 +21,31 @@
   align-items: center;
   justify-content: space-between;
   height: var(--nav-height);
-  gap: var(--space-4);
+  /* Minimum gutter between the three nav groups (brand / links / actions).
+     Reduced from var(--space-4) (16px) to var(--space-2) (8px) to recover the
+     tokenized width the desktop row needs at exactly 1024px: with a classic
+     15px scrollbar the client area is ~1009px (961px content) and the 11-link
+     row + brand + toggle measured 968px — a 7px deficit that previously forced
+     the (now non-shrinking) brand to wrap (P8-F2). Reclaiming 16px here leaves a
+     ~9px margin even with a classic scrollbar. This only affects the tight
+     ~1024px band: at mobile and wider desktop widths `justify-content:
+     space-between` distributes ample free space, so the smaller minimum gutter
+     is not visible. */
+  gap: var(--space-2);
+}
+
+/* Keep the brand from compressing in the flex row. The Logo is the only direct
+   <a> child of .nav (the links live inside .links <ul> and the controls inside
+   .actions <div>), so `.nav > a` uniquely targets it. At exactly 1024px a
+   classic scrollbar leaves ~1009px of client width, and the previously
+   flex-shrinkable brand contracted until "John Doe" wrapped onto a second line
+   despite the one-line layout (P8-F2). flex-shrink:0 holds the brand's intrinsic
+   width and white-space:nowrap — inherited by the inner .name span — keeps the
+   name on a single line. The brand's natural width is unchanged, so the desktop
+   link row still fits the content area at 1024px. */
+.nav > a {
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 /* Mobile-first: the inline nav links are hidden by default and progressively
@@ -30,7 +54,14 @@
 .links {
   display: none;
   align-items: center;
-  gap: var(--space-6);
+  /* Desktop inline-row gap. Reduced from var(--space-6) (24px) to
+     var(--space-3) (12px) so the 11-entry desktop link row (grown from 8 after
+     the Statistics/Certifications/Testimonials sections were added) fits on a
+     single line at exactly 1024px alongside the logo + ThemeToggle. Paired with
+     the desktop-only `.links a` font-size reduction inside the @media block
+     below; the two together keep the row from wrapping or clipping the
+     ThemeToggle (reducing the gap alone was insufficient at var(--text-base)). */
+  gap: var(--space-3);
   list-style: none;
 }
 
@@ -89,7 +120,18 @@
   top: var(--nav-height);
   left: 0;
   right: 0;
-  overflow: hidden;
+  /* Cap the dropdown to the space between the sticky navbar and the bottom of
+     the viewport, then scroll internally. Without this the 11-link menu measured
+     693px tall at 320x568 and pushed the lower links (Contact) ~197px below the
+     fold where they were unreachable (P8-F1). --viewport-height-small uses svh
+     so mobile browser chrome never clips the menu (the same rationale that token
+     documents for the Hero); subtracting --nav-height leaves exactly the visible
+     area beneath the header. overflow-y:auto replaces the previous
+     overflow:hidden so the capped menu scrolls to every link — the 44px tap
+     targets (.mobileLinks a) and the reduced-motion gating (Navbar.jsx
+     menuMotion) are preserved unchanged. */
+  max-height: calc(var(--viewport-height-small) - var(--nav-height));
+  overflow-y: auto;
   background: var(--color-surface);
   border-bottom: var(--border-width-hairline) solid var(--glass-border, var(--color-border));
   box-shadow: var(--shadow-lg);
@@ -114,18 +156,39 @@
 
 /* Desktop (>= lg / 1024px): reveal the inline nav links and hide the hamburger.
    The collapse point is deliberately the `lg` breakpoint (1024px), NOT `md`
-   (768px): the full desktop row (logo + all 8 links at gap var(--space-6) +
-   ThemeToggle + Container padding) needs ~842px on a single line, so revealing
-   it below 1024px forced the logo to wrap and pushed the ThemeToggle off-screen
-   (~19px horizontal overflow across the ~768-786px band). Collapsing to the
-   hamburger until 1024px guarantees no overflow and leaves comfortable headroom
-   (976px content area at 1024px), which also stays robust once the wider Inter
-   webfont loads. MUST stay in exact sync with the JS breakpoint in Navbar.jsx
-   (useMediaQuery `max-width: ${BREAKPOINTS.lg - 0.02}px` = 1023.98px, the
-   complement of this query) so a viewport is never both "mobile" and "desktop". */
+   (768px): the full desktop row (logo + the inline links + ThemeToggle +
+   Container padding) must fit on a single line, and revealing it below 1024px
+   forced the logo to wrap and pushed the ThemeToggle off-screen. With the link
+   row grown from 8 to 11 entries (Statistics/Certifications/Testimonials), the
+   `.links` gap above was reduced to var(--space-3) (12px) and the desktop link
+   font-size below to var(--text-sm) (14px) so all 11 links still fit within the
+   976px content area at 1024px (1024 - 2*var(--space-6) Container padding),
+   staying robust once the wider Inter webfont loads. MUST stay in exact sync with
+   the JS breakpoint in Navbar.jsx (useMediaQuery `max-width: ${BREAKPOINTS.lg -
+   0.02}px` = 1023.98px, the complement of this query) so a viewport is never both
+   "mobile" and "desktop". */
 @media (min-width: 1024px) {
   .links {
     display: flex;
+  }
+
+  .links a {
+    /* Desktop-only link font-size. Reduced to var(--text-sm) (14px) from the
+       base var(--text-base) (16px) so the 11-link inline row fits on one line at
+       1024px. Scoped to `.links a` (NOT `.mobileLinks a`) and to this >=1024px
+       media block, so the mobile-menu link size (base var(--text-base)) is
+       unaffected; equal specificity (0,1,1) means this later rule wins only when
+       the viewport is >=1024px. */
+    font-size: var(--text-sm);
+    /* Grow each desktop link to the 44px minimum tap target
+       (--tap-target-min) WITHOUT affecting horizontal layout: inline-flex keeps
+       the links inline in the single row while align-items centers the label
+       vertically within the taller hit area. min-height (not height) lets the
+       row settle at 44px yet never clips the text. Width is unchanged, so the
+       11-link row still fits the 976px content area at 1024px. */
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap-target-min);
   }
 
   .hamburger {

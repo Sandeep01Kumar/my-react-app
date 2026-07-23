@@ -1,0 +1,31 @@
+.statistics {
+  padding-block: var(--space-16);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-6);
+  margin-top: var(--space-12);
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 768px) {
+  .statistics {
+    padding-block: var(--space-24);
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

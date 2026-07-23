@@ -87,6 +87,37 @@
     />
 
     <!-- ================================================================
+         Structured data (JSON-LD) — schema.org "Person".
+         Additive SEO enhancement (AAP §0.6.1/§0.6.2): lets search engines
+         build a rich person/knowledge-panel identity for the portfolio.
+         These values MIRROR src/data/siteMeta.js (name, role→jobTitle,
+         description, email) and src/data/socials.js (sameAs profile URLs)
+         and MUST be kept in sync BY HAND — a static <head> cannot import JS
+         modules. URLs are RFC-2606 placeholders pending real user-supplied
+         content (post-merge manual step).
+         NOTE: inside a <script> element the literal "&" is NOT an HTML
+         entity, so write "Software QA Engineer & React Developer" with a
+         PLAIN ampersand here (do NOT write &amp; — that would corrupt the
+         JSON string, unlike the <title>/<meta> tags above).
+         ================================================================ -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "John Doe",
+        "jobTitle": "Software QA Engineer & React Developer",
+        "description": "Software QA Engineer & React Developer building tested, accessible, and high-quality web applications.",
+        "url": "https://johndoe.example.com/",
+        "email": "mailto:john.doe@example.com",
+        "sameAs": [
+          "https://github.com/johndoe",
+          "https://www.linkedin.com/in/johndoe",
+          "https://twitter.com/johndoe"
+        ]
+      }
+    </script>
+
+    <!-- ================================================================
          Web fonts — Google Fonts.
          Inter  -> --font-sans, Poppins -> --font-heading; the family names
          MUST match src/styles/variables.css verbatim or the loaded faces

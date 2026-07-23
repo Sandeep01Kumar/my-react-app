@@ -81,6 +81,30 @@ function Navbar() {
     return () => document.removeEventListener('keydown', handleKeyDown)
   }, [mobileMenuOpen])
 
+  // Lock body scroll while the mobile menu is open, mirroring the reusable
+  // `components/ui/Modal` dialog (which locks the same way while open). This
+  // (a) is the standard overlay/disclosure behavior — the page behind a
+  // full-width open mobile menu should not scroll — and (b) provides the single
+  // app-wide "a blocking overlay is open" signal (`body { overflow: hidden }`)
+  // that `useBodyScrollLocked` reads so the floating BackToTop control hides
+  // while the menu is open. Without this, BackToTop (`--z-backtotop`, 200)
+  // floats above the menu (which sits at `--z-nav`, 100), creating a conflicting
+  // control layered over the transient menu (see QA ISSUE-08). The prior
+  // overflow value is captured and restored on cleanup, so nested locks (e.g. a
+  // Modal opened elsewhere) compose correctly and the lock is always released
+  // when the menu closes or the viewport returns to desktop — both flip
+  // `mobileMenuOpen` to false, re-running this cleanup.
+  useEffect(() => {
+    if (!mobileMenuOpen) return
+
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+
+    return () => {
+      document.body.style.overflow = previousOverflow
+    }
+  }, [mobileMenuOpen])
+
   const handleNavClick = (event, id) => {
     event.preventDefault()
     scrollToId(id)

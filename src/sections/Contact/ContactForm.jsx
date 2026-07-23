@@ -1,4 +1,5 @@
 import { useContactForm } from '@/hooks/useContactForm'
+import { FIELD_MAX_LENGTHS } from '@/utils'
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
 import styles from './ContactForm.module.css'
@@ -40,9 +41,13 @@ function ContactForm() {
                 type={field.type}
                 autoComplete={field.autoComplete}
                 placeholder={field.placeholder}
+                maxLength={FIELD_MAX_LENGTHS[field.name]}
                 value={values[field.name]}
                 onChange={handleChange}
                 onBlur={handleBlur}
+                /* Lock fields while a submit is in flight so an edit made during
+                   submission cannot be lost when the form resets (P7-F1). */
+                disabled={isSubmitting}
                 aria-invalid={hasError || undefined}
                 aria-describedby={hasError ? errorId : undefined}
               />
@@ -64,10 +69,12 @@ function ContactForm() {
             id="contact-message"
             name="message"
             rows={5}
+            maxLength={FIELD_MAX_LENGTHS.message}
             placeholder="Tell me about your project..."
             value={values.message}
             onChange={handleChange}
             onBlur={handleBlur}
+            disabled={isSubmitting}
             aria-invalid={Boolean(errors.message) || undefined}
             aria-describedby={errors.message ? 'contact-message-error' : undefined}
           />
@@ -83,9 +90,22 @@ function ContactForm() {
             Thanks for reaching out. Your message has been sent and I will reply soon.
           </p>
         )}
+        {status === 'demo' && (
+          <p className={styles.info} role="status">
+            Demo mode: email delivery isn&apos;t configured, so your message was
+            not sent. Your details are preserved below — please reach me directly
+            using the contact details on this page.
+          </p>
+        )}
         {status === 'error' && (
           <p className={styles.errorBanner} role="alert">
             Please fix the highlighted fields and try again.
+          </p>
+        )}
+        {status === 'submitError' && (
+          <p className={styles.errorBanner} role="alert">
+            Something went wrong sending your message. Please try again in a
+            moment, or email me directly.
           </p>
         )}
 

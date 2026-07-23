@@ -16,7 +16,7 @@
  * Token discipline: every value resolves to a var(--token) from
  * src/styles/variables.css (app-wide zero-hardcoded-values rule); the only
  * non-token literals are structural (0, 100%, auto), the uniform image
- * aspect ratio (16 / 9), and the line-clamp count (3). Global element resets
+ * aspect ratio (16 / 10), and the line-clamp count (3). Global element resets
  * (img display/max-width, button/list resets, box-sizing) and the
  * prefers-reduced-motion guard live in src/styles/global.css and are
  * intentionally not repeated.
@@ -48,11 +48,21 @@
   background: var(--color-surface);
 }
 
-/* Uniform 16:9 framing so all placeholder images render at the same shape
-   without layout shift. */
+/* Uniform 16:10 framing so all placeholder images render at the same shape
+   without layout shift. The ratio matches the intrinsic size of the project
+   thumbnail SVGs (viewBox 0 0 640 400 = 16:10), so object-fit:cover neither
+   crops nor stretches them (QA ISSUE-06), and it agrees with the html
+   width/height attributes (640×400) on the <img> to prevent layout shift.
+   height:auto is REQUIRED: the <img>'s html height="400" attribute maps to a
+   presentational-hint height that, together with width:100%, would fix BOTH
+   box dimensions and cause aspect-ratio to be ignored (the box would render at
+   the raw 400px attribute height — a portrait 291×400 box, QA ISSUE-06).
+   height:auto (an author declaration, so it beats the presentational hint)
+   frees the height so aspect-ratio:16/10 governs the box shape from width. */
 .image {
   width: 100%;
-  aspect-ratio: 16 / 9;
+  height: auto;
+  aspect-ratio: 16 / 10;
   object-fit: cover;
 }
 
@@ -144,4 +154,24 @@
   gap: var(--space-2);
   margin-top: auto;
   padding-top: var(--space-4);
+}
+
+/* Category chip rendered as the first child of .body (above the title). The
+   soft Badge is a <span> made a flex item by .body's column layout, so
+   align-self keeps it hugging its own content instead of stretching to the full
+   body width. Spacing above/below is handled by .body's existing gap token, so
+   no margin is needed here. */
+.category {
+  align-self: flex-start;
+}
+
+/* The primary "Demo" action renders as an <a> (it carries an href), so the
+   global `a:hover`/`a:active { color: var(--color-primary-hover) }` rule
+   (specificity 0,1,1) would otherwise override the primary Button's white label
+   with the hover BACKGROUND color, making it invisible. This scoped rule
+   (0,2,0) re-asserts the white label. In-scope consumer relocation of the
+   reverted out-of-scope Button.module.css change (P3-F1). */
+.demoLink:hover,
+.demoLink:active {
+  color: var(--color-white);
 }

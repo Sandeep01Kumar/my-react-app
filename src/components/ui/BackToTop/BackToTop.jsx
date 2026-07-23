@@ -7,12 +7,24 @@
  * slides in once the user scrolls past `threshold` pixels and animates back out
  * when they scroll above it again.
  *
- * The button is rendered *inside* <AnimatePresence> and gated on `isVisible` —
- * the idiomatic Framer Motion pattern that grants the exit (leave) animation when
- * `isVisible` flips to false (wrapping AnimatePresence around a conditional parent
- * would break the exit transition). The arrow icon is decorative (`aria-hidden`);
- * the button's `aria-label` supplies the accessible name, and
- * `.backToTop:focus-visible` (CSS Module) provides the visible keyboard focus ring.
+ * The button is rendered *inside* <AnimatePresence> and gated on
+ * `isVisible && !suppressed` — the idiomatic Framer Motion pattern that grants
+ * the exit (leave) animation when that condition flips to false (wrapping
+ * AnimatePresence around a conditional parent would break the exit transition).
+ * The arrow icon is decorative (`aria-hidden`); the button's `aria-label`
+ * supplies the accessible name, and `.backToTop:focus-visible` (CSS Module)
+ * provides the visible keyboard focus ring.
+ *
+ * `suppressed` is an optional caller-supplied override that force-hides (and
+ * fully un-mounts, so it is inert to pointer and keyboard) the control even when
+ * the scroll position would otherwise show it. Consumers use it to keep this
+ * fixed floating control from conflicting with other layers — e.g. while a
+ * blocking overlay (modal / mobile menu) is open, or while the viewport is over
+ * the page's bottom interactive content (see `components/layout/Footer`, QA
+ * ISSUE-07 / ISSUE-08). It is combined with `isVisible` rather than replacing it,
+ * and it hides the button regardless of scroll position — important because body
+ * scroll is locked (and thus `isVisible` is frozen) while an overlay is open.
+ * Kept a generic boolean so this primitive stays decoupled from app navigation.
  *
  * @see AAP §0.1.1 (Footer "back-to-top button"), §0.4.3 (floating back-to-top
  *      button), §0.5.3 (component mapping: Back-to-top → BackToTop, prop
@@ -31,11 +43,15 @@ import styles from './BackToTop.module.css'
  *   distance in px past which the button becomes visible; defaults to the shared
  *   400px constant but can be overridden per-consumer.
  * @param {string} [props.className] - Optional extra class merged onto the button.
+ * @param {boolean} [props.suppressed=false] - When `true`, force-hides and
+ *   un-mounts the control regardless of scroll position (e.g. while an overlay is
+ *   open or the page's bottom interactive content is in view). Combined with the
+ *   internal `isVisible` flag.
  * @param {object} [props.rest] - Any additional attributes forwarded to the
  *   underlying motion button (e.g. `data-*`, inline `style`).
  * @returns {import('react').ReactElement} The AnimatePresence-wrapped back-to-top button.
  */
-function BackToTop({ threshold = BACK_TO_TOP_THRESHOLD, className, ...rest }) {
+function BackToTop({ threshold = BACK_TO_TOP_THRESHOLD, className, suppressed = false, ...rest }) {
   const { isVisible, scrollToTop } = useScrollToTop(threshold)
   const reduced = usePrefersReducedMotion()
 
@@ -54,7 +70,7 @@ function BackToTop({ threshold = BACK_TO_TOP_THRESHOLD, className, ...rest }) {
 
   return (
     <AnimatePresence>
-      {isVisible && (
+      {isVisible && !suppressed && (
         <motion.button
           type="button"
           aria-label="Back to top"

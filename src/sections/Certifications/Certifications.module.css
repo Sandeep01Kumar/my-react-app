@@ -1,0 +1,118 @@
+/**
+ * Certifications.module.css — Certifications section shell + responsive card
+ * grid AND the inner layout/typography of one CertificationCard.
+ * --------------------------------------------------------------------------
+ * SINGLE shared module for the section (Certifications.jsx) and its card
+ * subcomponent (CertificationCard.jsx), per AAP §0.2.3 — there is intentionally
+ * NO separate CertificationCard.module.css. Mirrors the Services/Projects grid
+ * rhythm: one column on mobile, two at >=768px, three at >=1024px, with the
+ * vertical section padding growing from 64px to 96px to match the shared
+ * desktop section cadence used by every other content section.
+ *
+ * Token discipline: every value resolves to a var(--token) from
+ * src/styles/variables.css (app-wide zero-hardcoded-values rule); the only
+ * non-token literals are the structural grid track values (1fr / repeat(n, 1fr))
+ * and the media-query breakpoint pixels (media conditions cannot use var()).
+ * Global element resets (img display/max-width, heading overflow-wrap), the
+ * section scroll-margin, the focus rings and the reduced-motion guard live in
+ * src/styles/global.css and are intentionally not repeated here. The Card
+ * SURFACE (radius/border/glass background/shadow/padding/hover lift) is owned by
+ * the shared Card primitive and is deliberately NOT restated here.
+ */
+
+.certifications {
+  padding-block: var(--space-16);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-6);
+  margin-top: var(--space-12);
+}
+
+/* min-width:0 lets a grid item shrink below its content's min-content width, so
+   an unusually long unbroken organization string wraps INSIDE the card instead
+   of stretching its column and unbalancing the row (QA ISSUE-09). Paired with
+   the minmax(0, 1fr) tracks below, which also permit tracks to shrink. */
+.item {
+  display: flex;
+  min-width: 0;
+}
+
+/* Card inner layout: full-height vertical stack, left-aligned, token gap so all
+   cards in a grid row are equal height and their CTAs can bottom-align.
+   min-width:0 lets long content wrap instead of forcing horizontal overflow. */
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-4);
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+}
+
+/* Issuing-organization / certification logo: square, contained (never cropped),
+   rounded, on a neutral surface fallback while the art loads. */
+.logo {
+  width: var(--space-16);
+  height: var(--space-16);
+  border-radius: var(--radius-md);
+  object-fit: contain;
+  background-color: var(--color-surface);
+}
+
+/* Credential name — heading family/color at the card scale (mirrors
+   ServiceCard .title). overflow-wrap:anywhere + min-width:0 wrap a long
+   unbroken token instead of overflowing (QA F5). */
+.name {
+  margin: 0;
+  color: var(--color-heading);
+  font-family: var(--font-heading);
+  font-size: var(--text-xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--leading-tight);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Issuing organization (soft Badge). The base Badge pill is `white-space:nowrap`,
+   which would force an unusually long unbroken org string to stretch its grid
+   column (QA ISSUE-09). Scoped here (not on the shared Badge) so only the cert
+   org wraps: cap at the card width and allow the label to break mid-token. */
+.org {
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* Issue date — muted supporting text. */
+.date {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+}
+
+/* "View credential" pinned to the card bottom so CTAs align across a grid row
+   (mirrors ProjectCard's .actions margin-top:auto). */
+.action {
+  margin-top: auto;
+}
+
+@media (min-width: 768px) {
+  .certifications {
+    padding-block: var(--space-24);
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

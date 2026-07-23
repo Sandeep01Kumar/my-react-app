@@ -84,12 +84,23 @@
 
 .primary:hover {
   background-color: var(--color-primary-hover);
+  /* Re-assert the white label on hover. When Button renders as an <a>
+     (as="a" — e.g. Resume "Download Resume", NotFound "Back to Home"), the
+     global `a:hover { color: var(--color-primary-hover) }` rule (specificity
+     0,1,1) would otherwise out-rank the base `.primary` color (0,1,0) and tint
+     the text to the hover-blue, making it vanish against this hover-blue
+     background. `.primary:hover` (specificity 0,2,0) beats the global rule and
+     keeps the label/icon readable. */
+  color: var(--color-white);
   box-shadow: var(--shadow-md);
   transform: translateY(var(--lift-hover));
 }
 
 .primary:active {
   background-color: var(--color-primary-active);
+  /* Same rationale as :hover — an active anchor is still matched by the global
+     a:hover rule, so keep the label white on press as well. */
+  color: var(--color-white);
   transform: translateY(0);
 }
 
@@ -106,7 +117,12 @@
 
 .outline {
   background-color: transparent;
-  color: var(--color-primary);
+  /* Accent (not primary) so the label lightens to #4F83FF in dark mode, lifting
+     the text-on-glass-card contrast past WCAG 4.5:1 (was 3.08:1 with primary on
+     the dark glass surface — e.g. the Certifications "View credential" link).
+     In light mode --color-accent == --color-primary, so this is a no-op there.
+     The hover state below still paints white-on-primary, unchanged. */
+  color: var(--color-accent);
   border-color: var(--color-primary);
 }
 

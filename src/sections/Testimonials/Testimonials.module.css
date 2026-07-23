@@ -1,0 +1,233 @@
+/**
+ * Testimonials.module.css — Testimonials section shell + carousel + card styles.
+ * --------------------------------------------------------------------------
+ * The SINGLE CSS Module for the Testimonials section. It is imported by BOTH
+ * Testimonials.jsx (section + carousel + prev/next controls + dot indicators)
+ * AND TestimonialCard.jsx (card layout + photo + star rating + quote + name +
+ * role) as `import styles from './Testimonials.module.css'`. There is
+ * deliberately NO separate TestimonialCard.module.css for this folder.
+ *
+ * Contract notes:
+ *   - Zero hardcoded values: every property value resolves to a var(--token)
+ *     from src/styles/variables.css. The only non-token literals are the
+ *     always-exempt keywords (0, none, auto, relative, center, flex, column,
+ *     hidden, inline-flex, italic, cover), the empty content string for the dot
+ *     pseudo-element, the 100% structural fills, and the media-query breakpoint
+ *     pixels (media conditions cannot use var()).
+ *   - The card SURFACE (glass background/border, radius, shadow, padding) is
+ *     owned by the reused Card primitive (<Card variant="glass" padding="lg">)
+ *     and is intentionally NOT restated here; this module supplies only inner
+ *     layout and typography.
+ *   - Prev/next controls are the reused Button primitive; its colors/background
+ *     are owned by the Button variant — only sizing/shape is added below via
+ *     .controlButton.
+ *   - Global behaviors live in src/styles/global.css and are NOT restated: the
+ *     section[id] scroll offset for #testimonials, the :focus-visible rings, the
+ *     img/margin/list/button resets, and the prefers-reduced-motion guard (which
+ *     automatically neutralizes the transitions declared below — so no per-file
+ *     reduced-motion query is needed).
+ *   - Mobile-first: a single centered slide at every breakpoint; the only
+ *     responsive change is the shared section padding rhythm at >=768px.
+ */
+
+/* ==========================================================================
+ * Section shell
+ * ========================================================================== */
+
+/* Vertical rhythm matching the sibling content sections (About/Skills/Projects/
+   Services/Experience): 64px base, growing to 96px at >=768px (media query at
+   the end of this file). */
+.testimonials {
+  padding-block: var(--space-16);
+}
+
+/* Empty state shown when there are no testimonials (role="status" in the JSX):
+   centered, muted, and given the same top rhythm the carousel would occupy so
+   the section height stays consistent whether populated or empty. */
+.empty {
+  margin-top: var(--space-12);
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: var(--text-lg);
+}
+
+/* ==========================================================================
+ * Carousel structure
+ * ========================================================================== */
+
+/* Outer carousel container and hover/focus pause zone (aria-roledescription=
+   "carousel" is applied in the JSX). Capped to the narrow reading measure
+   (mirrors the Container `narrow` formula) and centered, so a single testimonial
+   stays comfortably readable on lg/xl while filling the Container width on
+   sm/md. */
+.carousel {
+  position: relative;
+  max-width: calc(var(--container-max) - var(--space-32) - var(--space-16));
+  margin-inline: auto;
+  margin-top: var(--space-12);
+}
+
+/* Slide stacking region (aria-live in the JSX). Every slide is placed in the
+   SAME grid cell (see `.slide { grid-area: 1 / 1 }`) so all slides overlap
+   perfectly and the region always sizes to the TALLEST slide. Because the
+   height is fixed by the tallest testimonial, it never changes as slides
+   advance, so the controls below never shift (F-15: no moving targets).
+   overflow: hidden guards against any sub-pixel bleed during the crossfade. */
+.viewport {
+  position: relative;
+  display: grid;
+  overflow: hidden;
+}
+
+/* Every slide is stacked into the single grid cell and fills the viewport
+   width, so the crossfade reads as a full-width swap in place while the
+   shorter slides still reserve the tallest slide's height. */
+.slide {
+  grid-area: 1 / 1;
+  width: 100%;
+}
+
+/* ==========================================================================
+ * Controls — prev/next reuse the Button primitive
+ * ========================================================================== */
+
+/* Centered row of prev/next controls below the viewport. */
+.controls {
+  display: flex;
+  gap: var(--space-4);
+  justify-content: center;
+  align-items: center;
+  margin-top: var(--space-6);
+}
+
+/* Merged onto the reused Button via its className prop. The Button already sets
+   min-height: var(--tap-target-min); here we also guarantee the WIDTH meets the
+   tap target and render it as a round icon button. Colors/background are
+   deliberately left to the Button variant. */
+.controlButton {
+  min-width: var(--tap-target-min);
+  border-radius: var(--radius-full);
+}
+
+/* ==========================================================================
+ * Dot indicators
+ * ========================================================================== */
+
+/* Centered row of slide indicators below the controls. */
+.dots {
+  display: flex;
+  gap: var(--space-2);
+  justify-content: center;
+  margin-top: var(--space-4);
+}
+
+/* Native <button> indicator: a full tap-target-sized hit area whose visible dot
+   is drawn by the ::before pseudo-element, keeping the touch target large while
+   the dot itself stays small. */
+.dot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--tap-target-min);
+  min-height: var(--tap-target-min);
+  border-radius: var(--radius-full);
+  background: none;
+}
+
+/* The visible dot — muted by default. The transition is automatically
+   neutralized under the global prefers-reduced-motion guard. */
+.dot::before {
+  content: '';
+  width: var(--space-2);
+  height: var(--space-2);
+  border-radius: var(--radius-full);
+  background-color: var(--color-border);
+  transition: background-color var(--transition-fast) var(--ease);
+}
+
+/* Active slide indicator — accent-colored visible dot. Declared AFTER
+   .dot::before so it wins by source order (both selectors share specificity).
+   Uses the theme-aware --color-accent (P5-F1): in dark theme accent (#4F83FF)
+   reaches ~4.24:1 against the surface and ~3:1 against the inactive
+   --color-border dot, both clearing the WCAG 1.4.11 3:1 non-text-contrast
+   threshold; in light theme accent equals the brand primary so the appearance
+   is unchanged. */
+.dotActive::before {
+  background-color: var(--color-accent);
+}
+
+/* ==========================================================================
+ * Card — shared by TestimonialCard.jsx (the Card primitive owns the surface)
+ * ========================================================================== */
+
+/* Inner layout only: a centered vertical stack that fills the card height so
+   adjacent cards align. justify-content: center vertically centers shorter
+   testimonials within the tallest-slide height reserved by the grid stack
+   (F-15), so every slide reads as centered rather than top-aligned. Surface
+   styling (glass bg/border, radius, shadow, padding) is owned by
+   <Card variant="glass" padding="lg">. */
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: var(--space-4);
+  height: 100%;
+}
+
+/* Rounded avatar (96px). object-fit keeps non-square photos undistorted;
+   img display:block / max-width:100% come from the global reset. */
+.photo {
+  width: var(--space-24);
+  height: var(--space-24);
+  border-radius: var(--radius-full);
+  object-fit: cover;
+}
+
+/* Star row — both the solid (FaStar) and outline (FaRegStar) glyphs inherit the
+   warning color through currentColor. */
+.rating {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--color-warning);
+  font-size: var(--text-xl);
+}
+
+/* The testimonial quote (<blockquote>): reset the UA margin and use the body
+   text token so it flips correctly between light and dark themes. */
+.quote {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--text-lg);
+  line-height: var(--leading-normal);
+  font-style: italic;
+}
+
+/* Attribution name — heading color, semibold weight. */
+.name {
+  margin: 0;
+  color: var(--color-heading);
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--text-base);
+}
+
+/* Attribution role / company — muted and smaller. */
+.role {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
+/* ==========================================================================
+ * Responsive — a single centered slide at every breakpoint; only the shared
+ * section padding rhythm changes at >=768px (matching every sibling content
+ * section, e.g. Projects/Services).
+ * ========================================================================== */
+
+@media (min-width: 768px) {
+  .testimonials {
+    padding-block: var(--space-24);
+  }
+}

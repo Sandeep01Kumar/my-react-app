@@ -1,4 +1,4 @@
-import { FaGraduationCap, FaBriefcase, FaRocket, FaCertificate } from 'react-icons/fa'
+import { FaGraduationCap, FaBriefcase, FaRocket, FaCertificate, FaCheckCircle } from 'react-icons/fa'
 import Reveal from '@/components/ui/Reveal'
 import Card from '@/components/ui/Card'
 import Badge from '@/components/ui/Badge'
@@ -34,9 +34,17 @@ const TYPE_ICONS = {
  * internally), containing a decorative category marker and a `Card` rendered
  * as an `<article>` with the type `Badge`, period, title, org, and description.
  *
+ * The optional `logo`, `tech`, and `achievements` fields are additive and
+ * backward-compatible: each is rendered ONLY when present, so entries without
+ * them render exactly as before. `logo` shows a small organization logo above
+ * the title, `tech` renders reusable `Badge` chips, and `achievements` renders
+ * a semantic list with a decorative check icon per item.
+ *
  * @param {object} props
- * @param {{ type: 'Education'|'Experience'|'Journey'|'Certification', title: string, org: string, period: string, description: string }} props.item
- *   The timeline entry to render.
+ * @param {{ type: 'Education'|'Experience'|'Journey'|'Certification', title: string, org: string, period: string, description: string, logo?: string, tech?: string[], achievements?: string[] }} props.item
+ *   The timeline entry to render. `logo` (an imported asset URL), `tech`, and
+ *   `achievements` are optional; when omitted the entry renders identically to
+ *   the pre-enhancement layout.
  * @param {number} props.index Position in the list; its parity selects the
  *   left/right side on the desktop alternating layout.
  * @returns {import('react').ReactElement} The rendered `<li>` timeline entry.
@@ -56,9 +64,39 @@ function TimelineItem({ item, index }) {
           <Badge variant="soft">{item.type}</Badge>
           <span className={styles.period}>{item.period}</span>
         </div>
+        {item.logo && (
+          <img
+            className={styles.logo}
+            src={item.logo}
+            alt={`${item.org} logo`}
+            width="48"
+            height="48"
+            loading="lazy"
+            decoding="async"
+          />
+        )}
         <h3 className={styles.title}>{item.title}</h3>
         <p className={styles.org}>{item.org}</p>
         <p className={styles.description}>{item.description}</p>
+        {item.tech?.length > 0 && (
+          <ul className={styles.tech}>
+            {item.tech.map((t) => (
+              <li key={t}>
+                <Badge variant="soft">{t}</Badge>
+              </li>
+            ))}
+          </ul>
+        )}
+        {item.achievements?.length > 0 && (
+          <ul className={styles.achievements}>
+            {item.achievements.map((a) => (
+              <li key={a} className={styles.achievement}>
+                <FaCheckCircle className={styles.achievementIcon} aria-hidden="true" />
+                <span>{a}</span>
+              </li>
+            ))}
+          </ul>
+        )}
       </Card>
     </Reveal>
   )

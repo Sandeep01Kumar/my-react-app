@@ -33,6 +33,82 @@
   display: flex;
 }
 
+/* Filter + search bar between the SectionTitle and the grid. Wraps on small
+   screens (flex-wrap) so the category chips and the search field stack. */
+.filterBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+  margin-top: var(--space-8);
+}
+
+/* Row of category filter chips (each is a shared Button). */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+/* Ensures each category Button meets the 44px minimum tap target (WCAG 2.5.5)
+   in BOTH dimensions on top of the Button primitive's own sizing: min-height
+   guarantees the vertical target and min-width guarantees the horizontal one, so
+   even the shortest label ("All", previously ~43.5px wide) is >= 44px. The
+   active/inactive look is handled by swapping the Button variant (primary vs
+   outline) in the JSX, so no separate active class is needed here. */
+.filterButton {
+  min-height: var(--tap-target-min);
+  min-width: var(--tap-target-min);
+}
+
+/* Search field grows to fill the remaining bar width; drops to its own full
+   row when the bar wraps on small screens. */
+.search {
+  flex: 1 1 var(--space-32);
+  min-width: 0;
+}
+
+/* Visually-hidden but accessible <label> for the search input. Exact sr-only
+   idiom already used in src/sections/Hero/Hero.module.css (token-driven size). */
+.searchLabel {
+  position: absolute;
+  width: var(--sr-only-size);
+  height: var(--sr-only-size);
+  padding: 0;
+  margin: calc(var(--sr-only-size) * -1);
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Token-styled raw search input (there is no Input primitive). Meets the 44px
+   tap target; focus ring comes from the global :focus-visible rule. */
+.searchInput {
+  width: 100%;
+  min-height: var(--tap-target-min);
+  padding-block: var(--space-2);
+  padding-inline: var(--space-3);
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: var(--border-width-hairline) solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+}
+
+.searchInput::placeholder {
+  color: var(--color-text-muted);
+}
+
+/* Graceful empty state shown when no project matches the active filters. */
+.empty {
+  margin-top: var(--space-12);
+  padding: var(--space-8);
+  color: var(--color-text-muted);
+  font-size: var(--text-base);
+  text-align: center;
+}
+
 @media (min-width: 768px) {
   .section {
     padding-block: var(--space-24);

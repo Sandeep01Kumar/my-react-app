@@ -1,7 +1,9 @@
 /**
  * ProjectModal.module.css — Project details modal BODY content.
  * --------------------------------------------------------------------------
- * Consumed by ProjectModal.jsx as `styles.content`, `styles.image`,
+ * Consumed by ProjectModal.jsx as `styles.content`, the image-gallery classes
+ * `styles.gallery`, `styles.viewport`, `styles.slide`, `styles.galleryControls`,
+ * `styles.galleryButton`, `styles.dots`, `styles.dot`, `styles.dotActive`,
  * `styles.description`, `styles.tech`, `styles.features`, `styles.featuresTitle`,
  * `styles.featureList`, `styles.featureItem`, `styles.featureIcon`, `styles.actions`.
  *
@@ -26,12 +28,91 @@
   gap: var(--space-4);
 }
 
-.image {
+/* Image gallery carousel (replaces the former single hero image). The viewport
+   is a stable 16:10 box so absolutely-positioned slides can cross-fade via the
+   framer-motion AnimatePresence in ProjectModal.jsx with NO layout shift, and so
+   the box never collapses during the brief exit/enter gap. The 16:10 ratio
+   matches the intrinsic size of the gallery SVGs (viewBox 0 0 640 400) and the
+   Projects grid card thumbnail, so the same asset renders identically (no crop
+   or stretch) in the card and the modal (QA ISSUE-06). */
+.gallery {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.viewport {
+  position: relative;
   width: 100%;
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
   border-radius: var(--radius-lg);
   background: var(--color-surface);
+}
+
+/* Each slide fills the viewport; absolute positioning lets the exiting and
+   entering frames overlap cleanly during the transition. Global img reset
+   already provides display:block/max-width:100%. */
+.slide {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Prev / dots / next row, centered beneath the image. Wraps if space is tight. */
+.galleryControls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+}
+
+/* Icon-only prev/next buttons — guarantee the 44px minimum tap target
+   (WCAG 2.5.5) on top of the shared Button primitive's own sizing. */
+.galleryButton {
+  min-width: var(--tap-target-min);
+  min-height: var(--tap-target-min);
+}
+
+/* Dot indicators (navigate via useCarousel goTo). */
+.dots {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* Each dot is a full 44px hit target (accessibility) with a small centered
+   visual dot drawn by ::before, so the touch area meets the minimum without a
+   huge visible dot. */
+.dot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--tap-target-min);
+  min-height: var(--tap-target-min);
+  padding: 0;
+  background: none;
+}
+
+.dot::before {
+  content: '';
+  width: var(--space-2);
+  height: var(--space-2);
+  border-radius: var(--radius-full);
+  background: var(--color-border);
+  transition: background-color var(--transition-fast) var(--ease);
+}
+
+/* Active dot marks the current slide. Uses the theme-aware --color-accent
+   (P5-F1): in dark theme accent (#4F83FF) reaches ~4.24:1 against the surface
+   and ~3:1 against the inactive --color-border dot, both clearing the WCAG
+   1.4.11 3:1 non-text-contrast threshold; in light theme accent equals the
+   brand primary so the appearance is unchanged. */
+.dotActive::before {
+  background: var(--color-accent);
 }
 
 .description {
@@ -87,4 +168,15 @@
   flex-wrap: wrap;
   gap: var(--space-3);
   margin-top: var(--space-2);
+}
+
+/* The primary "Live Demo" action renders as an <a> (it carries an href), so the
+   global `a:hover`/`a:active { color: var(--color-primary-hover) }` rule
+   (specificity 0,1,1) would otherwise override the primary Button's white label
+   with the hover BACKGROUND color, making it invisible. This scoped rule
+   (0,2,0) re-asserts the white label. In-scope consumer relocation of the
+   reverted out-of-scope Button.module.css change (P3-F1). */
+.demoLink:hover,
+.demoLink:active {
+  color: var(--color-white);
 }

@@ -45,11 +45,19 @@
   border-color: var(--color-border);
 }
 
-/* Soft (default) — subtle surface fill with royal-blue text and a hairline
-   border; theme-aware via --color-surface / --color-border. */
+/* Soft (default) — subtle fill with accent-blue text and a hairline border;
+   theme-aware via --color-bg / --color-accent / --color-border.
+   The text uses --color-accent (not --color-primary) so it lightens to #4F83FF
+   in dark mode, and the fill uses --color-bg (not --color-surface) which is a
+   touch darker in dark mode — together these lift the accent-on-fill contrast
+   past the WCAG 4.5:1 floor in dark (was 2.86:1 with primary-on-surface) while
+   staying visually identical in light (accent==primary and the near-white
+   #FFFFFF/#F8FAFC fills are indistinguishable, with the hairline border still
+   delineating the pill). Both remain plain token swaps — no theme-specific
+   selector — preserving the "theming comes only from token flips" convention. */
 .soft {
-  background: var(--color-surface);
-  color: var(--color-primary);
+  background: var(--color-bg);
+  color: var(--color-accent);
   border-color: var(--color-border);
 }
 
