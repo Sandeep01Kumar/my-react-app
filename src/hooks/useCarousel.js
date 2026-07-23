@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import { motionTokens } from '@/data'
 import { usePrefersReducedMotion } from './usePrefersReducedMotion'
 
 /**
@@ -73,8 +74,8 @@ import { usePrefersReducedMotion } from './usePrefersReducedMotion'
  *   autoplay are no-ops when this is `0`, `1`, or falsy (nothing to advance).
  * @param {boolean} [options.autoPlay=true] - Whether the carousel should
  *   auto-advance. Ignored (no timer) under `prefers-reduced-motion`.
- * @param {number} [options.interval=5000] - Delay in ms between automatic
- *   advances while autoplaying.
+ * @param {number} [options.interval] - Delay in ms between automatic advances
+ *   while autoplaying. Defaults to `motionTokens.carouselIntervalMs` (5000).
  * @param {*} [options.resetKey] - Optional identity value; when it changes the
  *   active index resets to `0`. Omit it (as the auto-sliding testimonial
  *   carousel does) to never auto-reset.
@@ -121,7 +122,7 @@ import { usePrefersReducedMotion } from './usePrefersReducedMotion'
  *   resetKey: project?.id,
  * })
  */
-export function useCarousel({ length, autoPlay = true, interval = 5000, resetKey } = {}) {
+export function useCarousel({ length, autoPlay = true, interval = motionTokens.carouselIntervalMs, resetKey } = {}) {
   const reduced = usePrefersReducedMotion()
   const [activeIndex, setActiveIndex] = useState(0)
 

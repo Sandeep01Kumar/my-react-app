@@ -73,7 +73,8 @@
 }
 
 .success,
-.errorBanner {
+.errorBanner,
+.info {
   margin: 0;
   padding: var(--space-3) var(--space-4);
   font-size: var(--text-sm);
@@ -91,4 +92,14 @@
   color: var(--color-error);
   background-color: var(--color-surface);
   border-color: var(--color-error);
+}
+
+/* Neutral informational banner (demo-mode acknowledgement). The label uses the
+   body-text token so it clears the 4.5:1 normal-text ratio in BOTH themes,
+   while the accent border (a graphical element, >=3:1) supplies a calm,
+   theme-aware affordance that reads as neither success nor error. */
+.info {
+  color: var(--color-text);
+  background-color: var(--color-surface);
+  border-color: var(--color-accent);
 }

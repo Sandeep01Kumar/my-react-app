@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { motionTokens } from '@/data'
 import { usePrefersReducedMotion } from './usePrefersReducedMotion'
 
 /**
@@ -47,7 +48,8 @@ import { usePrefersReducedMotion } from './usePrefersReducedMotion'
  *
  * @param {number} target - The final value to count up to.
  * @param {object} [options] - Timing and formatting options.
- * @param {number} [options.duration=2000] - Total ramp duration in milliseconds.
+ * @param {number} [options.duration] - Total ramp duration in milliseconds.
+ *   Defaults to `motionTokens.countUpDurationMs` (2000).
  * @param {number} [options.decimals=0] - Number of decimal places to round the
  *   in-flight value to (`0` → integers, `1` → one decimal place, …). The final
  *   frame always snaps to the exact `target`.
@@ -65,7 +67,7 @@ import { usePrefersReducedMotion } from './usePrefersReducedMotion'
  * const { ref, value } = useCountUp(4.9, { duration: 1500, decimals: 1 })
  */
 export function useCountUp(target, options = {}) {
-  const { duration = 2000, decimals = 0, start = 0 } = options
+  const { duration = motionTokens.countUpDurationMs, decimals = 0, start = 0 } = options
   const reduced = usePrefersReducedMotion()
   const ref = useRef(null)
   const [value, setValue] = useState(start)
@@ -111,8 +113,10 @@ export function useCountUp(target, options = {}) {
 
     // Start the ramp only after the element first enters the viewport, then
     // disconnect so it runs exactly once — mirrors the `viewportOnce`
-    // (`{ once: true, amount: 0.2 }`) config in @/utils animations.js
-    // (threshold 0.2 + one-shot).
+    // (`{ once: true, amount: 0.2 }`) config in @/utils animations.js. The
+    // threshold comes from `motionTokens.countUpThreshold`, which is defined to
+    // equal that `amount` (0.2), so the count-up fires at the same "~20% visible"
+    // point as the scroll-reveal — and stays a one-shot via `disconnect()`.
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -122,7 +126,7 @@ export function useCountUp(target, options = {}) {
           }
         })
       },
-      { threshold: 0.2 },
+      { threshold: motionTokens.countUpThreshold },
     )
     observer.observe(node)
 

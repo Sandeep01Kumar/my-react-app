@@ -5,6 +5,7 @@ import Button from '@/components/ui/Button'
 import { useCarousel } from '@/hooks/useCarousel'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 import { FaGithub, FaExternalLinkAlt, FaCheck, FaChevronLeft, FaChevronRight } from 'react-icons/fa'
+import { motionTokens } from '@/data'
 import styles from './ProjectModal.module.css'
 
 /**
@@ -87,14 +88,16 @@ function ProjectModal({ project, isOpen, onClose }) {
 
   // Slide transition props. Under reduced motion this is an empty object, so the
   // slide swaps INSTANTLY (no fade) while still being tracked by AnimatePresence
-  // — mirroring the Modal primitive's own reduced-motion pattern.
+  // — mirroring the Modal primitive's own reduced-motion pattern. The crossfade
+  // duration comes from the shared motion token contract (`motionTokens`, P5-F2)
+  // rather than a bare literal.
   const slideMotion = reduced
     ? {}
     : {
         initial: { opacity: 0 },
         animate: { opacity: 1 },
         exit: { opacity: 0 },
-        transition: { duration: 0.3 },
+        transition: { duration: motionTokens.modalCrossfadeS },
       }
 
   return (
@@ -196,6 +199,7 @@ function ProjectModal({ project, isOpen, onClose }) {
               target='_blank'
               rel='noopener noreferrer'
               variant='primary'
+              className={styles.demoLink}
               icon={<FaExternalLinkAlt />}
               aria-label={`Open the live demo of ${project.title}`}
             >

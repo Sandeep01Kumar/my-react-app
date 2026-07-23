@@ -109,6 +109,7 @@ function ProjectCard({ project, onOpen }) {
           rel='noopener noreferrer'
           variant='primary'
           size='sm'
+          className={styles.demoLink}
           icon={<FaExternalLinkAlt />}
           aria-label={`Open the live demo of ${project.title}`}
         >

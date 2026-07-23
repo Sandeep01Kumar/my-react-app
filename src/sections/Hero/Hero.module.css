@@ -118,6 +118,18 @@
   gap: var(--space-4);
 }
 
+/* Primary "Download Resume" CTA renders as an <a> (it carries an href), so the
+   global `a:hover`/`a:active { color: var(--color-primary-hover) }` rule
+   (specificity 0,1,1) would otherwise override the primary Button's white label
+   with the hover BACKGROUND color for an invisible, ~1:1-contrast label. This
+   scoped rule (0,2,0) re-asserts the white label. This is the in-scope consumer
+   relocation of the reverted out-of-scope Button.module.css change (P3-F1); it
+   is a no-op for the native <button> variant that never matches `a:hover`. */
+.primaryCta:hover,
+.primaryCta:active {
+  color: var(--color-white);
+}
+
 .imageWrap {
   display: flex;
   justify-content: center;

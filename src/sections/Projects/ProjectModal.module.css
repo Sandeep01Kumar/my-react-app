@@ -103,9 +103,13 @@
   transition: background-color var(--transition-fast) var(--ease);
 }
 
-/* Active dot uses the primary accent so the current slide is obvious. */
+/* Active dot marks the current slide. Uses the theme-aware --color-accent
+   (P5-F1): in dark theme accent (#4F83FF) reaches ~4.24:1 against the surface
+   and ~3:1 against the inactive --color-border dot, both clearing the WCAG
+   1.4.11 3:1 non-text-contrast threshold; in light theme accent equals the
+   brand primary so the appearance is unchanged. */
 .dotActive::before {
-  background: var(--color-primary);
+  background: var(--color-accent);
 }
 
 .description {
@@ -161,4 +165,15 @@
   flex-wrap: wrap;
   gap: var(--space-3);
   margin-top: var(--space-2);
+}
+
+/* The primary "Live Demo" action renders as an <a> (it carries an href), so the
+   global `a:hover`/`a:active { color: var(--color-primary-hover) }` rule
+   (specificity 0,1,1) would otherwise override the primary Button's white label
+   with the hover BACKGROUND color, making it invisible. This scoped rule
+   (0,2,0) re-asserts the white label. In-scope consumer relocation of the
+   reverted out-of-scope Button.module.css change (P3-F1). */
+.demoLink:hover,
+.demoLink:active {
+  color: var(--color-white);
 }

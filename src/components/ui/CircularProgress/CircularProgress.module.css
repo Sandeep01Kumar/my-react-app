@@ -23,9 +23,11 @@
  * src/styles/variables.css (in scope globally via the :root / [data-theme]
  * cascade, so this file does NOT @import it); there are no hardcoded design
  * values. The track, arc, and value colors are SEMANTIC tokens
- * (--color-border, --color-primary, --color-heading) — the first and third
- * already carry [data-theme="dark"] overrides — so the component renders
- * correctly in BOTH light and dark automatically with no per-theme rule here.
+ * (--color-border, --color-accent, --color-heading) — all of which carry
+ * [data-theme="dark"] overrides — so the component renders correctly in BOTH
+ * light and dark automatically with no per-theme rule here. The arc uses the
+ * theme-aware --color-accent (not --color-primary) so its dark-mode value meets
+ * the WCAG 1.4.11 3:1 non-text contrast threshold (P5-F1).
  *
  * Accessibility / motion: the global :focus-visible ring and the
  * prefers-reduced-motion guard are inherited from src/styles/global.css, so
@@ -59,10 +61,14 @@
   stroke: var(--color-border);
 }
 
-/* Progress arc — the filled sweep drawn over the track. Primary brand color
-   (theme-independent royal blue) for maximum affordance in both themes. */
+/* Progress arc — the filled sweep drawn over the track. Uses the THEME-AWARE
+   accent token rather than --color-primary: in dark mode --color-accent
+   (#4F83FF) resolves to a lighter blue that clears the WCAG 1.4.11 3:1
+   non-text (graphical) contrast threshold against both the dark surface and the
+   --color-border track, whereas the theme-independent --color-primary (#2563EB)
+   fell below it. Light mode is unaffected (accent === primary there). (P5-F1) */
 .progress {
-  stroke: var(--color-primary);
+  stroke: var(--color-accent);
 }
 
 /* Centered numeric value (rendered only when showValue is true). Absolutely

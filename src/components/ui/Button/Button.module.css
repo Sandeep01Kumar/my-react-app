@@ -84,24 +84,12 @@
 
 .primary:hover {
   background-color: var(--color-primary-hover);
-  /* Re-assert the white label on hover. When a primary Button renders as an
-     <a>/Link (Hero "Download Resume", project "Demo", Resume, NotFound), the
-     global `a:hover { color: var(--color-primary-hover) }` rule (specificity
-     0,1,1) otherwise beats the scoped `.primary` color (0,1,0) and drives the
-     text to var(--color-primary-hover) — the exact hover background — for a
-     1:1-contrast, invisible label. Re-declaring color here lifts the scoped
-     rule to (0,2,0) so it wins, mirroring `.outline:hover`; it is a no-op for a
-     native <button> (which `a:hover` never matches). */
-  color: var(--color-white);
   box-shadow: var(--shadow-md);
   transform: translateY(var(--lift-hover));
 }
 
 .primary:active {
   background-color: var(--color-primary-active);
-  /* Keep the label white while pressed too: an anchor's :active state still
-     inherits the global `a:hover` color, so re-assert it here as well. */
-  color: var(--color-white);
   transform: translateY(0);
 }
 

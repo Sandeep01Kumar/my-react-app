@@ -3,7 +3,7 @@ import { FaChevronLeft, FaChevronRight, FaPlay, FaPause } from 'react-icons/fa'
 import SectionTitle from '@/components/ui/SectionTitle'
 import Container from '@/components/ui/Container'
 import Button from '@/components/ui/Button'
-import { testimonials } from '@/data'
+import { testimonials, motionTokens } from '@/data'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 import { useCarousel } from '@/hooks/useCarousel'
 import TestimonialCard from './TestimonialCard.jsx'
@@ -84,7 +84,7 @@ function Testimonials() {
     isPlaying,
     togglePlay,
     changeSource,
-  } = useCarousel({ length: count, autoPlay: true, interval: 5000 })
+  } = useCarousel({ length: count, autoPlay: true, interval: motionTokens.carouselIntervalMs })
 
   // The section shell (id / heading / landmark) is identical whether populated
   // or empty, so the SectionTitle is built once and reused by both branches to
@@ -129,9 +129,13 @@ function Testimonials() {
   // before any interaction, polite for manual navigation.
   const liveMode = changeSource === 'user' ? 'polite' : 'off'
 
-  // Crossfade transition; instant under reduced motion. The [0.4, 0, 0.2, 1]
-  // bezier equals the `--ease` design token.
-  const transition = reduced ? { duration: 0 } : { duration: 0.4, ease: [0.4, 0, 0.2, 1] }
+  // Crossfade transition; instant under reduced motion. The duration and easing
+  // come from the shared motion token contract (`motionTokens`, P5-F2):
+  // `motionTokens.ease` is the [0.4, 0, 0.2, 1] bezier that mirrors the `--ease`
+  // design token, so the crossfade shares the app's single easing curve.
+  const transition = reduced
+    ? { duration: 0 }
+    : { duration: motionTokens.testimonialCrossfadeS, ease: motionTokens.ease }
 
   return (
     <section

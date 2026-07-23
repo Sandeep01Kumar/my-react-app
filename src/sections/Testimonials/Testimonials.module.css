@@ -145,10 +145,15 @@
   transition: background-color var(--transition-fast) var(--ease);
 }
 
-/* Active slide indicator — primary-colored visible dot. Declared AFTER
-   .dot::before so it wins by source order (both selectors share specificity). */
+/* Active slide indicator — accent-colored visible dot. Declared AFTER
+   .dot::before so it wins by source order (both selectors share specificity).
+   Uses the theme-aware --color-accent (P5-F1): in dark theme accent (#4F83FF)
+   reaches ~4.24:1 against the surface and ~3:1 against the inactive
+   --color-border dot, both clearing the WCAG 1.4.11 3:1 non-text-contrast
+   threshold; in light theme accent equals the brand primary so the appearance
+   is unchanged. */
 .dotActive::before {
-  background-color: var(--color-primary);
+  background-color: var(--color-accent);
 }
 
 /* ==========================================================================

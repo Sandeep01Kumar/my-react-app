@@ -45,6 +45,9 @@ function ContactForm() {
                 value={values[field.name]}
                 onChange={handleChange}
                 onBlur={handleBlur}
+                /* Lock fields while a submit is in flight so an edit made during
+                   submission cannot be lost when the form resets (P7-F1). */
+                disabled={isSubmitting}
                 aria-invalid={hasError || undefined}
                 aria-describedby={hasError ? errorId : undefined}
               />
@@ -71,6 +74,7 @@ function ContactForm() {
             value={values.message}
             onChange={handleChange}
             onBlur={handleBlur}
+            disabled={isSubmitting}
             aria-invalid={Boolean(errors.message) || undefined}
             aria-describedby={errors.message ? 'contact-message-error' : undefined}
           />
@@ -84,6 +88,13 @@ function ContactForm() {
         {status === 'success' && (
           <p className={styles.success} role="status">
             Thanks for reaching out. Your message has been sent and I will reply soon.
+          </p>
+        )}
+        {status === 'demo' && (
+          <p className={styles.info} role="status">
+            Demo mode: email delivery isn&apos;t configured, so your message was
+            not sent. Your details are preserved below — please reach me directly
+            using the contact details on this page.
           </p>
         )}
         {status === 'error' && (
